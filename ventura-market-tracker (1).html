@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ventura Real Estate Market Tracker | Brandon Wasilewski</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #111111;
+    --navy-light: #2a2a2a;
+    --gold: #c9a84c;
+    --gold-light: #e8c87a;
+    --cream: #f8f6f1;
+    --white: #ffffff;
+    --text-dark: #111111;
+    --text-mid: #4a5568;
+    --text-light: #8a95a8;
+    --border: #e2ddd4;
+    --up: #2d7a4f;
+    --down: #b83232;
+    --neutral: #6b7280;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  a { color: inherit; text-decoration: none; }
+  body {
+    font-family: 'Montserrat', sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    line-height: 1.6;
+  }
+
+  /* HERO */
+  .hero {
+    background: var(--navy);
+    padding: 3rem 2rem 2.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(ellipse at 70% 50%, rgba(201,168,76,0.08) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .hero-eyebrow {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.75rem;
+  }
+  .hero h1 {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1.2;
+    margin-bottom: 0.75rem;
+  }
+  .hero-sub {
+    font-size: 15px;
+    color: rgba(255,255,255,0.65);
+    max-width: 480px;
+    margin: 0 auto 1.5rem;
+  }
+  .last-updated {
+    display: inline-block;
+    font-size: 12px;
+    color: rgba(255,255,255,0.4);
+    border: 1px solid rgba(255,255,255,0.12);
+    padding: 4px 14px;
+    border-radius: 20px;
+  }
+
+  /* AGENT CARD */
+  .agent-strip {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 1.25rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .agent-photo {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center top;
+    border: 2px solid var(--gold);
+    flex-shrink: 0;
+  }
+  .agent-info { flex: 1; }
+  .agent-name {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--navy);
+  }
+  .agent-title {
+    font-size: 12px;
+    color: var(--text-light);
+    margin-top: 1px;
+  }
+  .agent-cta {
+    display: inline-block;
+    background: var(--navy);
+    color: var(--white);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.2s;
+  }
+  .agent-cta:hover { background: var(--navy-light); }
+
+  /* MAIN LAYOUT */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+  }
+
+  /* SECTION HEADERS */
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-title {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--navy);
+  }
+  .section-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-light);
+  }
+
+  /* TAB NAV */
+  .tab-nav {
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 2rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .tab-btn {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-light);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    padding: 0.75rem 1.25rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .tab-btn.active {
+    color: var(--navy);
+    border-bottom-color: var(--gold);
+  }
+  .tab-btn:hover { color: var(--navy); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* SNAPSHOT METRICS GRID */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .metric-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.1rem 1.25rem;
+    position: relative;
+  }
+  .metric-card.featured {
+    border-color: var(--gold);
+    border-width: 1.5px;
+  }
+  .metric-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-bottom: 0.4rem;
+  }
+  .metric-value {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--navy);
+    line-height: 1.1;
+  }
+  .metric-sub {
+    font-size: 12px;
+    color: var(--text-light);
+    margin-top: 0.25rem;
+  }
+  .trend-arrow {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .trend-up { color: var(--up); }
+  .trend-down { color: var(--down); }
+  .trend-flat { color: var(--neutral); }
+
+  /* 4-WEEK TABLE */
+  .table-wrap {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 2rem;
+  }
+  .data-table {
+    min-width: 700px;
+  }
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .data-table th {
+    background: var(--navy);
+    color: rgba(255,255,255,0.75);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.75rem 1rem;
+    text-align: left;
+  }
+  .data-table th:first-child { color: var(--gold); }
+  .data-table td {
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-dark);
+  }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:nth-child(even) td { background: var(--cream); }
+  .data-table td:first-child {
+    font-weight: 500;
+    color: var(--text-mid);
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  .data-table .current-week td {
+    background: rgba(201,168,76,0.06);
+    font-weight: 500;
+  }
+
+  /* NARRATIVE CARDS */
+  .narrative-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--gold);
+    border-radius: 0 10px 10px 0;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .narrative-week {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.4rem;
+  }
+  .narrative-text {
+    font-size: 14px;
+    color: var(--text-mid);
+    line-height: 1.7;
+  }
+
+  /* DIRECTIONAL INDICATORS */
+  .indicators-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .indicator-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+  .indicator-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-bottom: 0.75rem;
+  }
+  .indicator-direction {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+  .dir-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .dir-up { background: rgba(45,122,79,0.1); color: var(--up); }
+  .dir-down { background: rgba(184,50,50,0.1); color: var(--down); }
+  .dir-flat { background: rgba(107,114,128,0.1); color: var(--neutral); }
+  .dir-label {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--navy);
+  }
+  .streak-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    background: var(--cream);
+    border: 1px solid var(--border);
+    color: var(--text-mid);
+    padding: 2px 10px;
+    border-radius: 20px;
+  }
+  .streak-badge.confirmed {
+    background: rgba(201,168,76,0.12);
+    border-color: var(--gold);
+    color: #8a6a20;
+  }
+
+  /* PICKS */
+  .picks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .pick-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .pick-header {
+    padding: 0.85rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .pick-header.luxury { background: var(--navy); }
+  .pick-header.investment { background: #1e3a2f; }
+  .pick-header.deal { background: #3a1e1e; }
+  .pick-type {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .pick-badge {
+    font-size: 10px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.7);
+  }
+  .pick-body { padding: 1.25rem; }
+  .pick-address {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 0.35rem;
+    line-height: 1.3;
+  }
+  .pick-price {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+  }
+  .pick-meta {
+    font-size: 12px;
+    color: var(--text-light);
+    margin-bottom: 1rem;
+  }
+  .pick-cta {
+    display: block;
+    text-align: center;
+    background: var(--cream);
+    border: 1px solid var(--border);
+    color: var(--navy);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .pick-cta:hover {
+    background: var(--navy);
+    color: var(--white);
+    border-color: var(--navy);
+  }
+
+  /* LOADING STATE */
+  .loading-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-light);
+    font-size: 14px;
+  }
+  .loading-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    margin: 0 3px;
+    animation: pulse 1.2s infinite;
+  }
+  .loading-dot:nth-child(2) { animation-delay: 0.2s; }
+  .loading-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes pulse {
+    0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); }
+    40% { opacity: 1; transform: scale(1); }
+  }
+
+  /* ERROR STATE */
+  .error-state {
+    background: #fff8f0;
+    border: 1px solid #f5d9b5;
+    border-radius: 10px;
+    padding: 1.5rem;
+    text-align: center;
+    color: #7a4a1e;
+    font-size: 14px;
+  }
+
+  /* CTA BANNER */
+  .cta-banner {
+    background: var(--navy);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    margin-top: 2rem;
+  }
+  .cta-banner h3 {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 1.3rem;
+    color: var(--white);
+    margin-bottom: 0.5rem;
+  }
+  .cta-banner p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 1.25rem;
+  }
+  .cta-buttons {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .btn-primary {
+    background: var(--gold);
+    color: var(--navy);
+    font-weight: 600;
+    font-size: 13px;
+    padding: 11px 22px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+  .btn-primary:hover { background: var(--gold-light); }
+  .btn-secondary {
+    background: transparent;
+    color: rgba(255,255,255,0.8);
+    font-size: 13px;
+    padding: 11px 22px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.25);
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-secondary:hover {
+    border-color: rgba(255,255,255,0.6);
+    color: var(--white);
+  }
+
+  /* FOOTER */
+  .page-footer {
+    text-align: center;
+    padding: 2rem 1.5rem;
+    font-size: 11px;
+    color: var(--text-light);
+    border-top: 1px solid var(--border);
+    margin-top: 1rem;
+    line-height: 1.8;
+  }
+
+  @media (max-width: 600px) {
+    .agent-strip { flex-wrap: wrap; }
+    .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+    .picks-grid { grid-template-columns: 1fr; }
+    .hero { padding: 2rem 1.25rem 1.75rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">Ventura, CA &nbsp;|&nbsp; Updated Weekly</div>
+  <h1>Ventura Real Estate<br>Market Tracker</h1>
+  <p class="hero-sub">Live data pulled directly from MLS — refreshed every week so you always know where the market stands.</p>
+  <span class="last-updated" id="lastUpdated">Loading data...</span>
+</div>
+
+<!-- AGENT STRIP -->
+<div class="agent-strip">
+  <img class="agent-photo" src="data:image/jpeg;base64,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" alt="Brandon Wasilewski, Ventura REALTOR">
+  <div class="agent-info">
+    <div class="agent-name">Brandon Wasilewski</div>
+    <div class="agent-title">REALTOR® &nbsp;|&nbsp; Realty One Group Summit &nbsp;|&nbsp; DRE 02021131 &nbsp;|&nbsp; 805-856-8773</div>
+  </div>
+  <a class="agent-cta" href="https://calendar.app.google/ZmdVdYGTRraVNJWK9" target="_blank">Book a Free Call</a>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="container">
+
+  <!-- TABS -->
+  <div class="tab-nav">
+    <button class="tab-btn active" data-tab="snapshot">Weekly Snapshot</button>
+    <button class="tab-btn" data-tab="narrative">Trend Narrative</button>
+    <button class="tab-btn" data-tab="indicators">Market Direction</button>
+    <button class="tab-btn" data-tab="picks">Featured Picks</button>
+  </div>
+
+  <!-- TAB 1: WEEKLY SNAPSHOT -->
+  <div class="tab-panel active" id="tab-snapshot">
+    <div class="section-header">
+      <span class="section-title">This Week at a Glance</span>
+      <span class="section-label" id="snapshotWeekLabel"></span>
+    </div>
+    <div class="metrics-grid" id="metricsGrid">
+      <div class="loading-state">
+        <div><span class="loading-dot"></span><span class="loading-dot"></span><span class="loading-dot"></span></div>
+        <p style="margin-top:0.75rem;">Loading market data...</p>
+      </div>
+    </div>
+    <div class="section-header" style="margin-top:1.5rem;">
+      <span class="section-title">4-Week Rolling View</span>
+    </div>
+    <div class="table-wrap">
+      <table class="data-table" id="rollingTable">
+        <thead>
+          <tr>
+            <th>Week</th>
+            <th>New Listings</th>
+            <th>Pending</th>
+            <th>Closed</th>
+            <th>Price Reductions</th>
+            <th>Median Close Price</th>
+            <th>Median $/sqft</th>
+            <th>Median DOM</th>
+            <th>LP/SP Ratio</th>
+          </tr>
+        </thead>
+        <tbody id="rollingTableBody">
+          <tr><td colspan="9" style="text-align:center;color:var(--text-light);padding:2rem;">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB 2: TREND NARRATIVE -->
+  <div class="tab-panel" id="tab-narrative">
+    <div class="section-header">
+      <span class="section-title">Market Narrative</span>
+      <span class="section-label">Last 4 Weeks</span>
+    </div>
+    <div id="narrativeContainer">
+      <div class="loading-state">
+        <span class="loading-dot"></span><span class="loading-dot"></span><span class="loading-dot"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3: DIRECTIONAL INDICATORS -->
+  <div class="tab-panel" id="tab-indicators">
+    <div class="section-header">
+      <span class="section-title">Market Direction</span>
+      <span class="section-label">Current Trends</span>
+    </div>
+    <div class="indicators-grid" id="indicatorsGrid">
+      <div class="loading-state">
+        <span class="loading-dot"></span><span class="loading-dot"></span><span class="loading-dot"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 4: FEATURED PICKS -->
+  <div class="tab-panel" id="tab-picks">
+    <div class="section-header">
+      <span class="section-title">Featured Picks</span>
+      <span class="section-label" id="picksWeekLabel"></span>
+    </div>
+    <div class="picks-grid" id="picksGrid">
+      <div class="loading-state">
+        <span class="loading-dot"></span><span class="loading-dot"></span><span class="loading-dot"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA BANNER -->
+  <div class="cta-banner">
+    <h3>What does this mean for you?</h3>
+    <p>Every number on this page tells a story. Let's talk about what it means for your specific situation.</p>
+    <div class="cta-buttons">
+      <a class="btn-primary" href="https://calendar.app.google/ZmdVdYGTRraVNJWK9" target="_blank">Book a Free Call</a>
+      <a class="btn-secondary" href="https://lewskitherealtor.com/15339/p/28767/d1nHmRFvc" target="_blank">Get a Free Home Valuation</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="page-footer">
+  Brandon Wasilewski &nbsp;|&nbsp; REALTOR® DRE 02021131 &nbsp;|&nbsp; Realty One Group Summit<br>
+  305 S. Kalorama St Suite B, Ventura, CA 93001 &nbsp;|&nbsp; 805-856-8773 &nbsp;|&nbsp; BrandonWasilewski.com<br><br>
+  Market data sourced from MLS activity. Information is believed to be accurate but is not guaranteed.<br>
+  This page is for informational purposes only and does not constitute real estate, legal, or financial advice.<br>
+  &copy; 2025 Brandon Wasilewski. All rights reserved. An Equal Housing Opportunity.
+</div>
+
+<script>
+const SHEET_ID = '13gE7-A6FaDxzmWOY-iw1DtIB3AgI4Q0xU93GZYlvZEw';
+
+function gidUrl(sheetName) {
+  return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
+}
+
+async function fetchSheet(sheetName) {
+  const url = gidUrl(sheetName);
+  const res = await fetch(url);
+  const text = await res.text();
+  const json = JSON.parse(text.substring(47).slice(0, -2));
+  return json.table;
+}
+
+function getVal(cell) {
+  if (!cell || cell.v === null || cell.v === undefined) return '';
+  return cell.f || String(cell.v);
+}
+
+function trendIcon(current, prev) {
+  if (!current || !prev) return '';
+  const cv = parseFloat(String(current).replace(/[^0-9.-]/g, ''));
+  const pv = parseFloat(String(prev).replace(/[^0-9.-]/g, ''));
+  if (isNaN(cv) || isNaN(pv)) return '';
+  if (cv > pv) return '<span class="trend-arrow trend-up">&#8593;</span>';
+  if (cv < pv) return '<span class="trend-arrow trend-down">&#8595;</span>';
+  return '<span class="trend-arrow trend-flat">&#8212;</span>';
+}
+
+function dirIcon(dir) {
+  const d = String(dir || '').toLowerCase();
+  if (d.includes('up') || d.includes('increas') || d === '↑') return { cls: 'dir-up', symbol: '&#8593;', label: 'Increasing' };
+  if (d.includes('down') || d.includes('decreas') || d === '↓') return { cls: 'dir-down', symbol: '&#8595;', label: 'Decreasing' };
+  return { cls: 'dir-flat', symbol: '&#8212;', label: 'Stable' };
+}
+
+// Sheet 1 is VERTICAL: col A = metric names, col B = most recent week, col C = prior week, etc.
+// Row 3 (index 2) = header row with week labels
+// Rows 5-20 (index 4-19) = data rows, skipping section header rows
+
+async function loadSnapshot() {
+  try {
+    const table = await fetchSheet('1 - Weekly Snapshot');
+    if (!table || !table.rows || table.rows.length === 0) throw new Error('No data');
+
+    const rows = table.rows;
+
+    // Row index 2 = header row (index 0 = row 1, so row 3 = index 2)
+    // But gviz skips some formatting rows - find the header row by looking for a date-like value in col B
+    // Col A = "METRIC", col B onward = week labels
+    // Find the week label row - it contains the date range in col B
+    let headerRowIdx = -1;
+    let weekLabels = [];
+    for (let i = 0; i < rows.length; i++) {
+      const colA = getVal(rows[i].c[0]);
+      const colB = rows[i].c[1] ? getVal(rows[i].c[1]) : '';
+      if (/metric/i.test(colA) || (colB && /\d{4}/.test(colB)) || (colB && /jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec/i.test(colB))) {
+        headerRowIdx = i;
+        // Collect week labels from this row
+        if (rows[i].c) {
+          rows[i].c.forEach((cell, idx) => {
+            if (idx > 0) weekLabels.push(getVal(cell));
+          });
+        }
+        break;
+      }
+    }
+
+    // Build a map: metricName -> [col1val, col2val, col3val, col4val]
+    const metricData = {};
+    const skipPatterns = /^\s*$|^—|supply|demand|closed sales|rate context/i;
+
+    for (let i = 0; i < rows.length; i++) {
+      if (i === headerRowIdx) continue;
+      const row = rows[i];
+      if (!row.c || !row.c[0]) continue;
+      const metricName = getVal(row.c[0]);
+      if (!metricName || skipPatterns.test(metricName)) continue;
+      const vals = [];
+      for (let j = 1; j < (row.c.length || 0); j++) {
+        vals.push(row.c[j] ? getVal(row.c[j]) : '');
+      }
+      if (vals.some(v => v !== '')) {
+        metricData[metricName] = vals;
+      }
+    }
+
+    // Most recent week = index 0 of vals, prior week = index 1
+    const currentWeekLabel = weekLabels[0] || 'Current Week';
+    document.getElementById('snapshotWeekLabel').textContent = currentWeekLabel;
+    document.getElementById('lastUpdated').textContent = 'Last updated: ' + currentWeekLabel;
+
+    // Display metric cards
+    const displayMetrics = [
+      { match: /new list/i, label: 'New Listings', featured: false },
+      { match: /total active|inventory/i, label: 'Total Inventory', featured: false },
+      { match: /price reduc/i, label: 'Price Reductions', featured: false },
+      { match: /auc count/i, label: 'Under Contract (AUC)', featured: false },
+      { match: /pending count/i, label: 'Pending', featured: false },
+      { match: /closed count/i, label: 'Closed Sales', featured: false },
+      { match: /median close price/i, label: 'Median Close Price', featured: true },
+      { match: /median.*sq|median.*psf/i, label: 'Median $/sqft', featured: false },
+      { match: /median dom.*closed|median dom \(closed/i, label: 'Median DOM', featured: false },
+      { match: /lp.?sp/i, label: 'LP/SP Ratio', featured: false },
+    ];
+
+    const grid = document.getElementById('metricsGrid');
+    grid.innerHTML = '';
+
+    displayMetrics.forEach(dm => {
+      const key = Object.keys(metricData).find(k => dm.match.test(k));
+      if (!key) return;
+      const vals = metricData[key];
+      const current = vals[0];
+      const prior = vals[1];
+      if (!current) return;
+
+      const card = document.createElement('div');
+      card.className = 'metric-card' + (dm.featured ? ' featured' : '');
+      card.innerHTML = `
+        <div class="metric-label">${dm.label}</div>
+        <div class="metric-value">${current}</div>
+        ${prior ? `<div class="metric-sub">Prior week: ${prior}</div>` : ''}
+        ${trendIcon(current, prior)}
+      `;
+      grid.appendChild(card);
+    });
+
+    if (grid.children.length === 0) {
+      grid.innerHTML = '<div class="error-state">Metric data not yet available. Make sure the sheet has data in column B.</div>';
+    }
+
+    // Build 4-week rolling table
+    const tableMetrics = [
+      { match: /new list/i, label: 'New Listings' },
+      { match: /pending count/i, label: 'Pending' },
+      { match: /closed count/i, label: 'Closed' },
+      { match: /price reduc/i, label: 'Price Reductions' },
+      { match: /median close price/i, label: 'Median Close Price' },
+      { match: /median.*sq|median.*psf/i, label: 'Median $/sqft' },
+      { match: /median dom.*closed|median dom \(closed/i, label: 'Median DOM' },
+      { match: /lp.?sp/i, label: 'LP/SP Ratio' },
+    ];
+
+    const tbody = document.getElementById('rollingTableBody');
+    tbody.innerHTML = '';
+
+    // Update table headers with actual week labels
+    const thead = document.querySelector('#rollingTable thead tr');
+    if (thead && weekLabels.length > 0) {
+      thead.innerHTML = '<th>Metric</th>' + weekLabels.slice(0,4).map((w,i) => `<th>${w || 'Week ' + (i+1)}</th>`).join('');
+    }
+
+    tableMetrics.forEach((tm, rowIdx) => {
+      const key = Object.keys(metricData).find(k => tm.match.test(k));
+      const vals = key ? metricData[key] : [];
+      const tr = document.createElement('tr');
+      if (rowIdx === 0) tr.className = '';
+      const cells = [tm.label, vals[0]||'—', vals[1]||'—', vals[2]||'—', vals[3]||'—'];
+      tr.innerHTML = cells.map((v,i) => `<td${i===0?' style="font-weight:500;color:var(--text-mid);font-size:12px;"':''}>${v}</td>`).join('');
+      tbody.appendChild(tr);
+    });
+
+  } catch (e) {
+    document.getElementById('metricsGrid').innerHTML = `<div class="error-state">Unable to load snapshot data.<br><small style="opacity:0.7;margin-top:6px;display:block;">${e.message}</small></div>`;
+    console.error('Snapshot error:', e);
+  }
+}
+
+async function loadNarrative() {
+  try {
+    const table = await fetchSheet('2 - Trend Narrative');
+    if (!table || !table.rows || table.rows.length === 0) throw new Error('No data');
+
+    const container = document.getElementById('narrativeContainer');
+    container.innerHTML = '';
+
+    // Look through all rows for non-empty content
+    const dataRows = table.rows.filter(row => {
+      if (!row.c) return false;
+      return row.c.some(c => c && c.v !== null && c.v !== undefined && String(c.v).trim() !== '');
+    });
+
+    // Skip title/header rows (first 1-2 rows likely)
+    const contentRows = dataRows.filter(row => {
+      const firstVal = getVal(row.c[0]);
+      return firstVal && !/narrative|memory|ventura|weekly/i.test(firstVal) || (row.c[1] && getVal(row.c[1]));
+    });
+
+    contentRows.slice(0, 4).forEach(row => {
+      const weekVal = getVal(row.c[0]);
+      const textVal = getVal(row.c[1]) || getVal(row.c[2]) || '';
+      if (!textVal && !weekVal) return;
+
+      const card = document.createElement('div');
+      card.className = 'narrative-card';
+      card.innerHTML = `
+        ${weekVal ? `<div class="narrative-week">${weekVal}</div>` : ''}
+        <div class="narrative-text">${textVal || weekVal}</div>
+      `;
+      container.appendChild(card);
+    });
+
+    if (container.children.length === 0) {
+      container.innerHTML = '<div class="error-state">Narrative data not yet available. This will populate after your first weekly update.</div>';
+    }
+
+  } catch (e) {
+    document.getElementById('narrativeContainer').innerHTML = `<div class="error-state">Unable to load narrative data.<br><small style="opacity:0.7;margin-top:6px;display:block;">${e.message}</small></div>`;
+  }
+}
+
+async function loadIndicators() {
+  try {
+    const table = await fetchSheet('3 - Directional Indicators');
+    if (!table || !table.rows || table.rows.length === 0) throw new Error('No data');
+
+    const grid = document.getElementById('indicatorsGrid');
+    grid.innerHTML = '';
+
+    // Structure: col A = indicator name, col B = direction, col C = streak, or similar
+    // Find data rows - skip headers
+    const dataRows = table.rows.filter(row => {
+      if (!row.c || !row.c[0]) return false;
+      const v = getVal(row.c[0]);
+      return v && !/indicator|direction|ventura|memory|^\s*$/.test(v) && !/^—/.test(v);
+    });
+
+    const indicatorNames = ['Inventory', 'Seller Pricing Pressure', 'Buyer Demand', 'Price Trend'];
+
+    dataRows.forEach(row => {
+      const name = getVal(row.c[0]);
+      if (!name || !indicatorNames.some(n => new RegExp(n.split(' ')[0], 'i').test(name))) return;
+
+      // Try to find direction and streak in subsequent columns
+      let dirVal = '';
+      let streakVal = '';
+      for (let i = 1; i < (row.c ? row.c.length : 0); i++) {
+        const v = getVal(row.c[i]);
+        if (!v) continue;
+        if (/up|down|increas|decreas|stable|flat/i.test(v) || v === '↑' || v === '↓') {
+          dirVal = v;
+        } else if (/^\d+$/.test(v.trim())) {
+          streakVal = v;
+        }
+      }
+
+      if (!dirVal) return;
+
+      const { cls, symbol, label } = dirIcon(dirVal);
+      const streakNum = parseInt(streakVal) || 0;
+      const isConfirmed = streakNum >= 3;
+
+      const card = document.createElement('div');
+      card.className = 'indicator-card';
+      card.innerHTML = `
+        <div class="indicator-label">${name}</div>
+        <div class="indicator-direction">
+          <div class="dir-icon ${cls}">${symbol}</div>
+          <div class="dir-label">${dirVal}</div>
+        </div>
+        ${streakNum ? `<span class="streak-badge ${isConfirmed ? 'confirmed' : ''}">${streakNum} week streak${isConfirmed ? ' — confirmed trend' : ''}</span>` : ''}
+      `;
+      grid.appendChild(card);
+    });
+
+    if (grid.children.length === 0) {
+      grid.innerHTML = '<div class="error-state">Directional indicator data not yet available. This will populate after your first weekly update.</div>';
+    }
+
+  } catch (e) {
+    document.getElementById('indicatorsGrid').innerHTML = `<div class="error-state">Unable to load indicator data.<br><small style="opacity:0.7;margin-top:6px;display:block;">${e.message}</small></div>`;
+  }
+}
+
+async function loadPicks() {
+  try {
+    const table = await fetchSheet('4 - Featured Picks Log');
+    if (!table || !table.rows || table.rows.length === 0) throw new Error('No data');
+
+    const grid = document.getElementById('picksGrid');
+    grid.innerHTML = '';
+
+    // Find header row and data rows
+    let headerRow = null;
+    let headerIdx = -1;
+    for (let i = 0; i < table.rows.length; i++) {
+      const row = table.rows[i];
+      if (!row.c) continue;
+      const vals = row.c.map(c => getVal(c).toLowerCase());
+      if (vals.some(v => /week|lux|invest|deal/i.test(v))) {
+        headerRow = row.c.map(c => getVal(c));
+        headerIdx = i;
+        break;
+      }
+    }
+
+    // Get most recent data row after header
+    const dataRows = table.rows.slice(headerIdx >= 0 ? headerIdx + 1 : 0).filter(row => {
+      if (!row.c) return false;
+      return row.c.some(c => c && c.v !== null && String(c.v).trim() !== '');
+    });
+
+    if (dataRows.length === 0) {
+      grid.innerHTML = '<div class="error-state">Featured picks not yet available. This will populate after your first weekly update.</div>';
+      return;
+    }
+
+    const currentRow = dataRows[dataRows.length - 1];
+    const weekLabel = getVal(currentRow.c[0]);
+    document.getElementById('picksWeekLabel').textContent = weekLabel;
+
+    // Map columns using header row
+    const pickTypes = [
+      { match: /lux/i, display: 'Luxury Pick', headerCls: 'luxury', ctaText: 'Talk about this property' },
+      { match: /inv/i, display: 'Investment Pick', headerCls: 'investment', ctaText: 'Discuss the investment angle' },
+      { match: /deal/i, display: 'Deal of the Week', headerCls: 'deal', ctaText: 'Ask about deals like this' },
+    ];
+
+    if (headerRow) {
+      pickTypes.forEach(pt => {
+        const addrIdx = headerRow.findIndex(h => pt.match.test(h) && /addr/i.test(h));
+        const priceIdx = headerRow.findIndex(h => pt.match.test(h) && /price/i.test(h));
+        const statusIdx = headerRow.findIndex(h => pt.match.test(h) && /status/i.test(h));
+
+        const addr = addrIdx >= 0 ? getVal(currentRow.c[addrIdx]) : '';
+        const price = priceIdx >= 0 ? getVal(currentRow.c[priceIdx]) : '';
+        const status = statusIdx >= 0 ? getVal(currentRow.c[statusIdx]) : '';
+
+        if (!addr) return;
+
+        const card = document.createElement('div');
+        card.className = 'pick-card';
+        card.innerHTML = `
+          <div class="pick-header ${pt.headerCls}">
+            <span class="pick-type">${pt.display}</span>
+            ${status ? `<span class="pick-badge">${status}</span>` : ''}
+          </div>
+          <div class="pick-body">
+            <div class="pick-address">${addr}</div>
+            ${price ? `<div class="pick-price">${price}</div>` : ''}
+            <a class="pick-cta" href="https://calendar.app.google/ZmdVdYGTRraVNJWK9" target="_blank">${pt.ctaText} &rarr;</a>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    if (grid.children.length === 0) {
+      grid.innerHTML = '<div class="error-state">Featured picks not yet available for this week.</div>';
+    }
+
+  } catch (e) {
+    document.getElementById('picksGrid').innerHTML = `<div class="error-state">Unable to load picks data.<br><small style="opacity:0.7;margin-top:6px;display:block;">${e.message}</small></div>`;
+  }
+}
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+  });
+});
+
+loadSnapshot();
+loadNarrative();
+loadIndicators();
+loadPicks();
+</script>
+</body>
+</html>
