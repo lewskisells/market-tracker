@@ -109,19 +109,7 @@
     color: var(--text-light);
     margin-top: 1px;
   }
-  .agent-cta {
-    display: inline-block;
-    background: var(--navy);
-    color: var(--white);
-    font-size: 13px;
-    font-weight: 500;
-    padding: 10px 20px;
-    border-radius: 6px;
-    text-decoration: none;
-    white-space: nowrap;
-    transition: background 0.2s;
-  }
-  .agent-cta:hover { background: var(--navy-light); }
+
 
   /* MAIN LAYOUT */
   .container {
@@ -475,57 +463,6 @@
     font-size: 14px;
   }
 
-  /* CTA BANNER */
-  .cta-banner {
-    background: var(--navy);
-    border-radius: 12px;
-    padding: 2rem;
-    text-align: center;
-    margin-top: 2rem;
-  }
-  .cta-banner h3 {
-    font-family: 'Archivo Black', sans-serif;
-    font-size: 1.3rem;
-    color: var(--white);
-    margin-bottom: 0.5rem;
-  }
-  .cta-banner p {
-    font-size: 14px;
-    color: rgba(255,255,255,0.6);
-    margin-bottom: 1.25rem;
-  }
-  .cta-buttons {
-    display: flex;
-    gap: 0.75rem;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  .btn-primary {
-    background: var(--gold);
-    color: var(--navy);
-    font-weight: 600;
-    font-size: 13px;
-    padding: 11px 22px;
-    border-radius: 6px;
-    text-decoration: none;
-    transition: background 0.2s;
-  }
-  .btn-primary:hover { background: var(--gold-light); }
-  .btn-secondary {
-    background: transparent;
-    color: rgba(255,255,255,0.8);
-    font-size: 13px;
-    padding: 11px 22px;
-    border-radius: 6px;
-    border: 1px solid rgba(255,255,255,0.25);
-    text-decoration: none;
-    transition: border-color 0.2s, color 0.2s;
-  }
-  .btn-secondary:hover {
-    border-color: rgba(255,255,255,0.6);
-    color: var(--white);
-  }
-
   /* FOOTER */
   .page-footer {
     text-align: center;
@@ -537,11 +474,16 @@
     line-height: 1.8;
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 768px) {
     .agent-strip { flex-wrap: wrap; }
-    .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+    .metrics-grid { grid-template-columns: 1fr 1fr; }
     .picks-grid { grid-template-columns: 1fr; }
     .hero { padding: 2rem 1.25rem 1.75rem; }
+    .container { padding: 1.5rem 1rem; }
+    .metric-value { font-size: 1.4rem; }
+  }
+  @media (max-width: 400px) {
+    .metrics-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -562,7 +504,6 @@
     <div class="agent-name">Brandon Wasilewski</div>
     <div class="agent-title">REALTOR® &nbsp;|&nbsp; Realty One Group Summit &nbsp;|&nbsp; DRE 02021131 &nbsp;|&nbsp; 805-856-8773</div>
   </div>
-  <a class="agent-cta" href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ23UYauCqgroLU8uf8c0W_MtIlkKstMtKATyWCN8KFSImcwKj57ROiaGxCh42QC8gjbbcPKgp_U" target="_blank">Book a Free Call</a>
 </div>
 
 <!-- MAIN CONTENT -->
@@ -648,15 +589,7 @@
     </div>
   </div>
 
-  <!-- CTA BANNER -->
-  <div class="cta-banner">
-    <h3>What does this mean for you?</h3>
-    <p>Every number on this page tells a story. Let's talk about what it means for your specific situation.</p>
-    <div class="cta-buttons">
-      <a class="btn-primary" href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ23UYauCqgroLU8uf8c0W_MtIlkKstMtKATyWCN8KFSImcwKj57ROiaGxCh42QC8gjbbcPKgp_U" target="_blank">Book a Free Call</a>
-      <a class="btn-secondary" href="https://lewskitherealtor.com/15339/p/28767/d1nHmRFvc" target="_blank">Get a Free Home Valuation</a>
-    </div>
-  </div>
+</div>
 
 </div>
 
