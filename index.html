@@ -638,19 +638,36 @@ async function loadSnapshot() {
     // Find the week label row - it contains the date range in col B
     let headerRowIdx = -1;
     let weekLabels = [];
-    // Find the header row — col A = "METRIC", col B onward = week date labels
+    // Find the header row — scan ALL rows for one where col A = METRIC
+    // gviz may skip merged rows so we cast a wide net
     for (let i = 0; i < rows.length; i++) {
       if (!rows[i].c) continue;
       const colA = getVal(rows[i].c[0]).trim();
       const colB = rows[i].c[1] ? getVal(rows[i].c[1]).trim() : '';
-      const hasMetric = /^metric$/i.test(colA);
-      const hasDate = /apr|may|jun|jul|aug|sep|oct|nov|dec|jan|feb|mar/i.test(colB);
-      if (hasMetric || hasDate) {
+      const isMetricRow = /^metric$/i.test(colA);
+      const isDateRow = /^\w{3}[\s\-–]\d|\d{4}/.test(colB);
+      if (isMetricRow || isDateRow) {
         headerRowIdx = i;
         rows[i].c.forEach((cell, idx) => {
-          if (idx > 0) { const v = getVal(cell); if (v) weekLabels.push(v); }
+          if (idx > 0) {
+            const v = getVal(cell);
+            if (v && v.trim() !== '') weekLabels.push(v.trim());
+          }
         });
         break;
+      }
+    }
+    // Fallback — grab week label from the first data cell with a date pattern
+    if (weekLabels.length === 0) {
+      for (let i = 0; i < rows.length; i++) {
+        if (!rows[i].c) continue;
+        for (let j = 1; j < rows[i].c.length; j++) {
+          const v = getVal(rows[i].c[j]);
+          if (v && /apr|may|jun|jul|aug|sep|oct|nov|dec|jan|feb|mar/i.test(v)) {
+            weekLabels.push(v);
+          }
+        }
+        if (weekLabels.length > 0) break;
       }
     }
 
