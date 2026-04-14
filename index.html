@@ -594,20 +594,16 @@
     <div class="table-wrap">
       <table class="data-table" id="rollingTable">
         <thead>
-          <tr>
-            <th>Week</th>
-            <th>New Listings</th>
-            <th>Pending</th>
-            <th>Closed</th>
-            <th>Price Reductions</th>
-            <th>Median Close Price</th>
-            <th>Median $/sqft</th>
-            <th>Median DOM</th>
-            <th>LP/SP Ratio</th>
+          <tr id="rollingTableHead">
+            <th>Metric</th>
+            <th>Week 1</th>
+            <th>Week 2</th>
+            <th>Week 3</th>
+            <th>Week 4</th>
           </tr>
         </thead>
         <tbody id="rollingTableBody">
-          <tr><td colspan="9" style="text-align:center;color:var(--text-light);padding:2rem;">Loading...</td></tr>
+          <tr><td colspan="5" style="text-align:center;color:var(--text-light);padding:2rem;">Loading...</td></tr>
         </tbody>
       </table>
     </div>
@@ -822,7 +818,7 @@ async function loadSnapshot() {
     tbody.innerHTML = '';
 
     // Update table headers with actual week labels
-    const thead = document.querySelector('#rollingTable thead tr');
+    const thead = document.getElementById('rollingTableHead');
     if (thead && weekLabels.length > 0) {
       thead.innerHTML = '<th>Metric</th>' + weekLabels.slice(0,4).map((w,i) => `<th>${w || 'Week ' + (i+1)}</th>`).join('');
     }
