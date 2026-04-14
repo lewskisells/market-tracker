@@ -638,17 +638,18 @@ async function loadSnapshot() {
     // Find the week label row - it contains the date range in col B
     let headerRowIdx = -1;
     let weekLabels = [];
+    // Find the header row — col A = "METRIC", col B onward = week date labels
     for (let i = 0; i < rows.length; i++) {
-      const colA = getVal(rows[i].c[0]);
-      const colB = rows[i].c[1] ? getVal(rows[i].c[1]) : '';
-      if (/metric/i.test(colA) || (colB && /\d{4}/.test(colB)) || (colB && /jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec/i.test(colB))) {
+      if (!rows[i].c) continue;
+      const colA = getVal(rows[i].c[0]).trim();
+      const colB = rows[i].c[1] ? getVal(rows[i].c[1]).trim() : '';
+      const hasMetric = /^metric$/i.test(colA);
+      const hasDate = /apr|may|jun|jul|aug|sep|oct|nov|dec|jan|feb|mar/i.test(colB);
+      if (hasMetric || hasDate) {
         headerRowIdx = i;
-        // Collect week labels from this row
-        if (rows[i].c) {
-          rows[i].c.forEach((cell, idx) => {
-            if (idx > 0) weekLabels.push(getVal(cell));
-          });
-        }
+        rows[i].c.forEach((cell, idx) => {
+          if (idx > 0) { const v = getVal(cell); if (v) weekLabels.push(v); }
+        });
         break;
       }
     }
