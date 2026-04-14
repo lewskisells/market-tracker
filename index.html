@@ -617,6 +617,7 @@ function dirIcon(dir) {
   const d = String(dir || '').toLowerCase();
   if (d.includes('up') || d.includes('increas') || d === '↑') return { cls: 'dir-up', symbol: '&#8593;', label: 'Increasing' };
   if (d.includes('down') || d.includes('decreas') || d === '↓') return { cls: 'dir-down', symbol: '&#8595;', label: 'Decreasing' };
+  if (d.includes('neutral') || d.includes('stable') || d.includes('flat') || d === '→') return { cls: 'dir-flat', symbol: '&#8212;', label: 'Neutral' };
   return { cls: 'dir-flat', symbol: '&#8212;', label: 'Stable' };
 }
 
@@ -761,28 +762,29 @@ async function loadNarrative() {
     const container = document.getElementById('narrativeContainer');
     container.innerHTML = '';
 
-    // Look through all rows for non-empty content
-    const dataRows = table.rows.filter(row => {
+    // Patterns to skip — internal instructions and header rows
+    const skipPatterns = /4-week rolling|read before filming|narrative.*direction|acceleration|reversal|no raw numbers|ventura market memory|trend narrative|^\s*week\s*$/i;
+
+    const validRows = table.rows.filter(row => {
       if (!row.c) return false;
-      return row.c.some(c => c && c.v !== null && c.v !== undefined && String(c.v).trim() !== '');
+      const colA = getVal(row.c[0]);
+      const colB = row.c[1] ? getVal(row.c[1]) : '';
+      if (!colA && !colB) return false;
+      if (skipPatterns.test(colA)) return false;
+      if (!colB || skipPatterns.test(colB)) return false;
+      return true;
     });
 
-    // Skip title/header rows (first 1-2 rows likely)
-    const contentRows = dataRows.filter(row => {
-      const firstVal = getVal(row.c[0]);
-      return firstVal && !/narrative|memory|ventura|weekly/i.test(firstVal) || (row.c[1] && getVal(row.c[1]));
-    });
-
-    contentRows.slice(0, 4).forEach(row => {
+    validRows.slice(0, 4).forEach(row => {
       const weekVal = getVal(row.c[0]);
-      const textVal = getVal(row.c[1]) || getVal(row.c[2]) || '';
-      if (!textVal && !weekVal) return;
+      const textVal = getVal(row.c[1]) || '';
+      if (!textVal) return;
 
       const card = document.createElement('div');
       card.className = 'narrative-card';
       card.innerHTML = `
         ${weekVal ? `<div class="narrative-week">${weekVal}</div>` : ''}
-        <div class="narrative-text">${textVal || weekVal}</div>
+        <div class="narrative-text">${textVal}</div>
       `;
       container.appendChild(card);
     });
@@ -804,36 +806,25 @@ async function loadIndicators() {
     const grid = document.getElementById('indicatorsGrid');
     grid.innerHTML = '';
 
-    // Structure: col A = indicator name, col B = direction, col C = streak, or similar
-    // Find data rows - skip headers
+    // Sheet structure: Col A = Indicator, Col B = Direction, Col C = Streak, Col D = Filming Note
+    // Data rows start at row 5 (index 4) — skip title, subtitle, rule, and header rows
+    // Filter: col A must be a known indicator name, col B must be a direction word
+    const validIndicators = ['inventory', 'seller pricing pressure', 'buyer demand', 'price trend'];
+
     const dataRows = table.rows.filter(row => {
       if (!row.c || !row.c[0]) return false;
-      const v = getVal(row.c[0]);
-      return v && !/indicator|direction|ventura|memory|^\s*$/.test(v) && !/^—/.test(v);
+      const colA = getVal(row.c[0]).toLowerCase().trim();
+      return validIndicators.some(ind => colA.includes(ind.split(' ')[0]));
     });
-
-    const indicatorNames = ['Inventory', 'Seller Pricing Pressure', 'Buyer Demand', 'Price Trend'];
 
     dataRows.forEach(row => {
       const name = getVal(row.c[0]);
-      if (!name || !indicatorNames.some(n => new RegExp(n.split(' ')[0], 'i').test(name))) return;
+      const dirVal = row.c[1] ? getVal(row.c[1]).trim() : '';
+      const streakVal = row.c[2] ? getVal(row.c[2]).trim() : '';
 
-      // Try to find direction and streak in subsequent columns
-      let dirVal = '';
-      let streakVal = '';
-      for (let i = 1; i < (row.c ? row.c.length : 0); i++) {
-        const v = getVal(row.c[i]);
-        if (!v) continue;
-        if (/up|down|increas|decreas|stable|flat/i.test(v) || v === '↑' || v === '↓') {
-          dirVal = v;
-        } else if (/^\d+$/.test(v.trim())) {
-          streakVal = v;
-        }
-      }
+      if (!name || !dirVal) return;
 
-      if (!dirVal) return;
-
-      const { cls, symbol, label } = dirIcon(dirVal);
+      const { cls, symbol } = dirIcon(dirVal);
       const streakNum = parseInt(streakVal) || 0;
       const isConfirmed = streakNum >= 3;
 
@@ -851,7 +842,7 @@ async function loadIndicators() {
     });
 
     if (grid.children.length === 0) {
-      grid.innerHTML = '<div class="error-state">Directional indicator data not yet available. This will populate after your first weekly update.</div>';
+      grid.innerHTML = '<div class="error-state">Directional indicator data not yet available.</div>';
     }
 
   } catch (e) {
@@ -867,24 +858,19 @@ async function loadPicks() {
     const grid = document.getElementById('picksGrid');
     grid.innerHTML = '';
 
-    // Find header row and data rows
-    let headerRow = null;
-    let headerIdx = -1;
-    for (let i = 0; i < table.rows.length; i++) {
-      const row = table.rows[i];
-      if (!row.c) continue;
-      const vals = row.c.map(c => getVal(c).toLowerCase());
-      if (vals.some(v => /week|lux|invest|deal/i.test(v))) {
-        headerRow = row.c.map(c => getVal(c));
-        headerIdx = i;
-        break;
-      }
-    }
+    // Sheet structure: Col A=WEEK, Col B=TYPE, Col C=ADDRESS, Col D=LIST PRICE, Col E=STATUS AT FEATURE, Col F=CURRENT STATUS
+    // Find data rows — skip title/header/instruction rows
+    const skipPatterns = /ventura market|featured picks|luxury.*investment|update.*current|^\s*week\s*$/i;
 
-    // Get most recent data row after header
-    const dataRows = table.rows.slice(headerIdx >= 0 ? headerIdx + 1 : 0).filter(row => {
+    const dataRows = table.rows.filter(row => {
       if (!row.c) return false;
-      return row.c.some(c => c && c.v !== null && String(c.v).trim() !== '');
+      const colA = getVal(row.c[0]);
+      const colB = row.c[1] ? getVal(row.c[1]) : '';
+      if (!colA && !colB) return false;
+      if (skipPatterns.test(colA)) return false;
+      // Must have a TYPE value of LUXURY or INVESTMENT
+      if (!/luxury|investment|deal/i.test(colB)) return false;
+      return true;
     });
 
     if (dataRows.length === 0) {
@@ -892,45 +878,47 @@ async function loadPicks() {
       return;
     }
 
-    const currentRow = dataRows[dataRows.length - 1];
-    const weekLabel = getVal(currentRow.c[0]);
+    // Get most recent week label
+    const weekLabel = getVal(dataRows[0].c[0]);
     document.getElementById('picksWeekLabel').textContent = weekLabel;
 
-    // Map columns using header row
-    const pickTypes = [
-      { match: /lux/i, display: 'Luxury Pick', headerCls: 'luxury', ctaText: 'Talk about this property' },
-      { match: /inv/i, display: 'Investment Pick', headerCls: 'investment', ctaText: 'Discuss the investment angle' },
-      { match: /deal/i, display: 'Deal of the Week', headerCls: 'deal', ctaText: 'Ask about deals like this' },
-    ];
+    // Filter to most recent week only
+    const currentWeekRows = dataRows.filter(row => getVal(row.c[0]) === weekLabel || !getVal(row.c[0]));
 
-    if (headerRow) {
-      pickTypes.forEach(pt => {
-        const addrIdx = headerRow.findIndex(h => pt.match.test(h) && /addr/i.test(h));
-        const priceIdx = headerRow.findIndex(h => pt.match.test(h) && /price/i.test(h));
-        const statusIdx = headerRow.findIndex(h => pt.match.test(h) && /status/i.test(h));
+    const typeConfig = {
+      'luxury':     { display: 'Luxury Pick',     headerCls: 'luxury',     ctaText: 'Talk about this property' },
+      'investment': { display: 'Investment Pick',  headerCls: 'investment', ctaText: 'Discuss the investment angle' },
+      'deal':       { display: 'Deal of the Week', headerCls: 'deal',       ctaText: 'Ask about deals like this' },
+    };
 
-        const addr = addrIdx >= 0 ? getVal(currentRow.c[addrIdx]) : '';
-        const price = priceIdx >= 0 ? getVal(currentRow.c[priceIdx]) : '';
-        const status = statusIdx >= 0 ? getVal(currentRow.c[statusIdx]) : '';
+    currentWeekRows.forEach(row => {
+      const type = getVal(row.c[1]).toLowerCase().trim();
+      const addr = getVal(row.c[2]);
+      const price = getVal(row.c[3]);
+      const status = getVal(row.c[4]);
+      const currentStatus = row.c[5] ? getVal(row.c[5]) : '';
 
-        if (!addr) return;
+      if (!addr) return;
 
-        const card = document.createElement('div');
-        card.className = 'pick-card';
-        card.innerHTML = `
-          <div class="pick-header ${pt.headerCls}">
-            <span class="pick-type">${pt.display}</span>
-            ${status ? `<span class="pick-badge">${status}</span>` : ''}
-          </div>
-          <div class="pick-body">
-            <div class="pick-address">${addr}</div>
-            ${price ? `<div class="pick-price">${price}</div>` : ''}
-            <a class="pick-cta" href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ23UYauCqgroLU8uf8c0W_MtIlkKstMtKATyWCN8KFSImcwKj57ROiaGxCh42QC8gjbbcPKgp_U" target="_blank">${pt.ctaText} &rarr;</a>
-          </div>
-        `;
-        grid.appendChild(card);
-      });
-    }
+      const typeKey = Object.keys(typeConfig).find(k => type.includes(k));
+      if (!typeKey) return;
+      const cfg = typeConfig[typeKey];
+      const displayStatus = currentStatus || status;
+
+      const card = document.createElement('div');
+      card.className = 'pick-card';
+      card.innerHTML = `
+        <div class="pick-header ${cfg.headerCls}">
+          <span class="pick-type">${cfg.display}</span>
+          ${displayStatus ? `<span class="pick-badge">${displayStatus}</span>` : ''}
+        </div>
+        <div class="pick-body">
+          <div class="pick-address">${addr}</div>
+          ${price ? `<div class="pick-price">${price}</div>` : ''}
+        </div>
+      `;
+      grid.appendChild(card);
+    });
 
     if (grid.children.length === 0) {
       grid.innerHTML = '<div class="error-state">Featured picks not yet available for this week.</div>';
