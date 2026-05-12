@@ -740,8 +740,25 @@
     <button class="admin-btn" onclick="toggleAdmin()">Update Market Data (Admin)</button>
   </div>
 
+  <!-- PIN GATE -->
+  <div class="admin-panel" id="pinGate">
+    <div class="admin-title">Admin Access</div>
+    <div class="admin-sub">Enter your 6-digit PIN to continue.</div>
+    <div style="display:flex;align-items:center;gap:10px;margin-top:0.5rem;">
+      <input type="password" id="pinInput" maxlength="6" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;"
+        style="width:140px;padding:9px 14px;font-size:18px;letter-spacing:0.25em;border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;background:#f8f8f8;"
+        onkeydown="if(event.key==='Enter')checkPin()">
+      <button class="btn-primary" onclick="checkPin()">Unlock</button>
+    </div>
+    <div class="admin-feedback error" id="pinFeedback"></div>
+  </div>
+
+  <!-- ADMIN CONTENT (hidden until PIN correct) -->
   <div class="admin-panel" id="adminPanel">
-    <div class="admin-title">Paste Weekly JSON Block</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
+      <div class="admin-title" style="margin:0;">Paste Weekly JSON Block</div>
+      <button class="admin-btn" onclick="lockAdmin()" style="font-size:12px;padding:4px 12px;">Lock</button>
+    </div>
     <div class="admin-sub">Paste the Memory File JSON output from your weekly workflow. Data is stored in your browser and persists week over week. All history is retained.</div>
     <textarea class="json-input" id="jsonInput" placeholder='{"weekLabel":"Week of May 12, 2025","newListings":12,...}'></textarea>
     <div class="admin-actions">
@@ -1086,9 +1103,42 @@ function importHistory(e) {
   reader.readAsText(file);
 }
 
+const ADMIN_PIN = '118826';
+let adminUnlocked = false;
+
 function toggleAdmin() {
-  const p = document.getElementById('adminPanel');
-  p.classList.toggle('open');
+  if (adminUnlocked) {
+    document.getElementById('adminPanel').classList.toggle('open');
+    document.getElementById('pinGate').classList.remove('open');
+  } else {
+    const gate = document.getElementById('pinGate');
+    const isOpen = gate.classList.contains('open');
+    gate.classList.toggle('open', !isOpen);
+    document.getElementById('adminPanel').classList.remove('open');
+    if (!isOpen) setTimeout(() => document.getElementById('pinInput').focus(), 50);
+  }
+}
+
+function checkPin() {
+  const val = document.getElementById('pinInput').value.trim();
+  const fb = document.getElementById('pinFeedback');
+  if (val === ADMIN_PIN) {
+    adminUnlocked = true;
+    document.getElementById('pinGate').classList.remove('open');
+    document.getElementById('adminPanel').classList.add('open');
+    document.getElementById('pinInput').value = '';
+    fb.textContent = '';
+  } else {
+    fb.textContent = 'Incorrect PIN. Try again.';
+    document.getElementById('pinInput').value = '';
+    document.getElementById('pinInput').focus();
+  }
+}
+
+function lockAdmin() {
+  adminUnlocked = false;
+  document.getElementById('adminPanel').classList.remove('open');
+  document.getElementById('pinGate').classList.remove('open');
 }
 
 function switchTab(tab) {
