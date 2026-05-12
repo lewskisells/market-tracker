@@ -8,514 +8,91 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --ocean: #1a1a1a;
-    --ocean-light: #ebebeb;
-    --sand: #f5f0e8;
-    --sand-dark: #e8e0d0;
-    --text: #1a1a1a;
-    --text-muted: #6b6b6b;
-    --text-light: #9a9a9a;
-    --white: #ffffff;
-    --border: rgba(0,0,0,0.08);
-    --border-strong: rgba(0,0,0,0.15);
-    --up: #1a7a4a;
-    --up-bg: #e8f5ee;
-    --down: #c0392b;
-    --down-bg: #fdf0ef;
-    --neutral: #6b6b6b;
-    --neutral-bg: #f2f2f2;
-    --radius: 12px;
-    --radius-sm: 8px;
+    --black: #1a1a1a; --black-light: #ebebeb; --sand: #f5f0e8;
+    --text: #1a1a1a; --text-muted: #6b6b6b; --text-light: #9a9a9a;
+    --white: #ffffff; --border: rgba(0,0,0,0.08); --border-strong: rgba(0,0,0,0.15);
+    --up: #1a7a4a; --up-bg: #e8f5ee; --down: #c0392b; --down-bg: #fdf0ef;
+    --neutral: #6b6b6b; --neutral-bg: #f2f2f2; --radius: 12px; --radius-sm: 8px;
   }
-
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--sand);
-    color: var(--text);
-    font-size: 15px;
-    line-height: 1.6;
-    min-height: 100vh;
-  }
-
-  /* HEADER */
-  .site-header {
-    background: var(--ocean);
-    padding: 0 2rem;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
-  }
-  .header-inner {
-    max-width: 1100px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 64px;
-  }
-  .brand {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .brand-logo {
-    width: 36px;
-    height: 36px;
-    background: rgba(255,255,255,0.15);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'DM Serif Display', serif;
-    color: white;
-    font-size: 16px;
-    font-weight: 400;
-  }
-  .brand-name {
-    font-size: 15px;
-    font-weight: 500;
-    color: rgba(255,255,255,0.9);
-    letter-spacing: 0.02em;
-  }
-  .brand-sub {
-    font-size: 11px;
-    color: rgba(255,255,255,0.5);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-  }
-  .header-cta {
-    background: rgba(255,255,255,0.15);
-    border: 1px solid rgba(255,255,255,0.25);
-    color: white;
-    padding: 8px 18px;
-    border-radius: 6px;
-    font-size: 13px;
-    font-weight: 500;
-    text-decoration: none;
-    transition: background 0.15s;
-  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--sand); color: var(--text); font-size: 15px; line-height: 1.6; min-height: 100vh; }
+  .site-header { background: var(--black); padding: 0 2rem; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.15); }
+  .header-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand-logo { width: 36px; height: 36px; background: rgba(255,255,255,0.15); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: 'DM Serif Display', serif; color: white; font-size: 16px; }
+  .brand-name { font-size: 15px; font-weight: 500; color: rgba(255,255,255,0.9); letter-spacing: 0.02em; }
+  .brand-sub { font-size: 11px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.08em; }
+  .header-cta { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); color: white; padding: 8px 18px; border-radius: 6px; font-size: 13px; font-weight: 500; text-decoration: none; transition: background 0.15s; }
   .header-cta:hover { background: rgba(255,255,255,0.25); }
-
-  /* MAIN LAYOUT */
   .main { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
-
-  /* WEEK LABEL & STATUS */
-  .status-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1.75rem;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-  .week-label {
-    font-family: 'DM Serif Display', serif;
-    font-size: 26px;
-    color: var(--text);
-  }
-  .week-label span {
-    color: var(--ocean);
-    font-style: italic;
-  }
-  .last-updated {
-    font-size: 12px;
-    color: var(--text-light);
-    background: var(--white);
-    border: 1px solid var(--border);
-    padding: 5px 12px;
-    border-radius: 20px;
-  }
-
-  /* NARRATIVE BANNER */
-  .narrative-banner {
-    background: var(--ocean);
-    color: white;
-    padding: 1.25rem 1.5rem;
-    border-radius: var(--radius);
-    margin-bottom: 1.75rem;
-    font-size: 15px;
-    line-height: 1.6;
-    position: relative;
-    overflow: hidden;
-  }
-  .narrative-banner::before {
-    content: '';
-    position: absolute;
-    right: -20px;
-    top: -20px;
-    width: 120px;
-    height: 120px;
-    background: rgba(255,255,255,0.05);
-    border-radius: 50%;
-  }
-  .narrative-label {
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: rgba(255,255,255,0.55);
-    margin-bottom: 4px;
-  }
-
-  /* METRIC GRID */
-  .metric-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 12px;
-    margin-bottom: 1.75rem;
-  }
-  .metric-card {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1rem 1.25rem;
-    position: relative;
-  }
-  .metric-label {
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--text-light);
-    margin-bottom: 6px;
-  }
-  .metric-value {
-    font-size: 26px;
-    font-weight: 600;
-    color: var(--text);
-    line-height: 1.1;
-  }
-  .metric-sub {
-    font-size: 12px;
-    color: var(--text-muted);
-    margin-top: 2px;
-  }
-  .metric-badge {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    font-size: 11px;
-    font-weight: 500;
-    padding: 2px 8px;
-    border-radius: 20px;
-  }
-  .badge-up { background: var(--up-bg); color: var(--up); }
-  .badge-down { background: var(--down-bg); color: var(--down); }
-  .badge-neutral { background: var(--neutral-bg); color: var(--neutral); }
-
-  /* TREND INDICATORS */
-  .trend-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 12px;
-    margin-bottom: 1.75rem;
-  }
-  .trend-card {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1rem 1.25rem;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .trend-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    flex-shrink: 0;
-  }
+  .loading-state { text-align: center; padding: 4rem 2rem; }
+  .loading-spinner { width: 36px; height: 36px; border: 3px solid var(--border-strong); border-top-color: var(--black); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 1rem; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text { color: var(--text-muted); font-size: 14px; }
+  .status-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.75rem; flex-wrap: wrap; gap: 12px; }
+  .week-label { font-family: 'DM Serif Display', serif; font-size: 26px; }
+  .week-label span { font-style: italic; }
+  .last-updated { font-size: 12px; color: var(--text-light); background: var(--white); border: 1px solid var(--border); padding: 5px 12px; border-radius: 20px; }
+  .narrative-banner { background: var(--black); color: white; padding: 1.25rem 1.5rem; border-radius: var(--radius); margin-bottom: 1.75rem; font-size: 15px; line-height: 1.6; }
+  .narrative-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(255,255,255,0.55); margin-bottom: 4px; }
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 1.75rem; }
+  .metric-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; }
+  .metric-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-light); margin-bottom: 6px; }
+  .metric-value { font-size: 26px; font-weight: 600; line-height: 1.1; }
+  .metric-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1.5px solid var(--border); }
+  .section-title { font-family: 'DM Serif Display', serif; font-size: 20px; }
+  .section-tag { font-size: 11px; background: var(--black-light); color: var(--black); padding: 3px 10px; border-radius: 20px; font-weight: 500; }
+  .trend-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 1.75rem; }
+  .trend-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; display: flex; align-items: center; gap: 12px; }
+  .trend-icon { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
   .trend-icon.up { background: var(--up-bg); color: var(--up); }
   .trend-icon.down { background: var(--down-bg); color: var(--down); }
   .trend-icon.neutral { background: var(--neutral-bg); color: var(--neutral); }
-  .trend-info {}
   .trend-name { font-size: 12px; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.06em; }
-  .trend-status { font-size: 14px; font-weight: 500; color: var(--text); }
+  .trend-status { font-size: 14px; font-weight: 500; }
   .trend-streak { font-size: 12px; color: var(--text-muted); }
-
-  /* SECTION HEADERS */
-  .section-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1.5px solid var(--border);
-  }
-  .section-title {
-    font-family: 'DM Serif Display', serif;
-    font-size: 20px;
-    color: var(--text);
-  }
-  .section-tag {
-    font-size: 11px;
-    background: var(--ocean-light);
-    color: var(--ocean);
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-weight: 500;
-  }
-
-  /* CHARTS SECTION */
   .charts-section { margin-bottom: 2rem; }
-  .chart-tabs {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 1rem;
-    flex-wrap: wrap;
-  }
-  .chart-tab {
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 500;
-    border: 1px solid var(--border);
-    background: var(--white);
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .chart-tab.active {
-    background: var(--ocean);
-    border-color: var(--ocean);
-    color: white;
-  }
-  .chart-tab:hover:not(.active) { border-color: var(--ocean); color: var(--ocean); }
+  .chart-tabs { display: flex; gap: 8px; margin-bottom: 1rem; flex-wrap: wrap; }
+  .chart-tab { padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 500; border: 1px solid var(--border); background: var(--white); color: var(--text-muted); cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
+  .chart-tab.active { background: var(--black); border-color: var(--black); color: white; }
+  .chart-tab:hover:not(.active) { border-color: var(--black); color: var(--black); }
   .chart-panel { display: none; }
   .chart-panel.active { display: block; }
-  .chart-card {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.25rem 1.5rem;
-  }
-  .chart-title {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text-muted);
-    margin-bottom: 1rem;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-  }
-  .chart-wrap {
-    position: relative;
-    width: 100%;
-    height: 280px;
-  }
-
-  /* PICKS GRID */
-  .picks-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 16px;
-    margin-bottom: 2rem;
-  }
-  .pick-card {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-  }
-  .pick-header {
-    padding: 0.75rem 1.25rem;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .pick-type {
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    font-weight: 600;
-  }
-  .pick-type.luxury { color: var(--ocean); }
-  .pick-type.investment { color: #1a7a4a; }
-  .pick-type.deal { color: #c0392b; }
-  .pick-status {
-    font-size: 11px;
-    padding: 2px 10px;
-    border-radius: 20px;
-  }
+  .chart-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem 1.5rem; }
+  .chart-title { font-size: 13px; font-weight: 500; color: var(--text-muted); margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.07em; }
+  .chart-wrap { position: relative; width: 100%; height: 280px; }
+  .picks-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 2rem; }
+  .pick-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .pick-header { padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .pick-type { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; }
+  .pick-type.luxury { color: var(--black); }
+  .pick-type.investment { color: var(--up); }
+  .pick-type.deal { color: var(--down); }
+  .pick-status { font-size: 11px; padding: 2px 10px; border-radius: 20px; background: var(--black-light); color: var(--black); }
   .pick-body { padding: 1.25rem; }
-  .pick-address {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--text);
-    margin-bottom: 4px;
-    line-height: 1.3;
-  }
-  .pick-address a {
-    color: inherit;
-    text-decoration: none;
-  }
-  .pick-address a:hover { color: var(--ocean); text-decoration: underline; }
-  .pick-price {
-    font-family: 'DM Serif Display', serif;
-    font-size: 22px;
-    color: var(--ocean);
-    margin-bottom: 8px;
-  }
-  .pick-detail {
-    font-size: 13px;
-    color: var(--text-muted);
-    line-height: 1.5;
-  }
-
-  /* HISTORY TABLE */
+  .pick-address { font-size: 16px; font-weight: 600; margin-bottom: 4px; line-height: 1.3; }
+  .pick-address a { color: inherit; text-decoration: none; }
+  .pick-address a:hover { text-decoration: underline; }
+  .pick-price { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--black); margin-bottom: 8px; }
+  .pick-detail { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
   .history-section { margin-bottom: 2rem; }
   .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
-    min-width: 700px;
-  }
-  thead th {
-    text-align: left;
-    padding: 10px 14px;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    color: var(--text-light);
-    background: var(--sand);
-    border-bottom: 1px solid var(--border-strong);
-    font-weight: 500;
-    white-space: nowrap;
-  }
-  tbody td {
-    padding: 10px 14px;
-    border-bottom: 1px solid var(--border);
-    color: var(--text);
-    white-space: nowrap;
-  }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 700px; }
+  thead th { text-align: left; padding: 10px 14px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-light); background: var(--sand); border-bottom: 1px solid var(--border-strong); font-weight: 500; white-space: nowrap; }
+  tbody td { padding: 10px 14px; border-bottom: 1px solid var(--border); white-space: nowrap; }
   tbody tr:last-child td { border-bottom: none; }
-  tbody tr:hover td { background: rgba(0,0,0,0.03); }
-  .table-card {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-  }
+  tbody tr:hover td { background: rgba(0,0,0,0.02); }
+  .table-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
   td.num { text-align: right; font-variant-numeric: tabular-nums; }
   th.num { text-align: right; }
-  .row-highlight td { background: rgba(0,0,0,0.04); font-weight: 500; }
-
-  /* ADMIN PANEL */
-  .admin-toggle {
-    text-align: center;
-    margin: 2rem 0 1rem;
-  }
-  .admin-btn {
-    background: none;
-    border: 1px solid var(--border-strong);
-    color: var(--text-muted);
-    padding: 8px 20px;
-    border-radius: 6px;
-    font-size: 13px;
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-  }
-  .admin-btn:hover { border-color: var(--ocean); color: var(--ocean); }
-  .admin-panel {
-    display: none;
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.5rem;
-    margin-bottom: 2rem;
-  }
-  .admin-panel.open { display: block; }
-  .admin-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text);
-    margin-bottom: 0.75rem;
-  }
-  .admin-sub {
-    font-size: 12px;
-    color: var(--text-muted);
-    margin-bottom: 1rem;
-  }
-  textarea.json-input {
-    width: 100%;
-    height: 160px;
-    font-family: 'Courier New', monospace;
-    font-size: 12px;
-    padding: 10px 12px;
-    border: 1px solid var(--border-strong);
-    border-radius: var(--radius-sm);
-    resize: vertical;
-    background: #f8f8f8;
-    color: var(--text);
-  }
-  .admin-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-    flex-wrap: wrap;
-  }
-  .btn-primary {
-    background: var(--ocean);
-    color: white;
-    border: none;
-    padding: 9px 20px;
-    border-radius: 6px;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-  }
-  .btn-primary:hover { background: #155068; }
-  .btn-secondary {
-    background: none;
-    color: var(--text-muted);
-    border: 1px solid var(--border-strong);
-    padding: 9px 20px;
-    border-radius: 6px;
-    font-size: 13px;
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-  }
-  .btn-secondary:hover { border-color: var(--down); color: var(--down); }
-  .admin-feedback {
-    margin-top: 8px;
-    font-size: 12px;
-    color: var(--up);
-    min-height: 18px;
-  }
-  .admin-feedback.error { color: var(--down); }
-
-  /* FOOTER */
-  .site-footer {
-    background: var(--text);
-    color: rgba(255,255,255,0.7);
-    padding: 2rem 1.5rem;
-    text-align: center;
-    font-size: 13px;
-    line-height: 1.8;
-  }
+  .row-highlight td { background: rgba(0,0,0,0.03); font-weight: 500; }
+  .site-footer { background: var(--text); color: rgba(255,255,255,0.7); padding: 2rem 1.5rem; text-align: center; font-size: 13px; line-height: 1.8; }
   .footer-name { color: white; font-weight: 500; font-size: 15px; }
   .footer-link { color: rgba(255,255,255,0.6); text-decoration: none; }
   .footer-link:hover { color: white; }
-  .footer-disc {
-    max-width: 600px;
-    margin: 1rem auto 0;
-    font-size: 11px;
-    color: rgba(255,255,255,0.35);
-    line-height: 1.6;
-  }
-
-  @media (max-width: 600px) {
-    .main { padding: 1.25rem 1rem 3rem; }
-    .metric-value { font-size: 22px; }
-    .week-label { font-size: 20px; }
-  }
+  .footer-disc { max-width: 600px; margin: 1rem auto 0; font-size: 11px; color: rgba(255,255,255,0.35); line-height: 1.6; }
+  @media (max-width: 600px) { .main { padding: 1.25rem 1rem 3rem; } .metric-value { font-size: 22px; } .week-label { font-size: 20px; } }
 </style>
 </head>
 <body>
@@ -533,178 +110,86 @@
   </div>
 </header>
 
+<div id="loadingWrap" class="main">
+  <div class="loading-state">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Loading live market data from Google Sheets...</div>
+  </div>
+</div>
+
+<div id="appWrap" style="display:none;">
 <main class="main">
 
   <div class="status-bar">
-    <div class="week-label">Ventura Market Update <span id="weekLabelDisplay">—</span></div>
-    <div class="last-updated" id="lastUpdated">Loading...</div>
+    <div class="week-label">Ventura Market Update <span id="weekLabelDisplay"></span></div>
+    <div class="last-updated" id="lastUpdated">Live from MLS</div>
   </div>
 
-  <div class="narrative-banner" id="narrativeBanner">
+  <div class="narrative-banner">
     <div class="narrative-label">Market Narrative</div>
-    <div id="narrativeText">Loading market data...</div>
+    <div id="narrativeText"></div>
   </div>
 
-  <!-- METRIC CARDS -->
-  <div class="metric-grid" id="metricGrid">
-    <div class="metric-card">
-      <div class="metric-label">New Listings</div>
-      <div class="metric-value" id="m-newListings">--</div>
-      <div class="metric-sub">this week</div>
-    </div>
-    <div class="metric-card">
-      <div class="metric-label">Total Inventory</div>
-      <div class="metric-value" id="m-totalInventory">--</div>
-      <div class="metric-sub">active</div>
-    </div>
-    <div class="metric-card">
-      <div class="metric-label">Median Sold Price</div>
-      <div class="metric-value" id="m-medianClosePrice">--</div>
-      <div class="metric-sub">closed sales</div>
-    </div>
-    <div class="metric-card">
-      <div class="metric-label">Median $/Sq Ft</div>
-      <div class="metric-value" id="m-medianPSF">--</div>
-      <div class="metric-sub">sold</div>
-    </div>
-    <div class="metric-card">
-      <div class="metric-label">Median DOM</div>
-      <div class="metric-value" id="m-medianDOM">--</div>
-      <div class="metric-sub">days on market</div>
-    </div>
-    <div class="metric-card">
-      <div class="metric-label">LP/SP Ratio</div>
-      <div class="metric-value" id="m-lpsp">--</div>
-      <div class="metric-sub">list vs sold</div>
-    </div>
-    <div class="metric-card">
-      <div class="metric-label">Price Reductions</div>
-      <div class="metric-value" id="m-priceReductions">--</div>
-      <div class="metric-sub" id="m-avgReductionPct">--</div>
-    </div>
-    <div class="metric-card">
-      <div class="metric-label">30-Yr Rate</div>
-      <div class="metric-value" id="m-rate">--</div>
-      <div class="metric-sub">national avg</div>
-    </div>
+  <div class="metric-grid">
+    <div class="metric-card"><div class="metric-label">New Listings</div><div class="metric-value" id="m-newListings">--</div><div class="metric-sub">this week</div></div>
+    <div class="metric-card"><div class="metric-label">Total Inventory</div><div class="metric-value" id="m-totalInventory">--</div><div class="metric-sub">active</div></div>
+    <div class="metric-card"><div class="metric-label">Median Sold Price</div><div class="metric-value" id="m-medianClosePrice">--</div><div class="metric-sub">closed sales</div></div>
+    <div class="metric-card"><div class="metric-label">Median $/Sq Ft</div><div class="metric-value" id="m-medianPSF">--</div><div class="metric-sub">sold</div></div>
+    <div class="metric-card"><div class="metric-label">Median DOM</div><div class="metric-value" id="m-medianDOM">--</div><div class="metric-sub">days on market</div></div>
+    <div class="metric-card"><div class="metric-label">LP/SP Ratio</div><div class="metric-value" id="m-lpsp">--</div><div class="metric-sub">list vs sold</div></div>
+    <div class="metric-card"><div class="metric-label">Price Reductions</div><div class="metric-value" id="m-priceReductions">--</div><div class="metric-sub" id="m-avgReductionPct">this week</div></div>
+    <div class="metric-card"><div class="metric-label">30-Yr Rate</div><div class="metric-value" id="m-rate">--</div><div class="metric-sub">national avg</div></div>
   </div>
 
-  <!-- TREND INDICATORS -->
   <div class="section-header">
     <div class="section-title">Market Trends</div>
     <div class="section-tag">Directional Streaks</div>
   </div>
-  <div class="trend-row" id="trendRow">
-    <div class="trend-card" id="t-inv">
-      <div class="trend-icon neutral">&#8212;</div>
-      <div class="trend-info">
-        <div class="trend-name">Inventory</div>
-        <div class="trend-status" id="ts-inv">--</div>
-        <div class="trend-streak" id="tk-inv">--</div>
-      </div>
-    </div>
-    <div class="trend-card" id="t-sel">
-      <div class="trend-icon neutral">&#8212;</div>
-      <div class="trend-info">
-        <div class="trend-name">Seller Pricing</div>
-        <div class="trend-status" id="ts-sel">--</div>
-        <div class="trend-streak" id="tk-sel">--</div>
-      </div>
-    </div>
-    <div class="trend-card" id="t-buy">
-      <div class="trend-icon neutral">&#8212;</div>
-      <div class="trend-info">
-        <div class="trend-name">Buyer Demand</div>
-        <div class="trend-status" id="ts-buy">--</div>
-        <div class="trend-streak" id="tk-buy">--</div>
-      </div>
-    </div>
-    <div class="trend-card" id="t-price">
-      <div class="trend-icon neutral">&#8212;</div>
-      <div class="trend-info">
-        <div class="trend-name">Price Trend</div>
-        <div class="trend-status" id="ts-price">--</div>
-        <div class="trend-streak" id="tk-price">--</div>
-      </div>
-    </div>
+  <div class="trend-row">
+    <div class="trend-card" id="t-inv"><div class="trend-icon neutral">&#8212;</div><div><div class="trend-name">Inventory</div><div class="trend-status" id="ts-inv">--</div><div class="trend-streak" id="tk-inv">--</div></div></div>
+    <div class="trend-card" id="t-sel"><div class="trend-icon neutral">&#8212;</div><div><div class="trend-name">Seller Pricing</div><div class="trend-status" id="ts-sel">--</div><div class="trend-streak" id="tk-sel">--</div></div></div>
+    <div class="trend-card" id="t-buy"><div class="trend-icon neutral">&#8212;</div><div><div class="trend-name">Buyer Demand</div><div class="trend-status" id="ts-buy">--</div><div class="trend-streak" id="tk-buy">--</div></div></div>
+    <div class="trend-card" id="t-price"><div class="trend-icon neutral">&#8212;</div><div><div class="trend-name">Price Trend</div><div class="trend-status" id="ts-price">--</div><div class="trend-streak" id="tk-price">--</div></div></div>
   </div>
 
-  <!-- CHARTS -->
   <div class="charts-section">
     <div class="section-header">
       <div class="section-title">Historical Trends</div>
-      <div class="section-tag">Last 3 Months</div>
+      <div class="section-tag" id="chartWeekCount">Loading...</div>
     </div>
-
     <div class="chart-tabs">
-      <button class="chart-tab active" onclick="switchTab('pricing')">Pricing</button>
-      <button class="chart-tab" onclick="switchTab('activity')">Activity</button>
-      <button class="chart-tab" onclick="switchTab('velocity')">Market Velocity</button>
-      <button class="chart-tab" onclick="switchTab('rates')">Rates</button>
+      <button class="chart-tab active" onclick="switchTab(event,'pricing')">Pricing</button>
+      <button class="chart-tab" onclick="switchTab(event,'activity')">Activity</button>
+      <button class="chart-tab" onclick="switchTab(event,'velocity')">Market Velocity</button>
+      <button class="chart-tab" onclick="switchTab(event,'rates')">Rates</button>
     </div>
-
     <div class="chart-card">
-      <div id="panel-pricing" class="chart-panel active">
-        <div class="chart-title">Median Sold Price & Price Per Sq Ft</div>
-        <div class="chart-wrap"><canvas id="chartPricing" role="img" aria-label="Median sold price and price per square foot over time">Price trend chart.</canvas></div>
-      </div>
-      <div id="panel-activity" class="chart-panel">
-        <div class="chart-title">Weekly Listing Activity</div>
-        <div class="chart-wrap"><canvas id="chartActivity" role="img" aria-label="Weekly new listings, pending, and closed counts">Activity trend chart.</canvas></div>
-      </div>
-      <div id="panel-velocity" class="chart-panel">
-        <div class="chart-title">Days on Market & LP/SP Ratio</div>
-        <div class="chart-wrap"><canvas id="chartVelocity" role="img" aria-label="Median days on market and list price to sales price ratio over time">Velocity chart.</canvas></div>
-      </div>
-      <div id="panel-rates" class="chart-panel">
-        <div class="chart-title">30-Year Fixed Rate</div>
-        <div class="chart-wrap"><canvas id="chartRates" role="img" aria-label="30-year fixed mortgage rate over time">Rate chart.</canvas></div>
-      </div>
+      <div id="panel-pricing" class="chart-panel active"><div class="chart-title">Median Sold Price & Price Per Sq Ft</div><div class="chart-wrap"><canvas id="chartPricing" role="img" aria-label="Price trends">Chart.</canvas></div></div>
+      <div id="panel-activity" class="chart-panel"><div class="chart-title">Weekly Listing Activity</div><div class="chart-wrap"><canvas id="chartActivity" role="img" aria-label="Activity trends">Chart.</canvas></div></div>
+      <div id="panel-velocity" class="chart-panel"><div class="chart-title">Days on Market & LP/SP Ratio</div><div class="chart-wrap"><canvas id="chartVelocity" role="img" aria-label="Velocity trends">Chart.</canvas></div></div>
+      <div id="panel-rates" class="chart-panel"><div class="chart-title">30-Year Fixed Rate</div><div class="chart-wrap"><canvas id="chartRates" role="img" aria-label="Rate trends">Chart.</canvas></div></div>
     </div>
   </div>
 
-  <!-- FEATURED PICKS -->
   <div class="section-header">
     <div class="section-title">Featured Picks</div>
     <div class="section-tag">This Week</div>
   </div>
-  <div class="picks-grid" id="picksGrid">
+  <div class="picks-grid">
     <div class="pick-card">
-      <div class="pick-header">
-        <div class="pick-type luxury">Luxury Pick</div>
-        <div class="pick-status badge-up" id="lux-status">--</div>
-      </div>
-      <div class="pick-body">
-        <div class="pick-address" id="lux-address">--</div>
-        <div class="pick-price" id="lux-price">--</div>
-        <div class="pick-detail">Listed this week as Brandon's luxury pick. Contact Brandon for full details and a private showing.</div>
-      </div>
+      <div class="pick-header"><div class="pick-type luxury">Luxury Pick</div><div class="pick-status" id="lux-status">--</div></div>
+      <div class="pick-body"><div class="pick-address" id="lux-address">--</div><div class="pick-price" id="lux-price">--</div><div class="pick-detail">Contact Brandon for full details and a private showing.</div></div>
     </div>
     <div class="pick-card">
-      <div class="pick-header">
-        <div class="pick-type investment">Investment Pick</div>
-        <div class="pick-status badge-up" id="inv-status">--</div>
-      </div>
-      <div class="pick-body">
-        <div class="pick-address" id="inv-address">--</div>
-        <div class="pick-price" id="inv-price">--</div>
-        <div class="pick-detail">Selected for investor potential. Book a call to walk through the numbers on this one.</div>
-      </div>
+      <div class="pick-header"><div class="pick-type investment">Investment Pick</div><div class="pick-status" id="inv-status">--</div></div>
+      <div class="pick-body"><div class="pick-address" id="inv-address">--</div><div class="pick-price" id="inv-price">--</div><div class="pick-detail">Book a call to walk through the numbers on this one.</div></div>
     </div>
     <div class="pick-card">
-      <div class="pick-header">
-        <div class="pick-type deal">Deal of the Week</div>
-        <div class="pick-status badge-down" id="deal-status">Closed</div>
-      </div>
-      <div class="pick-body">
-        <div class="pick-address" id="deal-address">--</div>
-        <div class="pick-price" id="deal-price">--</div>
-        <div class="pick-detail">Selected for largest price reduction or lowest LP/SP ratio from closed sales.</div>
-      </div>
+      <div class="pick-header"><div class="pick-type deal">Deal of the Week</div><div class="pick-status" id="deal-status" style="background:var(--down-bg);color:var(--down);">Closed</div></div>
+      <div class="pick-body"><div class="pick-address" id="deal-address">--</div><div class="pick-price" id="deal-price">--</div><div class="pick-detail">Selected for largest price reduction or lowest LP/SP from closed sales.</div></div>
     </div>
   </div>
 
-  <!-- HISTORY TABLE -->
   <div class="history-section">
     <div class="section-header">
       <div class="section-title">Weekly History</div>
@@ -712,72 +197,16 @@
     </div>
     <div class="table-card">
       <div class="table-scroll">
-        <table id="historyTable">
-          <thead>
-            <tr>
-              <th>Week</th>
-              <th class="num">New Listings</th>
-              <th class="num">Inventory</th>
-              <th class="num">Median Price</th>
-              <th class="num">$/Sq Ft</th>
-              <th class="num">DOM</th>
-              <th class="num">LP/SP</th>
-              <th class="num">Pending</th>
-              <th class="num">Closed</th>
-              <th class="num">Rate</th>
-            </tr>
-          </thead>
-          <tbody id="historyBody">
-            <tr><td colspan="10" style="text-align:center;color:var(--text-light);padding:2rem;">No history yet. Add your first week below.</td></tr>
-          </tbody>
+        <table>
+          <thead><tr><th>Week</th><th class="num">New Listings</th><th class="num">Inventory</th><th class="num">Median Price</th><th class="num">$/Sq Ft</th><th class="num">DOM</th><th class="num">LP/SP</th><th class="num">Pending</th><th class="num">Closed</th><th class="num">Rate</th></tr></thead>
+          <tbody id="historyBody"><tr><td colspan="10" style="text-align:center;color:var(--text-light);padding:2rem;">Loading history...</td></tr></tbody>
         </table>
       </div>
     </div>
   </div>
 
-  <!-- ADMIN PANEL -->
-  <div class="admin-toggle">
-    <button class="admin-btn" onclick="toggleAdmin()">Update Market Data (Admin)</button>
-  </div>
-
-  <!-- PIN GATE -->
-  <div class="admin-panel" id="pinGate">
-    <div class="admin-title">Admin Access</div>
-    <div class="admin-sub">Enter your 6-digit PIN to continue.</div>
-    <div style="display:flex;align-items:center;gap:10px;margin-top:0.5rem;">
-      <input type="password" id="pinInput" maxlength="6" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;"
-        style="width:140px;padding:9px 14px;font-size:18px;letter-spacing:0.25em;border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;background:#f8f8f8;"
-        onkeydown="if(event.key==='Enter')checkPin()">
-      <button class="btn-primary" onclick="checkPin()">Unlock</button>
-    </div>
-    <div class="admin-feedback error" id="pinFeedback"></div>
-  </div>
-
-  <!-- ADMIN CONTENT (hidden until PIN correct) -->
-  <div class="admin-panel" id="adminPanel">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
-      <div class="admin-title" style="margin:0;">Paste Weekly JSON Block</div>
-      <button class="admin-btn" onclick="lockAdmin()" style="font-size:12px;padding:4px 12px;">Lock</button>
-    </div>
-    <div class="admin-sub">Paste the Memory File JSON output from your weekly workflow. Data is stored in your browser and persists week over week. All history is retained.</div>
-    <textarea class="json-input" id="jsonInput" placeholder='{"weekLabel":"Week of May 12, 2025","newListings":12,...}'></textarea>
-    <div class="admin-actions">
-      <button class="btn-primary" onclick="ingestJSON()">Save Week</button>
-      <button class="btn-secondary" onclick="clearAllData()">Clear All Data</button>
-    </div>
-    <div class="admin-feedback" id="adminFeedback"></div>
-
-    <div style="margin-top:1.5rem;border-top:1px solid var(--border);padding-top:1.25rem;">
-      <div class="admin-title">Export / Backup History</div>
-      <div class="admin-sub">Download all stored weeks as a JSON file for safekeeping.</div>
-      <div class="admin-actions">
-        <button class="btn-primary" onclick="exportHistory()">Download Backup</button>
-        <label class="btn-primary" style="cursor:pointer">Import Backup <input type="file" accept=".json" onchange="importHistory(event)" style="display:none"></label>
-      </div>
-    </div>
-  </div>
-
 </main>
+</div>
 
 <footer class="site-footer">
   <div class="footer-name">Brandon Wasilewski</div>
@@ -788,367 +217,235 @@
 </footer>
 
 <script>
-const STORAGE_KEY = 'ventura_market_history_v2';
+const SHEET_ID = '13gE7-A6FaDxzmWOY-iw1DtIB3AgI4Q0xU93GZYlvZEw';
 
-function loadHistory() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch(e) { return []; }
+async function fetchSheet(tabName) {
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(tabName)}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('Sheet fetch failed: ' + tabName);
+  const text = await res.text();
+  const clean = text.replace(/^[^{]*/, '').replace(/[^}]*$/, '');
+  const json = JSON.parse(clean);
+  return json.table;
 }
 
-function saveHistory(arr) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
-}
+function cv(cell) { return (!cell || cell.v === null || cell.v === undefined) ? null : cell.v; }
 
 function formatPrice(val) {
   if (!val && val !== 0) return '--';
-  const n = typeof val === 'string' ? parseFloat(val.replace(/[^0-9.]/g,'')) : val;
-  if (isNaN(n)) return val;
+  const n = parseFloat(String(val).replace(/[^0-9.]/g,''));
+  if (isNaN(n)) return String(val);
   if (n >= 1000000) return '$' + (n/1000000).toFixed(2) + 'M';
   if (n >= 1000) return '$' + Math.round(n/1000) + 'K';
   return '$' + n;
 }
 
+function safeNum(v) { if (v === null || v === undefined || v === '') return null; const n = parseFloat(v); return isNaN(n) ? null : n; }
+
 function getDir(dir) {
-  if (!dir) return { icon: '&#8212;', cls: 'neutral', label: 'Neutral' };
+  if (!dir) return { icon: '&#8212;', cls: 'neutral' };
   const d = String(dir).toLowerCase();
-  if (d === 'up' || d === 'increasing' || d === 'rising') return { icon: '&#8593;', cls: 'up', label: 'Rising' };
-  if (d === 'down' || d === 'decreasing' || d === 'falling') return { icon: '&#8595;', cls: 'down', label: 'Falling' };
-  return { icon: '&#8594;', cls: 'neutral', label: 'Stable' };
+  if (d === 'up' || d.includes('increas') || d.includes('rising') || d.startsWith('↑')) return { icon: '&#8593;', cls: 'up' };
+  if (d === 'down' || d.includes('decreas') || d.includes('falling') || d.startsWith('↓')) return { icon: '&#8595;', cls: 'down' };
+  return { icon: '&#8594;', cls: 'neutral' };
 }
 
-function setTrend(id, dir, streak, label) {
+function setTrend(id, dir, streak, upLabel, downLabel) {
   const card = document.getElementById('t-' + id);
   if (!card) return;
   const d = getDir(dir);
   card.querySelector('.trend-icon').className = 'trend-icon ' + d.cls;
   card.querySelector('.trend-icon').innerHTML = d.icon;
-  card.querySelector('.trend-status').textContent = label || d.label;
+  const label = d.cls === 'up' ? upLabel : d.cls === 'down' ? downLabel : 'Stable';
+  card.querySelector('.trend-status').textContent = label;
   const s = parseInt(streak) || 1;
-  const wk = s === 1 ? 'week' : 'weeks';
-  card.querySelector('.trend-streak').textContent = s >= 3 ? `Confirmed ${s}-week streak` : `${s} ${wk} in same direction`;
-  if (s >= 3) {
-    card.querySelector('.trend-streak').style.fontWeight = '500';
-    card.querySelector('.trend-streak').style.color = d.cls === 'up' ? 'var(--up)' : d.cls === 'down' ? 'var(--down)' : 'var(--neutral)';
-  }
+  const streakEl = card.querySelector('.trend-streak');
+  streakEl.textContent = s >= 3 ? 'Confirmed ' + s + '-week streak' : s + (s === 1 ? ' week' : ' weeks') + ' in same direction';
+  if (s >= 3) { streakEl.style.fontWeight = '500'; streakEl.style.color = d.cls === 'up' ? 'var(--up)' : d.cls === 'down' ? 'var(--down)' : 'var(--neutral)'; }
 }
 
-function renderCurrentWeek(data) {
-  document.getElementById('weekLabelDisplay').textContent = data.weekLabel || '';
-  document.getElementById('lastUpdated').textContent = 'Updated: ' + (data.weekLabel || 'recently');
-  document.getElementById('narrativeText').textContent = data.narrative || 'Market data updated. Watch the video for full context.';
-
-  document.getElementById('m-newListings').textContent = data.newListings ?? '--';
-  document.getElementById('m-totalInventory').textContent = data.totalInventory ?? '--';
-  document.getElementById('m-medianClosePrice').textContent = formatPrice(data.medianClosePrice);
-  document.getElementById('m-medianPSF').textContent = data.medianPSF ? '$' + data.medianPSF : '--';
-  document.getElementById('m-medianDOM').textContent = data.medianDOM ? data.medianDOM + ' days' : '--';
-  document.getElementById('m-lpsp').textContent = data.lpsp ? (data.lpsp + '%') : '--';
-  document.getElementById('m-priceReductions').textContent = data.priceReductions ?? '--';
-  document.getElementById('m-avgReductionPct').textContent = data.avgReductionPct ? 'avg ' + data.avgReductionPct + '% cut' : 'this week';
-  document.getElementById('m-rate').textContent = data.rate ? data.rate + '%' : '--';
-
-  setTrend('inv', data.invDir, data.invStreak, data.invDir ? (data.invDir === 'up' ? 'Increasing' : data.invDir === 'down' ? 'Decreasing' : 'Stable') : '--');
-  setTrend('sel', data.selDir, data.selStreak, data.selDir ? (data.selDir === 'up' ? 'Pressure Up' : data.selDir === 'down' ? 'Pressure Down' : 'Stable') : '--');
-  setTrend('buy', data.buyDir, data.buyStreak, data.buyDir ? (data.buyDir === 'up' ? 'Strengthening' : data.buyDir === 'down' ? 'Softening' : 'Stable') : '--');
-  setTrend('price', data.priceDir, data.priceStreak, data.priceDir ? (data.priceDir === 'up' ? 'Appreciating' : data.priceDir === 'down' ? 'Softening' : 'Stable') : '--');
-
-  if (data.luxAddress) {
-    const luxEl = document.getElementById('lux-address');
-    if (data.luxUrl) {
-      luxEl.innerHTML = '<a href="' + data.luxUrl + '" target="_blank">' + data.luxAddress + '</a>';
-    } else {
-      luxEl.textContent = data.luxAddress;
-    }
-  }
-  document.getElementById('lux-price').textContent = formatPrice(data.luxPrice);
-  document.getElementById('lux-status').textContent = data.luxStatus || 'Active';
-
-  if (data.invAddress) {
-    const invEl = document.getElementById('inv-address');
-    if (data.invUrl) {
-      invEl.innerHTML = '<a href="' + data.invUrl + '" target="_blank">' + data.invAddress + '</a>';
-    } else {
-      invEl.textContent = data.invAddress;
-    }
-  }
-  document.getElementById('inv-price').textContent = formatPrice(data.invPrice);
-  document.getElementById('inv-status').textContent = data.invStatus || 'Active';
-
-  document.getElementById('deal-address').textContent = data.dealAddress || '--';
-  document.getElementById('deal-price').textContent = formatPrice(data.dealPrice);
+function parseSnapshot(table) {
+  const rows = table.rows;
+  const get = (ri, ci) => rows[ri] && rows[ri].c[ci] ? cv(rows[ri].c[ci]) : null;
+  return {
+    weekLabel: get(2,1),
+    newListings: get(4,1), totalInventory: get(5,1), priceReductions: get(6,1), avgReductionPct: get(7,1),
+    aucCount: get(9,1), pendingCount: get(10,1), medianPendingDOM: get(11,1),
+    closedCount: get(13,1), medianClosePrice: get(14,1), medianPSF: get(15,1), medianDOM: get(16,1), lpsp: get(17,1),
+    rate: get(19,1)
+  };
 }
 
-function renderHistoryTable(history) {
-  const tbody = document.getElementById('historyBody');
+function parseNarrative(table) {
+  const rows = table.rows;
+  for (let i = rows.length - 1; i >= 0; i--) {
+    const v = rows[i].c[1] ? cv(rows[i].c[1]) : null;
+    if (v) return String(v);
+  }
+  return '';
+}
+
+function parseIndicators(table) {
+  const rows = table.rows;
+  const get = (ri, ci) => rows[ri] && rows[ri].c[ci] ? cv(rows[ri].c[ci]) : null;
+  return {
+    inv:   { dir: get(4,1), streak: get(4,2) },
+    sel:   { dir: get(5,1), streak: get(5,2) },
+    buy:   { dir: get(6,1), streak: get(6,2) },
+    price: { dir: get(7,1), streak: get(7,2) }
+  };
+}
+
+function parseHistory(table) {
+  if (!table || !table.rows || !table.cols) return [];
+  const headers = table.cols.map(c => (c.label || '').trim());
+  return table.rows.map(row => {
+    const obj = {};
+    headers.forEach((h, i) => { obj[h] = row.c && row.c[i] ? cv(row.c[i]) : null; });
+    return obj;
+  }).filter(r => r.weekLabel);
+}
+
+function parseCurrentPicks(table, currentWeekLabel) {
+  const result = {};
+  if (!table || !table.rows) return result;
+  const wkLabel = String(currentWeekLabel || '').trim();
+  table.rows.forEach(row => {
+    if (!row.c) return;
+    const rowWeek = String(cv(row.c[0]) || '').trim();
+    const type = String(cv(row.c[1]) || '').toUpperCase();
+    if (rowWeek !== wkLabel) return;
+    const addr = cv(row.c[2]); const price = cv(row.c[3]); const status = cv(row.c[4]); const url = cv(row.c[6]);
+    if (type === 'LUXURY')     { result.luxAddress = addr; result.luxPrice = price; result.luxStatus = status; result.luxUrl = url; }
+    if (type === 'INVESTMENT') { result.invAddress = addr; result.invPrice = price; result.invStatus = status; result.invUrl = url; }
+    if (type === 'DEAL')       { result.dealAddress = addr; result.dealPrice = price; result.dealType = status; }
+  });
+  return result;
+}
+
+function renderCurrent(snap) {
+  document.getElementById('weekLabelDisplay').textContent = snap.weekLabel || '';
+  document.getElementById('lastUpdated').textContent = 'Updated: ' + (snap.weekLabel || 'recently');
+  document.getElementById('m-newListings').textContent = snap.newListings ?? '--';
+  document.getElementById('m-totalInventory').textContent = snap.totalInventory ?? '--';
+  document.getElementById('m-medianClosePrice').textContent = formatPrice(snap.medianClosePrice);
+  document.getElementById('m-medianPSF').textContent = snap.medianPSF ? '$' + Math.round(snap.medianPSF) : '--';
+  document.getElementById('m-medianDOM').textContent = snap.medianDOM ? snap.medianDOM + ' days' : '--';
+  document.getElementById('m-lpsp').textContent = snap.lpsp ? snap.lpsp + '%' : '--';
+  document.getElementById('m-priceReductions').textContent = snap.priceReductions ?? '--';
+  document.getElementById('m-avgReductionPct').textContent = snap.avgReductionPct ? 'avg ' + snap.avgReductionPct + '% cut' : 'this week';
+  document.getElementById('m-rate').textContent = snap.rate ? snap.rate + '%' : '--';
+}
+
+function renderIndicators(ind) {
+  setTrend('inv',   ind.inv.dir,   ind.inv.streak,   'Increasing', 'Decreasing');
+  setTrend('sel',   ind.sel.dir,   ind.sel.streak,   'Pressure Up', 'Pressure Down');
+  setTrend('buy',   ind.buy.dir,   ind.buy.streak,   'Strengthening', 'Softening');
+  setTrend('price', ind.price.dir, ind.price.streak, 'Appreciating', 'Softening');
+}
+
+function renderPicks(picks) {
+  const setAddr = (id, addr, url) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (addr && url) { el.innerHTML = '<a href="' + url + '" target="_blank">' + addr + '</a>'; }
+    else { el.textContent = addr || '--'; }
+  };
+  setAddr('lux-address', picks.luxAddress, picks.luxUrl);
+  document.getElementById('lux-price').textContent = formatPrice(picks.luxPrice);
+  document.getElementById('lux-status').textContent = picks.luxStatus || 'Active';
+  setAddr('inv-address', picks.invAddress, picks.invUrl);
+  document.getElementById('inv-price').textContent = formatPrice(picks.invPrice);
+  document.getElementById('inv-status').textContent = picks.invStatus || 'Active';
+  document.getElementById('deal-address').textContent = picks.dealAddress || '--';
+  document.getElementById('deal-price').textContent = formatPrice(picks.dealPrice);
+}
+
+function renderHistory(history) {
   document.getElementById('historyCount').textContent = history.length + (history.length === 1 ? ' Week' : ' Weeks');
-  if (!history.length) {
-    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:var(--text-light);padding:2rem;">No history yet. Add your first week below.</td></tr>';
-    return;
-  }
-  const rows = [...history].reverse().map((w, i) => {
-    const isLatest = i === 0;
-    return `<tr class="${isLatest ? 'row-highlight' : ''}">
-      <td>${w.weekLabel || '--'}</td>
-      <td class="num">${w.newListings ?? '--'}</td>
-      <td class="num">${w.totalInventory ?? '--'}</td>
-      <td class="num">${formatPrice(w.medianClosePrice)}</td>
-      <td class="num">${w.medianPSF ? '$' + w.medianPSF : '--'}</td>
-      <td class="num">${w.medianDOM ? w.medianDOM + 'd' : '--'}</td>
-      <td class="num">${w.lpsp ? w.lpsp + '%' : '--'}</td>
-      <td class="num">${w.pendingCount ?? '--'}</td>
-      <td class="num">${w.closedCount ?? '--'}</td>
-      <td class="num">${w.rate ? w.rate + '%' : '--'}</td>
-    </tr>`;
-  }).join('');
-  tbody.innerHTML = rows;
+  if (!history.length) { document.getElementById('historyBody').innerHTML = '<tr><td colspan="10" style="text-align:center;color:var(--text-light);padding:2rem;">Run the backfill in Apps Script to populate history.</td></tr>'; return; }
+  const rows = [...history].reverse().map((w, i) => '<tr class="' + (i===0?'row-highlight':'') + '"><td>' + (w.weekLabel||'--') + '</td><td class="num">' + (w.newListings??'--') + '</td><td class="num">' + (w.totalInventory??'--') + '</td><td class="num">' + formatPrice(w.medianClosePrice) + '</td><td class="num">' + (w.medianPSF?'$'+Math.round(w.medianPSF):'--') + '</td><td class="num">' + (w.medianDOM?w.medianDOM+'d':'--') + '</td><td class="num">' + (w.lpsp?w.lpsp+'%':'--') + '</td><td class="num">' + (w.pendingCount??'--') + '</td><td class="num">' + (w.closedCount??'--') + '</td><td class="num">' + (w.rate?w.rate+'%':'--') + '</td></tr>').join('');
+  document.getElementById('historyBody').innerHTML = rows;
 }
 
-let chartPricing, chartActivity, chartVelocity, chartRates;
-
+let cP, cA, cV, cR;
 function buildCharts(history) {
   const recent = history.slice(-13);
-  const labels = recent.map(w => w.weekLabel ? w.weekLabel.replace('Week of ','').slice(0,8) : '');
-  const prices = recent.map(w => {
-    if (!w.medianClosePrice) return null;
-    const v = typeof w.medianClosePrice === 'string' ? parseFloat(w.medianClosePrice.replace(/[^0-9.]/g,'')) : w.medianClosePrice;
-    return isNaN(v) ? null : v;
-  });
-  const psf = recent.map(w => w.medianPSF ? parseFloat(w.medianPSF) : null);
-  const newListings = recent.map(w => w.newListings ?? null);
-  const pending = recent.map(w => w.pendingCount ?? null);
-  const closed = recent.map(w => w.closedCount ?? null);
-  const dom = recent.map(w => w.medianDOM ? parseFloat(w.medianDOM) : null);
-  const lpsp = recent.map(w => w.lpsp ? parseFloat(w.lpsp) : null);
-  const rates = recent.map(w => w.rate ? parseFloat(w.rate) : null);
-
-  const gridColor = 'rgba(0,0,0,0.06)';
-  const tickColor = '#9a9a9a';
-  const baseOpts = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: { legend: { display: false } },
-    scales: {
-      x: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 11 }, maxRotation: 45, autoSkip: false } },
-      y: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 11 } } }
-    }
-  };
-
-  if (chartPricing) chartPricing.destroy();
-  chartPricing = new Chart(document.getElementById('chartPricing'), {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [
-        { label: 'Median Price', data: prices, borderColor: '#1a1a1a', backgroundColor: 'rgba(0,0,0,0.06)', tension: 0.3, pointRadius: 4, pointBackgroundColor: '#1a1a1a', fill: true, yAxisID: 'y' },
-        { label: '$/Sq Ft', data: psf, borderColor: '#1a7a4a', backgroundColor: 'transparent', tension: 0.3, pointRadius: 4, pointBackgroundColor: '#1a7a4a', borderDash: [5,3], yAxisID: 'y2' }
-      ]
-    },
-    options: {
-      ...baseOpts,
-      scales: {
-        x: baseOpts.scales.x,
-        y: { ...baseOpts.scales.y, position: 'left', ticks: { ...baseOpts.scales.y.ticks, callback: v => '$' + Math.round(v/1000) + 'K' } },
-        y2: { position: 'right', grid: { drawOnChartArea: false }, ticks: { color: tickColor, font: { size: 11 }, callback: v => '$' + Math.round(v) } }
-      },
-      plugins: {
-        legend: { display: false },
-        tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + (ctx.datasetIndex === 0 ? formatPrice(ctx.parsed.y) : '$' + ctx.parsed.y) } }
-      }
-    }
-  });
-
-  if (chartActivity) chartActivity.destroy();
-  chartActivity = new Chart(document.getElementById('chartActivity'), {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [
-        { label: 'New Listings', data: newListings, backgroundColor: '#1a1a1a' },
-        { label: 'Pending', data: pending, backgroundColor: '#f5a623' },
-        { label: 'Closed', data: closed, backgroundColor: '#1a7a4a' }
-      ]
-    },
-    options: {
-      ...baseOpts,
-      plugins: {
-        legend: { display: true, position: 'top', labels: { boxWidth: 12, font: { size: 12 }, color: '#6b6b6b' } }
-      }
-    }
-  });
-
-  if (chartVelocity) chartVelocity.destroy();
-  chartVelocity = new Chart(document.getElementById('chartVelocity'), {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [
-        { label: 'Median DOM', data: dom, borderColor: '#c0392b', backgroundColor: 'rgba(192,57,43,0.07)', tension: 0.3, pointRadius: 4, pointBackgroundColor: '#c0392b', fill: true, yAxisID: 'y' },
-        { label: 'LP/SP %', data: lpsp, borderColor: '#1a1a1a', backgroundColor: 'transparent', tension: 0.3, pointRadius: 4, pointBackgroundColor: '#1a1a1a', borderDash: [5,3], yAxisID: 'y2' }
-      ]
-    },
-    options: {
-      ...baseOpts,
-      scales: {
-        x: baseOpts.scales.x,
-        y: { ...baseOpts.scales.y, position: 'left', ticks: { ...baseOpts.scales.y.ticks, callback: v => v + 'd' } },
-        y2: { position: 'right', grid: { drawOnChartArea: false }, ticks: { color: tickColor, font: { size: 11 }, callback: v => v + '%' } }
-      },
-      plugins: {
-        legend: { display: false },
-        tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + (ctx.datasetIndex === 0 ? ctx.parsed.y + ' days' : ctx.parsed.y + '%') } }
-      }
-    }
-  });
-
-  if (chartRates) chartRates.destroy();
-  chartRates = new Chart(document.getElementById('chartRates'), {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [
-        { label: '30-Yr Rate', data: rates, borderColor: '#1a1a1a', backgroundColor: 'rgba(0,0,0,0.06)', tension: 0.3, pointRadius: 4, pointBackgroundColor: '#1a1a1a', fill: true }
-      ]
-    },
-    options: {
-      ...baseOpts,
-      scales: {
-        x: baseOpts.scales.x,
-        y: { ...baseOpts.scales.y, ticks: { ...baseOpts.scales.y.ticks, callback: v => v + '%' } }
-      },
-      plugins: {
-        legend: { display: false },
-        tooltip: { callbacks: { label: ctx => ctx.parsed.y + '%' } }
-      }
-    }
-  });
+  document.getElementById('chartWeekCount').textContent = recent.length + ' Weeks';
+  const labels = recent.map(w => String(w.weekLabel||'').replace('Week of ','').replace(/\s*\d{4}\s*/g,' ').trim().slice(0,10));
+  const prices = recent.map(w => safeNum(w.medianClosePrice));
+  const psf = recent.map(w => safeNum(w.medianPSF));
+  const newL = recent.map(w => safeNum(w.newListings));
+  const pend = recent.map(w => safeNum(w.pendingCount));
+  const closed = recent.map(w => safeNum(w.closedCount));
+  const dom = recent.map(w => safeNum(w.medianDOM));
+  const lpsp = recent.map(w => safeNum(w.lpsp));
+  const rates = recent.map(w => safeNum(w.rate));
+  const gc = 'rgba(0,0,0,0.06)'; const tc = '#9a9a9a';
+  const base = { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{ x:{grid:{color:gc},ticks:{color:tc,font:{size:11},maxRotation:45,autoSkip:false}}, y:{grid:{color:gc},ticks:{color:tc,font:{size:11}}} } };
+  if(cP)cP.destroy();
+  cP = new Chart(document.getElementById('chartPricing'),{ type:'line', data:{ labels, datasets:[{label:'Median Price',data:prices,borderColor:'#1a1a1a',backgroundColor:'rgba(0,0,0,0.06)',tension:0.3,pointRadius:4,pointBackgroundColor:'#1a1a1a',fill:true,yAxisID:'y'},{label:'$/Sq Ft',data:psf,borderColor:'#1a7a4a',backgroundColor:'transparent',tension:0.3,pointRadius:4,pointBackgroundColor:'#1a7a4a',borderDash:[5,3],yAxisID:'y2'}] }, options:{...base,scales:{x:base.scales.x,y:{...base.scales.y,position:'left',ticks:{...base.scales.y.ticks,callback:v=>'$'+Math.round(v/1000)+'K'}},y2:{position:'right',grid:{drawOnChartArea:false},ticks:{color:tc,font:{size:11},callback:v=>'$'+Math.round(v)}}},plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': '+(ctx.datasetIndex===0?formatPrice(ctx.parsed.y):'$'+ctx.parsed.y)}}}} });
+  if(cA)cA.destroy();
+  cA = new Chart(document.getElementById('chartActivity'),{ type:'bar', data:{ labels, datasets:[{label:'New Listings',data:newL,backgroundColor:'#1a1a1a'},{label:'Pending',data:pend,backgroundColor:'#f5a623'},{label:'Closed',data:closed,backgroundColor:'#1a7a4a'}] }, options:{...base,plugins:{legend:{display:true,position:'top',labels:{boxWidth:12,font:{size:12},color:'#6b6b6b'}}}} });
+  if(cV)cV.destroy();
+  cV = new Chart(document.getElementById('chartVelocity'),{ type:'line', data:{ labels, datasets:[{label:'Median DOM',data:dom,borderColor:'#c0392b',backgroundColor:'rgba(192,57,43,0.07)',tension:0.3,pointRadius:4,pointBackgroundColor:'#c0392b',fill:true,yAxisID:'y'},{label:'LP/SP %',data:lpsp,borderColor:'#1a1a1a',backgroundColor:'transparent',tension:0.3,pointRadius:4,pointBackgroundColor:'#1a1a1a',borderDash:[5,3],yAxisID:'y2'}] }, options:{...base,scales:{x:base.scales.x,y:{...base.scales.y,position:'left',ticks:{...base.scales.y.ticks,callback:v=>v+'d'}},y2:{position:'right',grid:{drawOnChartArea:false},ticks:{color:tc,font:{size:11},callback:v=>v+'%'}}},plugins:{legend:{display:false}}} });
+  if(cR)cR.destroy();
+  cR = new Chart(document.getElementById('chartRates'),{ type:'line', data:{ labels, datasets:[{label:'30-Yr Rate',data:rates,borderColor:'#1a1a1a',backgroundColor:'rgba(0,0,0,0.06)',tension:0.3,pointRadius:4,pointBackgroundColor:'#1a1a1a',fill:true}] }, options:{...base,scales:{x:base.scales.x,y:{...base.scales.y,ticks:{...base.scales.y.ticks,callback:v=>v+'%'}}},plugins:{legend:{display:false}}} });
 }
 
-function renderAll() {
-  const history = loadHistory();
-  if (history.length > 0) {
-    renderCurrentWeek(history[history.length - 1]);
-    renderHistoryTable(history);
-    buildCharts(history);
-  }
-}
-
-function ingestJSON() {
-  const raw = document.getElementById('jsonInput').value.trim();
-  const fb = document.getElementById('adminFeedback');
-  fb.className = 'admin-feedback';
-  if (!raw) { fb.className = 'admin-feedback error'; fb.textContent = 'Paste your JSON first.'; return; }
-  let data;
-  try {
-    data = JSON.parse(raw);
-  } catch(e) {
-    fb.className = 'admin-feedback error';
-    fb.textContent = 'Invalid JSON. Check for typos or missing brackets.';
-    return;
-  }
-  if (!data.weekLabel) {
-    fb.className = 'admin-feedback error';
-    fb.textContent = 'Missing weekLabel field. Make sure your JSON is complete.';
-    return;
-  }
-  const history = loadHistory();
-  const idx = history.findIndex(w => w.weekLabel === data.weekLabel);
-  if (idx >= 0) {
-    history[idx] = data;
-    fb.textContent = 'Week updated: ' + data.weekLabel;
-  } else {
-    history.push(data);
-    fb.textContent = 'Saved: ' + data.weekLabel + ' (' + history.length + ' weeks total)';
-  }
-  saveHistory(history);
-  document.getElementById('jsonInput').value = '';
-  renderAll();
-}
-
-function clearAllData() {
-  if (!confirm('Clear all stored market history? This cannot be undone.')) return;
-  localStorage.removeItem(STORAGE_KEY);
-  document.getElementById('adminFeedback').textContent = 'All data cleared.';
-  renderAll();
-}
-
-function exportHistory() {
-  const history = loadHistory();
-  const blob = new Blob([JSON.stringify(history, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'ventura-market-history-' + new Date().toISOString().slice(0,10) + '.json';
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-function importHistory(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = evt => {
-    try {
-      const arr = JSON.parse(evt.target.result);
-      if (!Array.isArray(arr)) throw new Error('Expected array');
-      saveHistory(arr);
-      document.getElementById('adminFeedback').textContent = 'Imported ' + arr.length + ' weeks.';
-      renderAll();
-    } catch(err) {
-      document.getElementById('adminFeedback').className = 'admin-feedback error';
-      document.getElementById('adminFeedback').textContent = 'Import failed: ' + err.message;
-    }
-  };
-  reader.readAsText(file);
-}
-
-const ADMIN_PIN = '118826';
-let adminUnlocked = false;
-
-function toggleAdmin() {
-  if (adminUnlocked) {
-    document.getElementById('adminPanel').classList.toggle('open');
-    document.getElementById('pinGate').classList.remove('open');
-  } else {
-    const gate = document.getElementById('pinGate');
-    const isOpen = gate.classList.contains('open');
-    gate.classList.toggle('open', !isOpen);
-    document.getElementById('adminPanel').classList.remove('open');
-    if (!isOpen) setTimeout(() => document.getElementById('pinInput').focus(), 50);
-  }
-}
-
-function checkPin() {
-  const val = document.getElementById('pinInput').value.trim();
-  const fb = document.getElementById('pinFeedback');
-  if (val === ADMIN_PIN) {
-    adminUnlocked = true;
-    document.getElementById('pinGate').classList.remove('open');
-    document.getElementById('adminPanel').classList.add('open');
-    document.getElementById('pinInput').value = '';
-    fb.textContent = '';
-  } else {
-    fb.textContent = 'Incorrect PIN. Try again.';
-    document.getElementById('pinInput').value = '';
-    document.getElementById('pinInput').focus();
-  }
-}
-
-function lockAdmin() {
-  adminUnlocked = false;
-  document.getElementById('adminPanel').classList.remove('open');
-  document.getElementById('pinGate').classList.remove('open');
-}
-
-function switchTab(tab) {
+function switchTab(event, tab) {
   document.querySelectorAll('.chart-tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.chart-panel').forEach(p => p.classList.remove('active'));
   event.target.classList.add('active');
   document.getElementById('panel-' + tab).classList.add('active');
 }
 
-renderAll();
+async function loadData() {
+  try {
+    const [snapTable, narrTable, indTable, picksTable] = await Promise.all([
+      fetchSheet('1 - Weekly Snapshot'),
+      fetchSheet('2 - Trend Narrative'),
+      fetchSheet('3 - Directional Indicators'),
+      fetchSheet('4 - Featured Picks Log')
+    ]);
+
+    const snap = parseSnapshot(snapTable);
+    const narrative = parseNarrative(narrTable);
+    const indicators = parseIndicators(indTable);
+    const picks = parseCurrentPicks(picksTable, snap.weekLabel);
+
+    renderCurrent(snap);
+    renderIndicators(indicators);
+    document.getElementById('narrativeText').textContent = narrative || 'Market data updated weekly. Watch the video for full context.';
+    renderPicks(picks);
+
+    let history = [];
+    try {
+      const histTable = await fetchSheet('6 - Full History');
+      history = parseHistory(histTable);
+    } catch(e) {
+      console.warn('Tab 6 not yet created. Run backfillHistoryFromSnapshot() in Apps Script.');
+    }
+
+    if (history.length > 0) {
+      renderHistory(history);
+      buildCharts(history);
+    } else {
+      document.getElementById('historyBody').innerHTML = '<tr><td colspan="10" style="text-align:center;color:var(--text-light);padding:2rem;">Complete Apps Script setup to populate full history.</td></tr>';
+      document.getElementById('historyCount').textContent = '0 Weeks';
+      document.getElementById('chartWeekCount').textContent = 'No history yet';
+    }
+
+    document.getElementById('loadingWrap').style.display = 'none';
+    document.getElementById('appWrap').style.display = 'block';
+
+  } catch(err) {
+    document.getElementById('loadingWrap').innerHTML = '<div class="main"><div class="loading-state"><p style="color:#c0392b;font-size:15px;font-weight:500;">Could not load market data.</p><p style="color:#6b6b6b;font-size:13px;margin-top:8px;">Make sure the Google Sheet is shared publicly as Viewer.<br>Error: ' + err.message + '</p></div></div>';
+    console.error(err);
+  }
+}
+
+loadData();
 </script>
 </body>
 </html>
