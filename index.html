@@ -266,13 +266,34 @@ function setTrend(id, dir, streak, upLabel, downLabel) {
 
 function parseSnapshot(table) {
   const rows = table.rows;
-  const get = (ri, ci) => rows[ri] && rows[ri].c[ci] ? cv(rows[ri].c[ci]) : null;
+  const get = (ri, ci) => {
+    if (!rows[ri] || !rows[ri].c || !rows[ri].c[ci]) return null;
+    return cv(rows[ri].c[ci]);
+  };
+  // Find the week label row dynamically by scanning for a date value in col B
+  let weekRow = 1;
+  for (let i = 0; i < Math.min(rows.length, 6); i++) {
+    const bVal = String(get(i, 1) || '');
+    if (bVal && (bVal.includes('2026') || bVal.includes('2025') || bVal.includes('Apr') || bVal.includes('May') || bVal.includes('Mar') || bVal.includes('Week') || bVal.includes('Jan') || bVal.includes('Feb'))) {
+      weekRow = i;
+      break;
+    }
+  }
   return {
-    weekLabel: get(2,1),
-    newListings: get(4,1), totalInventory: get(5,1), priceReductions: get(6,1), avgReductionPct: get(7,1),
-    aucCount: get(9,1), pendingCount: get(10,1), medianPendingDOM: get(11,1),
-    closedCount: get(13,1), medianClosePrice: get(14,1), medianPSF: get(15,1), medianDOM: get(16,1), lpsp: get(17,1),
-    rate: get(19,1)
+    weekLabel:        get(weekRow, 1),
+    newListings:      get(weekRow + 2, 1),
+    totalInventory:   get(weekRow + 3, 1),
+    priceReductions:  get(weekRow + 4, 1),
+    avgReductionPct:  get(weekRow + 5, 1),
+    aucCount:         get(weekRow + 7, 1),
+    pendingCount:     get(weekRow + 8, 1),
+    medianPendingDOM: get(weekRow + 9, 1),
+    closedCount:      get(weekRow + 11, 1),
+    medianClosePrice: get(weekRow + 12, 1),
+    medianPSF:        get(weekRow + 13, 1),
+    medianDOM:        get(weekRow + 14, 1),
+    lpsp:             get(weekRow + 15, 1),
+    rate:             get(weekRow + 17, 1)
   };
 }
 
@@ -287,12 +308,22 @@ function parseNarrative(table) {
 
 function parseIndicators(table) {
   const rows = table.rows;
-  const get = (ri, ci) => rows[ri] && rows[ri].c[ci] ? cv(rows[ri].c[ci]) : null;
+  const get = (ri, ci) => {
+    if (!rows[ri] || !rows[ri].c || !rows[ri].c[ci]) return null;
+    return cv(rows[ri].c[ci]);
+  };
+  // Tab 3 layout: rows 0-3 are headers/labels, data starts where col A = 'Inventory'
+  // Scan to find the first data row dynamically
+  let dataStart = 4;
+  for (let i = 0; i < rows.length; i++) {
+    const aVal = String(get(i, 0) || '').toLowerCase();
+    if (aVal === 'inventory') { dataStart = i; break; }
+  }
   return {
-    inv:   { dir: get(4,1), streak: get(4,2) },
-    sel:   { dir: get(5,1), streak: get(5,2) },
-    buy:   { dir: get(6,1), streak: get(6,2) },
-    price: { dir: get(7,1), streak: get(7,2) }
+    inv:   { dir: get(dataStart,     1), streak: get(dataStart,     2) },
+    sel:   { dir: get(dataStart + 1, 1), streak: get(dataStart + 1, 2) },
+    buy:   { dir: get(dataStart + 2, 1), streak: get(dataStart + 2, 2) },
+    price: { dir: get(dataStart + 3, 1), streak: get(dataStart + 3, 2) }
   };
 }
 
