@@ -20,8 +20,8 @@
       --ink-3:      #9B9890;
       --gold:       #C5A84F;
       --gold-light: #EAD99A;
-      --navy:       #1C2B4A;
-      --navy-mid:   #2D4270;
+      --black:      #111111;
+      --black-mid:  #333333;
       --green:      #3A7D5C;
       --red:        #C04040;
       --border:     rgba(0,0,0,0.08);
@@ -33,6 +33,7 @@
     body { min-height: 100vh; }
     .page-wrap { max-width: 960px; margin: 0 auto; padding: 0 20px 80px; }
  
+    /* Header */
     .site-header {
       display: flex;
       align-items: flex-end;
@@ -43,15 +44,16 @@
       gap: 12px;
       flex-wrap: wrap;
     }
-    .site-header h1 { font-family: 'DM Serif Display', serif; font-size: clamp(22px, 4vw, 32px); color: var(--navy); line-height: 1.1; }
+    .site-header h1 { font-family: 'DM Serif Display', serif; font-size: clamp(22px, 4vw, 32px); color: var(--black); line-height: 1.1; }
     .site-header h1 span { color: var(--gold); }
     .header-meta { font-size: 12px; color: var(--ink-3); text-align: right; line-height: 1.8; }
-    .header-meta a { color: var(--navy); text-decoration: none; font-weight: 500; }
+    .header-meta a { color: var(--black); text-decoration: none; font-weight: 500; }
     .header-meta a:hover { color: var(--gold); }
  
+    /* Loading */
     .loading-bar {
       height: 3px;
-      background: linear-gradient(90deg, var(--navy), var(--gold), var(--navy));
+      background: linear-gradient(90deg, var(--black), var(--gold), var(--black));
       background-size: 200% 100%;
       animation: shimmer 1.4s infinite;
       border-radius: 2px;
@@ -69,43 +71,101 @@
       margin-bottom: 24px;
     }
  
-    .narrative-card { background: var(--navy); color: #fff; border-radius: var(--radius); padding: 24px 28px; margin-bottom: 28px; line-height: 1.65; }
-    .narrative-label { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--gold-light); font-weight: 600; margin-bottom: 10px; }
-    .narrative-text  { font-size: 14px; color: rgba(255,255,255,0.88); }
- 
+    /* KPI grid */
     .kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 14px; margin-bottom: 28px; }
     .kpi-card { background: var(--surface); border-radius: var(--radius); padding: 18px 16px 14px; box-shadow: var(--shadow); border: 1px solid var(--border); }
     .kpi-label { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); font-weight: 600; margin-bottom: 8px; }
-    .kpi-value { font-size: 28px; font-weight: 600; color: var(--navy); line-height: 1; margin-bottom: 4px; }
+    .kpi-value { font-size: 28px; font-weight: 600; color: var(--black); line-height: 1; margin-bottom: 4px; }
     .kpi-sub   { font-size: 12px; color: var(--ink-3); }
  
+    /* Section header */
     .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-    .section-title  { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--navy); }
+    .section-title  { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--black); }
     .section-badge  { font-size: 11px; color: var(--ink-3); background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 4px 12px; }
  
+    /* Directional indicators */
     .dir-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-bottom: 32px; }
     .dir-card { background: var(--surface); border-radius: var(--radius); padding: 16px 18px; border: 1px solid var(--border); box-shadow: var(--shadow); display: flex; gap: 14px; align-items: center; }
     .dir-arrow { width: 36px; height: 36px; border-radius: 50%; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
     .dir-arrow.up      { background: #E8F5EE; color: var(--green); }
     .dir-arrow.down    { background: #FBE8E8; color: var(--red); }
-    .dir-arrow.neutral { background: #EEF0F5; color: var(--navy-mid); }
+    .dir-arrow.neutral { background: #EEEEEE; color: var(--black-mid); }
     .dir-label  { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); font-weight: 600; margin-bottom: 4px; }
     .dir-status { font-size: 15px; font-weight: 600; color: var(--ink); margin-bottom: 2px; }
     .dir-streak { font-size: 12px; color: var(--ink-3); }
     .confirmed-badge { display: inline-block; font-size: 9px; background: var(--gold); color: #fff; border-radius: 4px; padding: 2px 6px; margin-left: 6px; vertical-align: middle; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
  
+    /* Picks section */
+    .picks-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; margin-bottom: 32px; }
+    .pick-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .pick-type-bar {
+      height: 4px;
+    }
+    .pick-type-bar.luxury     { background: var(--gold); }
+    .pick-type-bar.investment { background: var(--black); }
+    .pick-type-bar.deal       { background: var(--green); }
+    .pick-body { padding: 18px 18px 16px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
+    .pick-type-label {
+      font-size: 9px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+    .pick-type-label.luxury     { color: var(--gold); }
+    .pick-type-label.investment { color: var(--black-mid); }
+    .pick-type-label.deal       { color: var(--green); }
+    .pick-address {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--black);
+      line-height: 1.3;
+      text-decoration: none;
+    }
+    .pick-address:hover { color: var(--gold); text-decoration: underline; }
+    .pick-address.no-link { cursor: default; }
+    .pick-address.no-link:hover { color: var(--black); text-decoration: none; }
+    .pick-price  { font-size: 18px; font-weight: 600; color: var(--black); }
+    .pick-detail { font-size: 12px; color: var(--ink-3); line-height: 1.5; margin-top: 2px; }
+    .pick-link-row { padding: 0 18px 14px; }
+    .pick-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--black);
+      text-decoration: none;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      padding: 5px 12px;
+      transition: all .16s;
+    }
+    .pick-link:hover { border-color: var(--gold); color: var(--gold); }
+    .pick-no-link { font-size: 12px; color: var(--ink-3); padding: 0 18px 14px; font-style: italic; }
+ 
+    /* Chart section */
     .chart-section { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); padding: 24px; margin-bottom: 28px; }
     .chart-tabs { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
     .chart-tab { font-size: 13px; font-weight: 500; padding: 7px 16px; border-radius: 20px; border: 1.5px solid var(--border); background: transparent; color: var(--ink-3); cursor: pointer; transition: all .18s; font-family: 'DM Sans', sans-serif; }
-    .chart-tab:hover  { border-color: var(--navy); color: var(--navy); }
-    .chart-tab.active { background: var(--navy); border-color: var(--navy); color: #fff; }
+    .chart-tab:hover  { border-color: var(--black); color: var(--black); }
+    .chart-tab.active { background: var(--black); border-color: var(--black); color: #fff; }
     .chart-wrap { position: relative; height: 280px; }
     .chart-empty { display: flex; align-items: center; justify-content: center; height: 200px; color: var(--ink-3); font-size: 14px; }
     .chart-range-note { font-size: 11px; color: var(--ink-3); margin-top: 12px; text-align: right; }
  
+    /* History table */
     .history-table-wrap { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 28px; }
     .history-table-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px 16px; border-bottom: 1px solid var(--border); }
-    .history-table-title { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--navy); }
+    .history-table-title { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--black); }
     .history-rows-count  { font-size: 12px; color: var(--ink-3); }
     .history-table { width: 100%; border-collapse: collapse; font-size: 13px; }
     .history-table th { text-align: left; padding: 10px 14px; font-size: 10px; letter-spacing: .07em; text-transform: uppercase; font-weight: 600; color: var(--ink-3); background: var(--surface2); border-bottom: 1px solid var(--border); }
@@ -115,13 +175,15 @@
     .week-col { font-weight: 500; white-space: nowrap; }
     .num-col  { font-variant-numeric: tabular-nums; }
  
+    /* Footer */
     .site-footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); font-size: 12px; color: var(--ink-3); line-height: 1.8; }
-    .site-footer a { color: var(--navy); text-decoration: none; }
+    .site-footer a { color: var(--black); text-decoration: none; }
     .site-footer a:hover { color: var(--gold); }
  
     @media (max-width: 600px) {
-      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
-      .dir-grid { grid-template-columns: 1fr 1fr; }
+      .kpi-grid  { grid-template-columns: repeat(2, 1fr); }
+      .dir-grid  { grid-template-columns: 1fr 1fr; }
+      .picks-grid { grid-template-columns: 1fr; }
       .history-table th:nth-child(n+4), .history-table td:nth-child(n+4) { display: none; }
     }
   </style>
@@ -135,21 +197,26 @@
   </header>
  
   <div class="loading-bar" id="loadingBar"></div>
-  <div class="load-error"  id="loadError"  style="display:none"></div>
+  <div class="load-error"  id="loadError" style="display:none"></div>
  
-  <div class="narrative-card" id="narrativeCard" style="display:none">
-    <div class="narrative-label">Market Narrative</div>
-    <div class="narrative-text" id="narrativeText"></div>
-  </div>
- 
+  <!-- KPI CARDS -->
   <div class="kpi-grid" id="kpiGrid"></div>
  
+  <!-- DIRECTIONAL INDICATORS -->
   <div class="section-header">
     <div class="section-title">Market Trends</div>
     <div class="section-badge">Directional Streaks</div>
   </div>
   <div class="dir-grid" id="dirGrid"></div>
  
+  <!-- FEATURED PICKS -->
+  <div class="section-header">
+    <div class="section-title">Featured Picks</div>
+    <div class="section-badge" id="picksBadge">This Week</div>
+  </div>
+  <div class="picks-grid" id="picksGrid"></div>
+ 
+  <!-- HISTORICAL TRENDS -->
   <div class="section-header">
     <div class="section-title">Historical Trends</div>
     <div id="histBadge" class="section-badge">Loading&hellip;</div>
@@ -168,6 +235,7 @@
     <div class="chart-range-note" id="chartRangeNote"></div>
   </div>
  
+  <!-- HISTORY TABLE -->
   <div class="history-table-wrap">
     <div class="history-table-header">
       <div class="history-table-title">Weekly History</div>
@@ -203,7 +271,6 @@
 </div>
  
 <script>
-// Data source — read only, no public access point
 const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTQzKlkxB-NEXLp6Ckfjm-u0-DCDUe4hQnvtRmhNXxdqLBSqjAYm2ROcZfguiwH8twEY4PieH6qbRhV/pub?gid=2016901667&single=true&output=csv';
 const CHART_WINDOW  = 13;
  
@@ -273,9 +340,9 @@ function splitCSVRow(row) {
 function renderAll() {
   const current = allHistory.length > 0 ? allHistory[allHistory.length - 1] : null;
   renderHeader(current);
-  renderNarrative(current);
   renderKPIs(current);
   renderDirectional(current);
+  renderPicks(current);
   renderHistoryTable();
   renderChart();
   document.getElementById('histBadge').textContent =
@@ -288,13 +355,6 @@ function renderHeader(current) {
   el.innerHTML = current
     ? 'Updated: ' + esc(current.weekLabel) + '<br><a href="https://brandonwasilewski.com" target="_blank">brandonwasilewski.com</a>'
     : 'No data available<br><a href="https://brandonwasilewski.com" target="_blank">brandonwasilewski.com</a>';
-}
- 
-function renderNarrative(current) {
-  const card = document.getElementById('narrativeCard');
-  if (!current || !current.narrative) { card.style.display = 'none'; return; }
-  card.style.display = '';
-  document.getElementById('narrativeText').textContent = current.narrative;
 }
  
 function renderKPIs(current) {
@@ -310,7 +370,11 @@ function renderKPIs(current) {
     { label: '30-Yr Rate',        value: d.rate != null ? d.rate + '%' : '--',                  sub: 'national avg' },
   ];
   document.getElementById('kpiGrid').innerHTML = cards.map(c =>
-    `<div class="kpi-card"><div class="kpi-label">${c.label}</div><div class="kpi-value">${c.value}</div><div class="kpi-sub">${c.sub}</div></div>`
+    `<div class="kpi-card">
+      <div class="kpi-label">${c.label}</div>
+      <div class="kpi-value">${c.value}</div>
+      <div class="kpi-sub">${c.sub}</div>
+    </div>`
   ).join('');
 }
  
@@ -329,11 +393,82 @@ function renderDirectional(current) {
     const cls   = dir === 'up' ? 'up' : dir === 'down' ? 'down' : 'neutral';
     const lbl   = dir === 'up' ? 'Increasing' : dir === 'down' ? 'Decreasing' : 'Stable';
     const badge = str >= 3 ? '<span class="confirmed-badge">Confirmed</span>' : '';
-    return `<div class="dir-card"><div class="dir-arrow ${cls}">${arrow}</div><div>
-      <div class="dir-label">${item.label}</div>
-      <div class="dir-status">${lbl}${badge}</div>
-      <div class="dir-streak">${str} week${str!==1?'s':''} in same direction</div>
-    </div></div>`;
+    return `<div class="dir-card">
+      <div class="dir-arrow ${cls}">${arrow}</div>
+      <div>
+        <div class="dir-label">${item.label}</div>
+        <div class="dir-status">${lbl}${badge}</div>
+        <div class="dir-streak">${str} week${str !== 1 ? 's' : ''} in same direction</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+ 
+function renderPicks(current) {
+  const grid = document.getElementById('picksGrid');
+  const badge = document.getElementById('picksBadge');
+ 
+  if (!current) {
+    grid.innerHTML = '<div style="color:var(--ink-3);font-size:14px">No picks data available.</div>';
+    return;
+  }
+ 
+  badge.textContent = esc(current.weekLabel) || 'This Week';
+ 
+  const picks = [
+    {
+      type:    'luxury',
+      label:   'Luxury Pick',
+      address: current.luxAddress || '',
+      price:   current.luxPrice,
+      detail:  current.luxStatus  || '',
+      url:     current.luxUrl     || '',
+    },
+    {
+      type:    'investment',
+      label:   'Investment Pick',
+      address: current.invAddress || '',
+      price:   current.invPrice,
+      detail:  current.invStatus  || '',
+      url:     current.invUrl     || '',
+    },
+    {
+      type:    'deal',
+      label:   'Deal of the Week',
+      address: current.dealAddress || '',
+      price:   current.dealPrice,
+      detail:  current.dealType    || '',
+      url:     current.dealUrl     || '',
+    },
+  ];
+ 
+  grid.innerHTML = picks.map(p => {
+    if (!p.address) return '';
+ 
+    const priceStr = p.price != null ? fmtPrice(p.price) : '';
+ 
+    const addressEl = p.url
+      ? `<a class="pick-address" href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.address)}</a>`
+      : `<span class="pick-address no-link">${esc(p.address)}</span>`;
+ 
+    const linkRow = p.url
+      ? `<div class="pick-link-row">
+           <a class="pick-link" href="${esc(p.url)}" target="_blank" rel="noopener">
+             View Listing &rarr;
+           </a>
+         </div>`
+      : `<div class="pick-no-link">No listing link available</div>`;
+ 
+    return `<div class="pick-card">
+      <div class="pick-type-bar ${p.type}"></div>
+      <div class="pick-body">
+        <div class="pick-type-label ${p.type}">${p.label}</div>
+        ${addressEl}
+        ${priceStr ? `<div class="pick-price">${priceStr}</div>` : ''}
+        ${p.detail ? `<div class="pick-detail">${esc(p.detail)}</div>` : ''}
+      </div>
+      ${linkRow}
+    </div>`;
   }).join('');
 }
  
@@ -352,32 +487,32 @@ function renderHistoryTable() {
     <td class="num-col">${r.newListings ?? '\u2013'}</td>
     <td class="num-col">${r.totalInventory ?? '\u2013'}</td>
     <td class="num-col">${r.medianClosePrice != null ? fmtPrice(r.medianClosePrice) : '\u2013'}</td>
-    <td class="num-col">${r.medianPSF != null ? '$'+r.medianPSF : '\u2013'}</td>
-    <td class="num-col">${r.medianDOM != null ? r.medianDOM+'d' : '\u2013'}</td>
+    <td class="num-col">${r.medianPSF != null ? '$' + r.medianPSF : '\u2013'}</td>
+    <td class="num-col">${r.medianDOM != null ? r.medianDOM + 'd' : '\u2013'}</td>
     <td class="num-col">${r.lpsp != null ? fmtPct(r.lpsp) : '\u2013'}</td>
     <td class="num-col">${r.pendingCount ?? '\u2013'}</td>
     <td class="num-col">${r.closedCount ?? '\u2013'}</td>
-    <td class="num-col">${r.rate != null ? r.rate+'%' : '\u2013'}</td>
+    <td class="num-col">${r.rate != null ? r.rate + '%' : '\u2013'}</td>
   </tr>`).join('');
 }
  
 const CHART_CONFIGS = {
   pricing:  { datasets: [
-    { key:'medianClosePrice', label:'Median Sold Price', color:'#1C2B4A', yAxis:'y',  fmt: v=>fmtPrice(v) },
-    { key:'medianPSF',        label:'$/Sq Ft',           color:'#C5A84F', yAxis:'y1', fmt: v=>'$'+v },
+    { key: 'medianClosePrice', label: 'Median Sold Price', color: '#111111', yAxis: 'y',  fmt: v => fmtPrice(v) },
+    { key: 'medianPSF',        label: '$/Sq Ft',           color: '#C5A84F', yAxis: 'y1', fmt: v => '$' + v },
   ]},
   activity: { datasets: [
-    { key:'newListings',  label:'New Listings', color:'#1C2B4A', yAxis:'y', fmt:v=>v },
-    { key:'aucCount',     label:'AUC',          color:'#C5A84F', yAxis:'y', fmt:v=>v },
-    { key:'pendingCount', label:'Pending',      color:'#3A7D5C', yAxis:'y', fmt:v=>v },
-    { key:'closedCount',  label:'Closed',       color:'#8B6CAD', yAxis:'y', fmt:v=>v },
+    { key: 'newListings',  label: 'New Listings', color: '#111111', yAxis: 'y', fmt: v => v },
+    { key: 'aucCount',     label: 'AUC',          color: '#C5A84F', yAxis: 'y', fmt: v => v },
+    { key: 'pendingCount', label: 'Pending',      color: '#3A7D5C', yAxis: 'y', fmt: v => v },
+    { key: 'closedCount',  label: 'Closed',       color: '#8B6CAD', yAxis: 'y', fmt: v => v },
   ]},
   velocity: { datasets: [
-    { key:'medianDOM', label:'Median DOM', color:'#1C2B4A', yAxis:'y',  fmt:v=>v+'d' },
-    { key:'lpsp',      label:'LP/SP %',   color:'#C5A84F', yAxis:'y1', fmt:v=>fmtPct(v) },
+    { key: 'medianDOM', label: 'Median DOM', color: '#111111', yAxis: 'y',  fmt: v => v + 'd' },
+    { key: 'lpsp',      label: 'LP/SP %',   color: '#C5A84F', yAxis: 'y1', fmt: v => fmtPct(v) },
   ]},
   rates: { datasets: [
-    { key:'rate', label:'30-Yr Fixed Rate', color:'#1C2B4A', yAxis:'y', fmt:v=>v+'%' },
+    { key: 'rate', label: '30-Yr Fixed Rate', color: '#111111', yAxis: 'y', fmt: v => v + '%' },
   ]}
 };
  
@@ -400,31 +535,49 @@ function renderChart() {
   const labels = data.map(r => r.weekLabel);
  
   const datasets = cfg.datasets.map(ds => ({
-    label: ds.label,
-    data:  data.map(r => (r[ds.key] != null && r[ds.key] !== '') ? Number(r[ds.key]) : null),
-    borderColor: ds.color, backgroundColor: ds.color+'18',
-    fill: cfg.datasets.length === 1,
-    tension: 0.35, pointRadius: 4, pointHoverRadius: 6, borderWidth: 2.5,
-    yAxisID: ds.yAxis, spanGaps: true,
+    label:            ds.label,
+    data:             data.map(r => (r[ds.key] != null && r[ds.key] !== '') ? Number(r[ds.key]) : null),
+    borderColor:      ds.color,
+    backgroundColor:  ds.color + '18',
+    fill:             cfg.datasets.length === 1,
+    tension:          0.35,
+    pointRadius:      4,
+    pointHoverRadius: 6,
+    borderWidth:      2.5,
+    yAxisID:          ds.yAxis,
+    spanGaps:         true,
   }));
  
   const scales = {
-    x: { grid:{color:'rgba(0,0,0,0.04)'}, ticks:{ font:{family:"'DM Sans',sans-serif",size:11}, color:'#9B9890', maxRotation:40, callback:(v,i)=>(labels[i]||'').replace(/, 20\d\d/,'') } },
-    y: { position:'left', grid:{color:'rgba(0,0,0,0.04)'}, ticks:{font:{family:"'DM Sans',sans-serif",size:11},color:'#9B9890',callback:v=>cfg.datasets[0].fmt(v)} }
+    x: {
+      grid: { color: 'rgba(0,0,0,0.04)' },
+      ticks: { font: { family: "'DM Sans',sans-serif", size: 11 }, color: '#9B9890', maxRotation: 40, callback: (v, i) => (labels[i] || '').replace(/, 20\d\d/, '') }
+    },
+    y: {
+      position: 'left',
+      grid: { color: 'rgba(0,0,0,0.04)' },
+      ticks: { font: { family: "'DM Sans',sans-serif", size: 11 }, color: '#9B9890', callback: v => cfg.datasets[0].fmt(v) }
+    }
   };
-  if (cfg.datasets.length > 1 && cfg.datasets[1].yAxis==='y1') {
-    scales.y1 = { position:'right', grid:{drawOnChartArea:false}, ticks:{font:{family:"'DM Sans',sans-serif",size:11},color:'#C5A84F',callback:v=>cfg.datasets[1].fmt(v)} };
+  if (cfg.datasets.length > 1 && cfg.datasets[1].yAxis === 'y1') {
+    scales.y1 = {
+      position: 'right',
+      grid: { drawOnChartArea: false },
+      ticks: { font: { family: "'DM Sans',sans-serif", size: 11 }, color: '#C5A84F', callback: v => cfg.datasets[1].fmt(v) }
+    };
   }
  
   if (mainChart) mainChart.destroy();
   mainChart = new Chart(canvas, {
-    type: 'line', data: { labels, datasets },
+    type: 'line',
+    data: { labels, datasets },
     options: {
-      responsive:true, maintainAspectRatio:false,
-      interaction:{mode:'index',intersect:false},
-      plugins:{
-        legend:{ position:'top', labels:{font:{family:"'DM Sans',sans-serif",size:12},color:'#555550',boxWidth:12,padding:16} },
-        tooltip:{ backgroundColor:'#1C2B4A', titleFont:{family:"'DM Sans',sans-serif",size:12}, bodyFont:{family:"'DM Sans',sans-serif",size:12}, padding:12, cornerRadius:8 }
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { position: 'top', labels: { font: { family: "'DM Sans',sans-serif", size: 12 }, color: '#555550', boxWidth: 12, padding: 16 } },
+        tooltip: { backgroundColor: '#111111', titleFont: { family: "'DM Sans',sans-serif", size: 12 }, bodyFont: { family: "'DM Sans',sans-serif", size: 12 }, padding: 12, cornerRadius: 8 }
       },
       scales
     }
@@ -444,20 +597,20 @@ document.addEventListener('DOMContentLoaded', () => {
  
 function nn(v)       { return (v != null && v !== '') ? String(v) : '--'; }
 function fmtPrice(v) {
-  const n = Number(v); if(isNaN(n)) return '--';
-  if(n>=1000000) return '$'+(n/1000000).toFixed(2).replace(/\.?0+$/,'')+'M';
-  if(n>=1000)    return '$'+Math.round(n/1000)+'K';
-  return '$'+n;
+  const n = Number(v); if (isNaN(n)) return '--';
+  if (n >= 1000000) return '$' + (n / 1000000).toFixed(2).replace(/\.?0+$/, '') + 'M';
+  if (n >= 1000)    return '$' + Math.round(n / 1000) + 'K';
+  return '$' + n;
 }
 function fmtPct(v) {
-  const n = Number(v); if(isNaN(n)) return '--';
-  return n > 10 ? n.toFixed(2)+'%' : (n*100).toFixed(2)+'%';
+  const n = Number(v); if (isNaN(n)) return '--';
+  return n > 10 ? n.toFixed(2) + '%' : (n * 100).toFixed(2) + '%';
 }
-function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function esc(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 function parseWeekLabel(label) {
-  const months = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
-  const m = String(label||'').match(/(\w{3})\s+\d+[–\-,\s]+(?:(\w{3})\s+)?(\d+),?\s*(\d{4})/);
-  if(m) { const mon=months[m[2]||m[1]]??0; return new Date(parseInt(m[4]),mon,parseInt(m[3])).getTime(); }
+  const months = { Jan:0, Feb:1, Mar:2, Apr:3, May:4, Jun:5, Jul:6, Aug:7, Sep:8, Oct:9, Nov:10, Dec:11 };
+  const m = String(label || '').match(/(\w{3})\s+\d+[–\-,\s]+(?:(\w{3})\s+)?(\d+),?\s*(\d{4})/);
+  if (m) { const mon = months[m[2] || m[1]] ?? 0; return new Date(parseInt(m[4]), mon, parseInt(m[3])).getTime(); }
   return 0;
 }
 </script>
