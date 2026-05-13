@@ -353,8 +353,23 @@ function renderAll() {
 function renderHeader(current) {
   const el = document.getElementById('headerMeta');
   el.innerHTML = current
-    ? 'Updated: ' + esc(current.weekLabel) + '<br><a href="https://brandonwasilewski.com" target="_blank">brandonwasilewski.com</a>'
+    ? 'Updated: ' + esc(lastDateFromLabel(current.weekLabel)) + '<br><a href="https://brandonwasilewski.com" target="_blank">brandonwasilewski.com</a>'
     : 'No data available<br><a href="https://brandonwasilewski.com" target="_blank">brandonwasilewski.com</a>';
+}
+ 
+function lastDateFromLabel(label) {
+  if (!label) return '';
+  const months = { Jan:'Jan', Feb:'Feb', Mar:'Mar', Apr:'Apr', May:'May', Jun:'Jun', Jul:'Jul', Aug:'Aug', Sep:'Sep', Oct:'Oct', Nov:'Nov', Dec:'Dec' };
+  // Match range like "Apr 30–May 6, 2026" or "Apr 15–22, 2026"
+  const rangeTwo = String(label).match(/(\w{3})\s+\d+[–\-]+(\w{3})\s+(\d+),?\s*(\d{4})/);
+  if (rangeTwo) return rangeTwo[2] + ' ' + rangeTwo[3] + ', ' + rangeTwo[4];
+  const rangeOne = String(label).match(/\w{3}\s+\d+[–\-]+(\d+),?\s*(\d{4})/);
+  if (rangeOne) {
+    const mon = String(label).match(/(\w{3})/);
+    return (mon ? mon[1] : '') + ' ' + rangeOne[1] + ', ' + rangeOne[2];
+  }
+  // Single date or "Week of X" — return as-is trimmed
+  return label.replace(/^Week of\s*/i, '');
 }
  
 function renderKPIs(current) {
