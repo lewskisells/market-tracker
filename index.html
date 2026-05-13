@@ -9,34 +9,30 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
-    /* ── Reset & base ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+ 
     :root {
-      --bg:          #F4F1EC;
-      --surface:     #FFFFFF;
-      --surface2:    #F9F7F3;
-      --ink:         #1A1A1A;
-      --ink-2:       #555550;
-      --ink-3:       #9B9890;
-      --gold:        #C5A84F;
-      --gold-light:  #EAD99A;
-      --navy:        #1C2B4A;
-      --navy-mid:    #2D4270;
-      --green:       #3A7D5C;
-      --red:         #C04040;
-      --border:      rgba(0,0,0,0.08);
-      --radius:      12px;
-      --shadow:      0 2px 16px rgba(0,0,0,0.07);
+      --bg:         #F4F1EC;
+      --surface:    #FFFFFF;
+      --surface2:   #F9F7F3;
+      --ink:        #1A1A1A;
+      --ink-2:      #555550;
+      --ink-3:      #9B9890;
+      --gold:       #C5A84F;
+      --gold-light: #EAD99A;
+      --navy:       #1C2B4A;
+      --navy-mid:   #2D4270;
+      --green:      #3A7D5C;
+      --red:        #C04040;
+      --border:     rgba(0,0,0,0.08);
+      --radius:     12px;
+      --shadow:     0 2px 16px rgba(0,0,0,0.07);
     }
-
+ 
     html { background: var(--bg); color: var(--ink); font-family: 'DM Sans', sans-serif; font-size: 16px; }
     body { min-height: 100vh; }
-
-    /* ── Layout ── */
     .page-wrap { max-width: 960px; margin: 0 auto; padding: 0 20px 80px; }
-
-    /* ── Header ── */
+ 
     .site-header {
       display: flex;
       align-items: flex-end;
@@ -47,369 +43,116 @@
       gap: 12px;
       flex-wrap: wrap;
     }
-    .site-header h1 {
-      font-family: 'DM Serif Display', serif;
-      font-size: clamp(22px, 4vw, 32px);
-      color: var(--navy);
-      line-height: 1.1;
-    }
+    .site-header h1 { font-family: 'DM Serif Display', serif; font-size: clamp(22px, 4vw, 32px); color: var(--navy); line-height: 1.1; }
     .site-header h1 span { color: var(--gold); }
-    .header-meta { font-size: 12px; color: var(--ink-3); text-align: right; line-height: 1.6; }
+    .header-meta { font-size: 12px; color: var(--ink-3); text-align: right; line-height: 1.8; }
     .header-meta a { color: var(--navy); text-decoration: none; font-weight: 500; }
     .header-meta a:hover { color: var(--gold); }
-
-    /* ── Narrative card ── */
-    .narrative-card {
-      background: var(--navy);
-      color: #fff;
-      border-radius: var(--radius);
-      padding: 24px 28px;
-      margin-bottom: 28px;
-      line-height: 1.65;
-    }
-    .narrative-label {
-      font-size: 10px;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      color: var(--gold-light);
-      font-weight: 600;
-      margin-bottom: 10px;
-    }
-    .narrative-text { font-size: 14px; color: rgba(255,255,255,0.88); }
-
-    /* ── KPI grid ── */
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-      gap: 14px;
+ 
+    .loading-bar {
+      height: 3px;
+      background: linear-gradient(90deg, var(--navy), var(--gold), var(--navy));
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 2px;
       margin-bottom: 28px;
     }
-    .kpi-card {
-      background: var(--surface);
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+ 
+    .load-error {
+      background: #FBE8E8;
+      border: 1px solid #E8C0C0;
       border-radius: var(--radius);
-      padding: 18px 16px 14px;
-      box-shadow: var(--shadow);
-      border: 1px solid var(--border);
+      padding: 18px 22px;
+      color: var(--red);
+      font-size: 14px;
+      margin-bottom: 24px;
     }
-    .kpi-label {
-      font-size: 10px;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: var(--ink-3);
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-    .kpi-value {
-      font-size: 28px;
-      font-weight: 600;
-      color: var(--navy);
-      line-height: 1;
-      margin-bottom: 4px;
-    }
-    .kpi-sub { font-size: 12px; color: var(--ink-3); }
-
-    /* ── Section header ── */
-    .section-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-    }
-    .section-title {
-      font-family: 'DM Serif Display', serif;
-      font-size: 20px;
-      color: var(--navy);
-    }
-    .section-badge {
-      font-size: 11px;
-      color: var(--ink-3);
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 4px 12px;
-    }
-
-    /* ── Directional indicators ── */
-    .dir-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 14px;
-      margin-bottom: 32px;
-    }
-    .dir-card {
-      background: var(--surface);
-      border-radius: var(--radius);
-      padding: 16px 18px;
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-      display: flex;
-      gap: 14px;
-      align-items: center;
-    }
-    .dir-arrow {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: var(--surface2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      flex-shrink: 0;
-    }
-    .dir-arrow.up   { background: #E8F5EE; color: var(--green); }
-    .dir-arrow.down { background: #FBE8E8; color: var(--red); }
+ 
+    .narrative-card { background: var(--navy); color: #fff; border-radius: var(--radius); padding: 24px 28px; margin-bottom: 28px; line-height: 1.65; }
+    .narrative-label { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--gold-light); font-weight: 600; margin-bottom: 10px; }
+    .narrative-text  { font-size: 14px; color: rgba(255,255,255,0.88); }
+ 
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 14px; margin-bottom: 28px; }
+    .kpi-card { background: var(--surface); border-radius: var(--radius); padding: 18px 16px 14px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+    .kpi-label { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); font-weight: 600; margin-bottom: 8px; }
+    .kpi-value { font-size: 28px; font-weight: 600; color: var(--navy); line-height: 1; margin-bottom: 4px; }
+    .kpi-sub   { font-size: 12px; color: var(--ink-3); }
+ 
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .section-title  { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--navy); }
+    .section-badge  { font-size: 11px; color: var(--ink-3); background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 4px 12px; }
+ 
+    .dir-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-bottom: 32px; }
+    .dir-card { background: var(--surface); border-radius: var(--radius); padding: 16px 18px; border: 1px solid var(--border); box-shadow: var(--shadow); display: flex; gap: 14px; align-items: center; }
+    .dir-arrow { width: 36px; height: 36px; border-radius: 50%; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+    .dir-arrow.up      { background: #E8F5EE; color: var(--green); }
+    .dir-arrow.down    { background: #FBE8E8; color: var(--red); }
     .dir-arrow.neutral { background: #EEF0F5; color: var(--navy-mid); }
-    .dir-label { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); font-weight: 600; margin-bottom: 4px; }
+    .dir-label  { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); font-weight: 600; margin-bottom: 4px; }
     .dir-status { font-size: 15px; font-weight: 600; color: var(--ink); margin-bottom: 2px; }
     .dir-streak { font-size: 12px; color: var(--ink-3); }
-    .confirmed-badge {
-      display: inline-block;
-      font-size: 9px;
-      background: var(--gold);
-      color: #fff;
-      border-radius: 4px;
-      padding: 2px 6px;
-      margin-left: 6px;
-      vertical-align: middle;
-      font-weight: 600;
-      letter-spacing: .04em;
-      text-transform: uppercase;
-    }
-
-    /* ── Chart section ── */
-    .chart-section {
-      background: var(--surface);
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-      padding: 24px;
-      margin-bottom: 28px;
-    }
-    .chart-tabs {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
-    }
-    .chart-tab {
-      font-size: 13px;
-      font-weight: 500;
-      padding: 7px 16px;
-      border-radius: 20px;
-      border: 1.5px solid var(--border);
-      background: transparent;
-      color: var(--ink-3);
-      cursor: pointer;
-      transition: all .18s;
-      font-family: 'DM Sans', sans-serif;
-    }
-    .chart-tab:hover { border-color: var(--navy); color: var(--navy); }
-    .chart-tab.active {
-      background: var(--navy);
-      border-color: var(--navy);
-      color: #fff;
-    }
-    .chart-wrap {
-      position: relative;
-      height: 280px;
-    }
-    .chart-empty {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 200px;
-      color: var(--ink-3);
-      font-size: 14px;
-    }
-    .chart-range-note {
-      font-size: 11px;
-      color: var(--ink-3);
-      margin-top: 12px;
-      text-align: right;
-    }
-
-    /* ── History table ── */
-    .history-table-wrap {
-      background: var(--surface);
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      margin-bottom: 28px;
-    }
-    .history-table-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 18px 22px 16px;
-      border-bottom: 1px solid var(--border);
-    }
+    .confirmed-badge { display: inline-block; font-size: 9px; background: var(--gold); color: #fff; border-radius: 4px; padding: 2px 6px; margin-left: 6px; vertical-align: middle; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+ 
+    .chart-section { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); padding: 24px; margin-bottom: 28px; }
+    .chart-tabs { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+    .chart-tab { font-size: 13px; font-weight: 500; padding: 7px 16px; border-radius: 20px; border: 1.5px solid var(--border); background: transparent; color: var(--ink-3); cursor: pointer; transition: all .18s; font-family: 'DM Sans', sans-serif; }
+    .chart-tab:hover  { border-color: var(--navy); color: var(--navy); }
+    .chart-tab.active { background: var(--navy); border-color: var(--navy); color: #fff; }
+    .chart-wrap { position: relative; height: 280px; }
+    .chart-empty { display: flex; align-items: center; justify-content: center; height: 200px; color: var(--ink-3); font-size: 14px; }
+    .chart-range-note { font-size: 11px; color: var(--ink-3); margin-top: 12px; text-align: right; }
+ 
+    .history-table-wrap { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 28px; }
+    .history-table-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px 16px; border-bottom: 1px solid var(--border); }
     .history-table-title { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--navy); }
-    .history-rows-count { font-size: 12px; color: var(--ink-3); }
+    .history-rows-count  { font-size: 12px; color: var(--ink-3); }
     .history-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    .history-table th {
-      text-align: left;
-      padding: 10px 14px;
-      font-size: 10px;
-      letter-spacing: .07em;
-      text-transform: uppercase;
-      font-weight: 600;
-      color: var(--ink-3);
-      background: var(--surface2);
-      border-bottom: 1px solid var(--border);
-    }
-    .history-table td {
-      padding: 11px 14px;
-      border-bottom: 1px solid var(--border);
-      color: var(--ink);
-      vertical-align: middle;
-    }
+    .history-table th { text-align: left; padding: 10px 14px; font-size: 10px; letter-spacing: .07em; text-transform: uppercase; font-weight: 600; color: var(--ink-3); background: var(--surface2); border-bottom: 1px solid var(--border); }
+    .history-table td { padding: 11px 14px; border-bottom: 1px solid var(--border); color: var(--ink); vertical-align: middle; }
     .history-table tr:last-child td { border-bottom: none; }
     .history-table tr:hover td { background: var(--surface2); }
     .week-col { font-weight: 500; white-space: nowrap; }
-    .num-col { font-variant-numeric: tabular-nums; }
-
-    /* ── Admin panel ── */
-    .admin-toggle-btn {
-      display: block;
-      margin: 0 auto 20px;
-      padding: 10px 28px;
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: 20px;
-      font-size: 13px;
-      color: var(--ink-3);
-      cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
-      transition: all .18s;
-    }
-    .admin-toggle-btn:hover { border-color: var(--navy); color: var(--navy); }
-
-    .admin-panel {
-      background: var(--surface);
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      padding: 24px;
-      box-shadow: var(--shadow);
-    }
-    .admin-title { font-size: 16px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
-    .admin-sub   { font-size: 13px; color: var(--ink-3); margin-bottom: 16px; line-height: 1.5; }
-    .admin-textarea {
-      width: 100%;
-      height: 160px;
-      border: 1.5px solid var(--border);
-      border-radius: 8px;
-      padding: 12px;
-      font-size: 13px;
-      font-family: 'DM Sans', monospace;
-      color: var(--ink);
-      background: var(--surface2);
-      resize: vertical;
-      line-height: 1.5;
-    }
-    .admin-textarea:focus { outline: none; border-color: var(--navy); }
-    .admin-btn-row { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; align-items: center; }
-    .btn-primary {
-      padding: 10px 22px;
-      background: var(--navy);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
-      transition: background .18s;
-    }
-    .btn-primary:hover { background: var(--navy-mid); }
-    .btn-secondary {
-      padding: 10px 18px;
-      background: transparent;
-      color: var(--ink-3);
-      border: 1.5px solid var(--border);
-      border-radius: 8px;
-      font-size: 13px;
-      cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
-      transition: all .18s;
-    }
-    .btn-secondary:hover { border-color: var(--red); color: var(--red); }
-    .admin-status { font-size: 13px; color: var(--green); margin-left: 4px; }
-    .admin-status.error { color: var(--red); }
-
-    .divider { height: 1px; background: var(--border); margin: 24px 0; }
-
-    .backup-title { font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
-    .backup-sub   { font-size: 13px; color: var(--ink-3); margin-bottom: 12px; }
-
-    /* ── Footer ── */
-    .site-footer {
-      margin-top: 48px;
-      padding-top: 24px;
-      border-top: 1px solid var(--border);
-      font-size: 12px;
-      color: var(--ink-3);
-      line-height: 1.8;
-    }
+    .num-col  { font-variant-numeric: tabular-nums; }
+ 
+    .site-footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); font-size: 12px; color: var(--ink-3); line-height: 1.8; }
     .site-footer a { color: var(--navy); text-decoration: none; }
     .site-footer a:hover { color: var(--gold); }
-
-    /* ── Source status chip ── */
-    .source-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 10px;
-      padding: 3px 9px;
-      border-radius: 10px;
-      font-weight: 600;
-      letter-spacing: .04em;
-      text-transform: uppercase;
-    }
-    .source-chip.sheet  { background: #E8F5EE; color: var(--green); }
-    .source-chip.local  { background: #FFF3CD; color: #8A6D00; }
-    .source-chip.dot    { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-
+ 
     @media (max-width: 600px) {
       .kpi-grid { grid-template-columns: repeat(2, 1fr); }
       .dir-grid { grid-template-columns: 1fr 1fr; }
-      .history-table th:nth-child(n+4),
-      .history-table td:nth-child(n+4) { display: none; }
+      .history-table th:nth-child(n+4), .history-table td:nth-child(n+4) { display: none; }
     }
   </style>
 </head>
 <body>
 <div class="page-wrap">
-
-  <!-- HEADER -->
+ 
   <header class="site-header">
     <h1>Ventura <span>Market</span> Tracker</h1>
-    <div class="header-meta" id="headerMeta">
-      Loading&hellip;
-    </div>
+    <div class="header-meta" id="headerMeta">Loading&hellip;</div>
   </header>
-
-  <!-- NARRATIVE -->
+ 
+  <div class="loading-bar" id="loadingBar"></div>
+  <div class="load-error"  id="loadError"  style="display:none"></div>
+ 
   <div class="narrative-card" id="narrativeCard" style="display:none">
     <div class="narrative-label">Market Narrative</div>
     <div class="narrative-text" id="narrativeText"></div>
   </div>
-
-  <!-- KPI GRID -->
+ 
   <div class="kpi-grid" id="kpiGrid"></div>
-
-  <!-- DIRECTIONAL INDICATORS -->
+ 
   <div class="section-header">
     <div class="section-title">Market Trends</div>
-    <div class="section-badge" id="dirBadge">Directional Streaks</div>
+    <div class="section-badge">Directional Streaks</div>
   </div>
   <div class="dir-grid" id="dirGrid"></div>
-
-  <!-- HISTORICAL TREND CHARTS -->
+ 
   <div class="section-header">
     <div class="section-title">Historical Trends</div>
-    <div id="histBadge" class="section-badge">Loading history&hellip;</div>
+    <div id="histBadge" class="section-badge">Loading&hellip;</div>
   </div>
   <div class="chart-section">
     <div class="chart-tabs" id="chartTabs">
@@ -420,13 +163,12 @@
     </div>
     <div class="chart-wrap">
       <canvas id="mainChart"></canvas>
-      <div class="chart-empty" id="chartEmpty" style="display:none">No history yet — add weeks using the admin panel below.</div>
+      <div class="chart-empty" id="chartEmpty" style="display:none">No history data available.</div>
     </div>
     <div class="chart-range-note" id="chartRangeNote"></div>
   </div>
-
-  <!-- HISTORY TABLE -->
-  <div class="history-table-wrap" id="historyTableWrap">
+ 
+  <div class="history-table-wrap">
     <div class="history-table-header">
       <div class="history-table-title">Weekly History</div>
       <div class="history-rows-count" id="histRowCount"></div>
@@ -451,404 +193,244 @@
       </table>
     </div>
   </div>
-
-  <!-- ADMIN TOGGLE -->
-  <button class="admin-toggle-btn" id="adminToggleBtn" onclick="toggleAdmin()">Update Market Data (Admin)</button>
-
-  <!-- ADMIN PANEL -->
-  <div class="admin-panel" id="adminPanel" style="display:none">
-    <div class="admin-title">Paste Weekly JSON Block</div>
-    <div class="admin-sub">
-      Paste the Memory File JSON output from your weekly workflow. Data is stored in your browser and persists week over week. All history is retained.<br>
-      <strong>Note:</strong> For the historical charts to pull from Google Sheets automatically, publish Tab 6 (Full History) as a public CSV — see setup instructions below.
-    </div>
-    <textarea class="admin-textarea" id="jsonInput" placeholder='{"weekLabel":"Week of May 12, 2025","newListings":12,...}'></textarea>
-    <div class="admin-btn-row">
-      <button class="btn-primary" onclick="saveWeek()">Save Week</button>
-      <button class="btn-secondary" onclick="clearAll()">Clear All Data</button>
-      <span class="admin-status" id="saveStatus"></span>
-    </div>
-
-    <div class="divider"></div>
-
-    <div class="backup-title">Export / Backup History</div>
-    <div class="backup-sub">Download all stored weeks as a JSON file for safekeeping.</div>
-    <div class="admin-btn-row">
-      <button class="btn-primary" onclick="downloadBackup()">Download Backup</button>
-      <button class="btn-secondary" onclick="importBackup()">Import Backup</button>
-      <input type="file" id="backupFileInput" style="display:none" accept=".json" onchange="handleImport(event)" />
-    </div>
-
-    <div class="divider"></div>
-
-    <!-- GOOGLE SHEETS SETUP -->
-    <div class="backup-title">Google Sheets Historical Data (Setup)</div>
-    <div class="admin-sub">
-      To enable automatic chart history from your Google Sheet:<br>
-      1. Open your <strong>Ventura Market Memory File</strong> Google Sheet<br>
-      2. Go to <strong>File &rarr; Share &rarr; Publish to web</strong><br>
-      3. Select <strong>Tab: 6 - Full History</strong> and format <strong>Comma-separated values (.csv)</strong><br>
-      4. Click <strong>Publish</strong> and copy the URL<br>
-      5. Paste it in the field below and click Save
-    </div>
-    <input
-      type="text"
-      id="sheetUrlInput"
-      placeholder="https://docs.google.com/spreadsheets/d/SHEET_ID/pub?gid=GID&single=true&output=csv"
-      style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;background:var(--surface2);color:var(--ink);margin-bottom:10px;"
-    />
-    <div class="admin-btn-row">
-      <button class="btn-primary" onclick="saveSheetUrl()">Save Sheet URL</button>
-      <button class="btn-secondary" onclick="clearSheetUrl()">Clear URL</button>
-      <span class="admin-status" id="sheetUrlStatus"></span>
-    </div>
-  </div>
-
-  <!-- FOOTER -->
+ 
   <footer class="site-footer">
     <strong>Brandon Wasilewski</strong> &bull; Realty One Group Summit &bull; DRE: 02021131<br>
-    <a href="https://brandonwasilewski.com" target="_blank">brandonwasilewski.com</a>
-    &bull; 805-856-8773<br>
+    <a href="https://brandonwasilewski.com" target="_blank">brandonwasilewski.com</a> &bull; 805-856-8773<br>
     <span style="margin-top:4px;display:block">Data sourced from MLS activity. For informational purposes only. Not guaranteed accurate.</span>
   </footer>
-
-</div><!-- /page-wrap -->
-
+ 
+</div>
+ 
 <script>
-// ╔══════════════════════════════════════════════════════════════╗
-// ║  VENTURA MARKET TRACKER — Main JS                           ║
-// ║  Data sources (priority order):                              ║
-// ║   1. Google Sheets CSV (Tab 6 Full History) via published URL║
-// ║   2. localStorage (admin JSON entry fallback)               ║
-// ╚══════════════════════════════════════════════════════════════╝
-
-const STORAGE_KEY    = 'ventura_market_history_v2';
-const SHEET_URL_KEY  = 'ventura_sheet_csv_url';
-
-// ── State ──────────────────────────────────────────────────────
-let allHistory     = [];   // full history array (merged from all sources)
-let sheetHistory   = [];   // rows from Google Sheet CSV
-let localHistory   = [];   // rows from localStorage
+// Data source — read only, no public access point
+const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTQzKlkxB-NEXLp6Ckfjm-u0-DCDUe4hQnvtRmhNXxdqLBSqjAYm2ROcZfguiwH8twEY4PieH6qbRhV/pub?gid=2016901667&single=true&output=csv';
+const CHART_WINDOW  = 13;
+ 
+let allHistory     = [];
 let mainChart      = null;
 let activeChartTab = 'pricing';
-let adminVisible   = false;
-
-// ── Bootstrap ─────────────────────────────────────────────────
+ 
 window.addEventListener('DOMContentLoaded', async () => {
-  loadAdminInput();
-  localHistory = loadLocalHistory();
-
-  const sheetUrl = localStorage.getItem(SHEET_URL_KEY);
-  if (sheetUrl) {
-    document.getElementById('sheetUrlInput').value = sheetUrl;
-    try {
-      sheetHistory = await fetchSheetHistory(sheetUrl);
-    } catch(e) {
-      console.warn('Sheet fetch failed, using localStorage only:', e.message);
-    }
+  try {
+    allHistory = await fetchSheetHistory(SHEET_CSV_URL);
+    allHistory.sort((a, b) => parseWeekLabel(a.weekLabel) - parseWeekLabel(b.weekLabel));
+    document.getElementById('loadingBar').style.display = 'none';
+    renderAll();
+  } catch(e) {
+    document.getElementById('loadingBar').style.display = 'none';
+    const err = document.getElementById('loadError');
+    err.style.display = '';
+    err.textContent = 'Unable to load market data. Please try refreshing the page.';
+    console.error(e);
   }
-
-  mergeAndRender();
 });
-
-// ── Merge sheet + local, deduplicate by weekLabel ─────────────
-function mergeAndRender() {
-  const seen  = new Set();
-  const merged = [];
-
-  // Sheet history is authoritative — add first
-  for (const row of sheetHistory) {
-    if (!seen.has(row.weekLabel)) {
-      seen.add(row.weekLabel);
-      merged.push({ ...row, _source: 'sheet' });
-    }
-  }
-  // Local fills gaps for weeks not yet in sheet
-  for (const row of localHistory) {
-    if (!seen.has(row.weekLabel)) {
-      seen.add(row.weekLabel);
-      merged.push({ ...row, _source: 'local' });
-    }
-  }
-
-  // Sort chronologically (oldest first)
-  merged.sort((a, b) => parseWeekLabel(a.weekLabel) - parseWeekLabel(b.weekLabel));
-  allHistory = merged;
-
-  renderAll();
+ 
+async function fetchSheetHistory(url) {
+  const resp = await fetch(url);
+  if (!resp.ok) throw new Error('HTTP ' + resp.status);
+  return parseCSV(await resp.text());
 }
-
-// ── Render everything ──────────────────────────────────────────
+ 
+function parseCSV(text) {
+  const lines = text.split('\n').filter(l => l.trim());
+  if (lines.length < 2) return [];
+  const headers = splitCSVRow(lines[0]);
+  const numFields = ['newListings','totalInventory','priceReductions','avgReductionPct',
+    'aucCount','pendingCount','medianPendingDOM','closedCount','medianClosePrice',
+    'medianPSF','medianDOM','lpsp','rate','invStreak','selStreak','buyStreak',
+    'priceStreak','luxPrice','invPrice','dealPrice'];
+  const rows = [];
+  for (let i = 1; i < lines.length; i++) {
+    const cols = splitCSVRow(lines[i]);
+    if (cols.length < 2) continue;
+    const obj = {};
+    headers.forEach((h, idx) => { obj[h.trim()] = (cols[idx] || '').trim(); });
+    numFields.forEach(k => {
+      const n = parseFloat(obj[k]);
+      obj[k] = (obj[k] !== '' && !isNaN(n)) ? n : null;
+    });
+    if (obj.weekLabel) rows.push(obj);
+  }
+  return rows;
+}
+ 
+function splitCSVRow(row) {
+  const result = [];
+  let cur = '', inQ = false;
+  for (let i = 0; i < row.length; i++) {
+    const ch = row[i];
+    if (ch === '"') {
+      if (inQ && row[i+1] === '"') { cur += '"'; i++; }
+      else inQ = !inQ;
+    } else if (ch === ',' && !inQ) { result.push(cur); cur = ''; }
+    else { cur += ch; }
+  }
+  result.push(cur);
+  return result;
+}
+ 
 function renderAll() {
   const current = allHistory.length > 0 ? allHistory[allHistory.length - 1] : null;
-
   renderHeader(current);
   renderNarrative(current);
   renderKPIs(current);
   renderDirectional(current);
   renderHistoryTable();
   renderChart();
-
-  const hasSomeSheet = allHistory.some(r => r._source === 'sheet');
   document.getElementById('histBadge').textContent =
     allHistory.length === 0 ? 'No history yet'
-    : allHistory.length + ' week' + (allHistory.length !== 1 ? 's' : '') + (hasSomeSheet ? ' (live from sheet)' : '');
+    : allHistory.length + ' week' + (allHistory.length !== 1 ? 's' : '') + ' (live)';
 }
-
-// ── Header ─────────────────────────────────────────────────────
+ 
 function renderHeader(current) {
-  const metaEl = document.getElementById('headerMeta');
-  if (!current) {
-    metaEl.innerHTML = 'No data yet<br><a href="https://brandonwasilewski.com" target="_blank">brandonwasilewski.com</a>';
-    return;
-  }
-  const sourceLabel = current._source === 'sheet'
-    ? '<span class="source-chip sheet"><span class="dot"></span>Live Sheet</span>'
-    : '<span class="source-chip local"><span class="dot"></span>Local</span>';
-  metaEl.innerHTML =
-    'Updated: ' + esc(current.weekLabel) + ' ' + sourceLabel +
-    '<br><a href="https://brandonwasilewski.com" target="_blank">brandonwasilewski.com</a>';
+  const el = document.getElementById('headerMeta');
+  el.innerHTML = current
+    ? 'Updated: ' + esc(current.weekLabel) + '<br><a href="https://brandonwasilewski.com" target="_blank">brandonwasilewski.com</a>'
+    : 'No data available<br><a href="https://brandonwasilewski.com" target="_blank">brandonwasilewski.com</a>';
 }
-
-// ── Narrative ──────────────────────────────────────────────────
+ 
 function renderNarrative(current) {
   const card = document.getElementById('narrativeCard');
-  const text = document.getElementById('narrativeText');
   if (!current || !current.narrative) { card.style.display = 'none'; return; }
   card.style.display = '';
-  text.textContent = current.narrative;
+  document.getElementById('narrativeText').textContent = current.narrative;
 }
-
-// ── KPI cards ──────────────────────────────────────────────────
+ 
 function renderKPIs(current) {
-  const grid = document.getElementById('kpiGrid');
   const d = current || {};
-  const fmt = (v, prefix='', suffix='') =>
-    v != null && v !== '' ? prefix + fmtNum(v) + suffix : '\u2013\u2013';
-
   const cards = [
-    { label: 'New Listings',         value: fmt(d.newListings),      sub: 'this week' },
-    { label: 'Total Inventory',      value: fmt(d.totalInventory),   sub: 'active' },
-    { label: 'Median Sold Price',    value: fmt(d.medianClosePrice, '$', ''), sub: 'closed sales', isPrice: true },
-    { label: 'Median $/Sq Ft',       value: fmt(d.medianPSF, '$', ''),        sub: 'sold' },
-    { label: 'Median DOM',           value: fmt(d.medianDOM),        sub: 'days on market' },
-    { label: 'LP/SP Ratio',          value: d.lpsp != null && d.lpsp !== '' ? fmtPct(d.lpsp) : '\u2013\u2013', sub: 'list vs sold' },
-    { label: 'Price Reductions',     value: fmt(d.priceReductions),  sub: 'this week' },
-    { label: '30-Yr Rate',           value: d.rate != null && d.rate !== '' ? d.rate + '%' : '\u2013\u2013', sub: 'national avg' },
+    { label: 'New Listings',      value: nn(d.newListings),                                     sub: 'this week' },
+    { label: 'Total Inventory',   value: nn(d.totalInventory),                                  sub: 'active' },
+    { label: 'Median Sold Price', value: d.medianClosePrice != null ? fmtPrice(d.medianClosePrice) : '--', sub: 'closed sales' },
+    { label: 'Median $/Sq Ft',    value: d.medianPSF != null ? '$' + d.medianPSF : '--',        sub: 'sold' },
+    { label: 'Median DOM',        value: nn(d.medianDOM),                                       sub: 'days on market' },
+    { label: 'LP/SP Ratio',       value: d.lpsp != null ? fmtPct(d.lpsp) : '--',               sub: 'list vs sold' },
+    { label: 'Price Reductions',  value: nn(d.priceReductions),                                 sub: 'this week' },
+    { label: '30-Yr Rate',        value: d.rate != null ? d.rate + '%' : '--',                  sub: 'national avg' },
   ];
-
-  grid.innerHTML = cards.map(c => `
-    <div class="kpi-card">
-      <div class="kpi-label">${c.label}</div>
-      <div class="kpi-value">${c.isPrice && c.value !== '\u2013\u2013' ? fmtPrice(d.medianClosePrice) : c.value}</div>
-      <div class="kpi-sub">${c.sub}</div>
-    </div>
-  `).join('');
+  document.getElementById('kpiGrid').innerHTML = cards.map(c =>
+    `<div class="kpi-card"><div class="kpi-label">${c.label}</div><div class="kpi-value">${c.value}</div><div class="kpi-sub">${c.sub}</div></div>`
+  ).join('');
 }
-
-// ── Directional indicators ─────────────────────────────────────
+ 
 function renderDirectional(current) {
-  const grid = document.getElementById('dirGrid');
   const d = current || {};
-  const dirs = [
-    { label: 'Inventory',       dir: d.invDir,   streak: d.invStreak },
-    { label: 'Seller Pricing',  dir: d.selDir,   streak: d.selStreak },
-    { label: 'Buyer Demand',    dir: d.buyDir,   streak: d.buyStreak },
-    { label: 'Price Trend',     dir: d.priceDir, streak: d.priceStreak },
+  const indicators = [
+    { label: 'Inventory',      dir: d.invDir,   streak: d.invStreak },
+    { label: 'Seller Pricing', dir: d.selDir,   streak: d.selStreak },
+    { label: 'Buyer Demand',   dir: d.buyDir,   streak: d.buyStreak },
+    { label: 'Price Trend',    dir: d.priceDir, streak: d.priceStreak },
   ];
-  grid.innerHTML = dirs.map(item => {
-    const dir  = (item.dir || 'neutral').toLowerCase();
-    const str  = Number(item.streak) || 1;
-    const confirmed = str >= 3;
+  document.getElementById('dirGrid').innerHTML = indicators.map(item => {
+    const dir   = (item.dir || 'neutral').toLowerCase();
+    const str   = Number(item.streak) || 1;
     const arrow = dir === 'up' ? '↑' : dir === 'down' ? '↓' : '→';
     const cls   = dir === 'up' ? 'up' : dir === 'down' ? 'down' : 'neutral';
-    const label = dir === 'up' ? 'Increasing' : dir === 'down' ? 'Decreasing' : 'Stable';
-    return `
-      <div class="dir-card">
-        <div class="dir-arrow ${cls}">${arrow}</div>
-        <div>
-          <div class="dir-label">${item.label}</div>
-          <div class="dir-status">
-            ${label}
-            ${confirmed ? '<span class="confirmed-badge">Confirmed</span>' : ''}
-          </div>
-          <div class="dir-streak">${str} week${str !== 1 ? 's' : ''} in same direction</div>
-        </div>
-      </div>`;
+    const lbl   = dir === 'up' ? 'Increasing' : dir === 'down' ? 'Decreasing' : 'Stable';
+    const badge = str >= 3 ? '<span class="confirmed-badge">Confirmed</span>' : '';
+    return `<div class="dir-card"><div class="dir-arrow ${cls}">${arrow}</div><div>
+      <div class="dir-label">${item.label}</div>
+      <div class="dir-status">${lbl}${badge}</div>
+      <div class="dir-streak">${str} week${str!==1?'s':''} in same direction</div>
+    </div></div>`;
   }).join('');
 }
-
-// ── History table ─────────────────────────────────────────────
+ 
 function renderHistoryTable() {
-  const tbody = document.getElementById('historyTableBody');
+  const tbody   = document.getElementById('historyTableBody');
   const countEl = document.getElementById('histRowCount');
-
   if (allHistory.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:28px;color:var(--ink-3)">No history yet.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:28px;color:var(--ink-3)">No history available.</td></tr>';
     countEl.textContent = '';
     return;
   }
-
-  const rows = [...allHistory].reverse(); // most recent first
+  const rows = [...allHistory].reverse();
   countEl.textContent = rows.length + ' week' + (rows.length !== 1 ? 's' : '');
-
-  tbody.innerHTML = rows.map(r => `
-    <tr>
-      <td class="week-col">${esc(r.weekLabel)}</td>
-      <td class="num-col">${r.newListings ?? '\u2013'}</td>
-      <td class="num-col">${r.totalInventory ?? '\u2013'}</td>
-      <td class="num-col">${r.medianClosePrice != null ? fmtPrice(r.medianClosePrice) : '\u2013'}</td>
-      <td class="num-col">${r.medianPSF != null ? '$' + r.medianPSF : '\u2013'}</td>
-      <td class="num-col">${r.medianDOM != null ? r.medianDOM + 'd' : '\u2013'}</td>
-      <td class="num-col">${r.lpsp != null ? fmtPct(r.lpsp) : '\u2013'}</td>
-      <td class="num-col">${r.pendingCount ?? '\u2013'}</td>
-      <td class="num-col">${r.closedCount ?? '\u2013'}</td>
-      <td class="num-col">${r.rate != null ? r.rate + '%' : '\u2013'}</td>
-    </tr>
-  `).join('');
+  tbody.innerHTML = rows.map(r => `<tr>
+    <td class="week-col">${esc(r.weekLabel)}</td>
+    <td class="num-col">${r.newListings ?? '\u2013'}</td>
+    <td class="num-col">${r.totalInventory ?? '\u2013'}</td>
+    <td class="num-col">${r.medianClosePrice != null ? fmtPrice(r.medianClosePrice) : '\u2013'}</td>
+    <td class="num-col">${r.medianPSF != null ? '$'+r.medianPSF : '\u2013'}</td>
+    <td class="num-col">${r.medianDOM != null ? r.medianDOM+'d' : '\u2013'}</td>
+    <td class="num-col">${r.lpsp != null ? fmtPct(r.lpsp) : '\u2013'}</td>
+    <td class="num-col">${r.pendingCount ?? '\u2013'}</td>
+    <td class="num-col">${r.closedCount ?? '\u2013'}</td>
+    <td class="num-col">${r.rate != null ? r.rate+'%' : '\u2013'}</td>
+  </tr>`).join('');
 }
-
-// ── Charts ────────────────────────────────────────────────────
+ 
 const CHART_CONFIGS = {
-  pricing: {
-    label: 'Pricing',
-    datasets: [
-      { key: 'medianClosePrice', label: 'Median Sold Price', color: '#1C2B4A', yAxis: 'y', fmt: v => '$' + fmtNum(v) },
-      { key: 'medianPSF',        label: '$/Sq Ft',           color: '#C5A84F', yAxis: 'y1', fmt: v => '$' + v },
-    ]
-  },
-  activity: {
-    label: 'Activity',
-    datasets: [
-      { key: 'newListings',    label: 'New Listings',    color: '#1C2B4A', yAxis: 'y', fmt: v => v },
-      { key: 'aucCount',       label: 'AUC',             color: '#C5A84F', yAxis: 'y', fmt: v => v },
-      { key: 'pendingCount',   label: 'Pending',         color: '#3A7D5C', yAxis: 'y', fmt: v => v },
-      { key: 'closedCount',    label: 'Closed',          color: '#8B6CAD', yAxis: 'y', fmt: v => v },
-    ]
-  },
-  velocity: {
-    label: 'Market Velocity',
-    datasets: [
-      { key: 'medianDOM',  label: 'Median DOM',   color: '#1C2B4A', yAxis: 'y',  fmt: v => v + 'd' },
-      { key: 'lpsp',       label: 'LP/SP %',      color: '#C5A84F', yAxis: 'y1', fmt: v => fmtPct(v) },
-    ]
-  },
-  rates: {
-    label: 'Rates',
-    datasets: [
-      { key: 'rate', label: '30-Yr Fixed Rate', color: '#1C2B4A', yAxis: 'y', fmt: v => v + '%' },
-    ]
-  }
+  pricing:  { datasets: [
+    { key:'medianClosePrice', label:'Median Sold Price', color:'#1C2B4A', yAxis:'y',  fmt: v=>fmtPrice(v) },
+    { key:'medianPSF',        label:'$/Sq Ft',           color:'#C5A84F', yAxis:'y1', fmt: v=>'$'+v },
+  ]},
+  activity: { datasets: [
+    { key:'newListings',  label:'New Listings', color:'#1C2B4A', yAxis:'y', fmt:v=>v },
+    { key:'aucCount',     label:'AUC',          color:'#C5A84F', yAxis:'y', fmt:v=>v },
+    { key:'pendingCount', label:'Pending',      color:'#3A7D5C', yAxis:'y', fmt:v=>v },
+    { key:'closedCount',  label:'Closed',       color:'#8B6CAD', yAxis:'y', fmt:v=>v },
+  ]},
+  velocity: { datasets: [
+    { key:'medianDOM', label:'Median DOM', color:'#1C2B4A', yAxis:'y',  fmt:v=>v+'d' },
+    { key:'lpsp',      label:'LP/SP %',   color:'#C5A84F', yAxis:'y1', fmt:v=>fmtPct(v) },
+  ]},
+  rates: { datasets: [
+    { key:'rate', label:'30-Yr Fixed Rate', color:'#1C2B4A', yAxis:'y', fmt:v=>v+'%' },
+  ]}
 };
-
+ 
 function renderChart() {
   const canvas  = document.getElementById('mainChart');
   const emptyEl = document.getElementById('chartEmpty');
   const noteEl  = document.getElementById('chartRangeNote');
-
-  // Show last 13 weeks (~3 months) in chart
-  const CHART_WINDOW = 13;
-  const chartData = allHistory.slice(-CHART_WINDOW);
-
-  if (chartData.length === 0) {
-    canvas.style.display = 'none';
-    emptyEl.style.display = 'flex';
-    noteEl.textContent = '';
-    return;
+  const data    = allHistory.slice(-CHART_WINDOW);
+ 
+  if (data.length === 0) {
+    canvas.style.display = 'none'; emptyEl.style.display = 'flex'; noteEl.textContent = ''; return;
   }
-
-  canvas.style.display = 'block';
-  emptyEl.style.display = 'none';
-
-  const cfg = CHART_CONFIGS[activeChartTab];
-  const labels = chartData.map(r => r.weekLabel);
-
-  noteEl.textContent = chartData.length >= CHART_WINDOW
+  canvas.style.display = 'block'; emptyEl.style.display = 'none';
+ 
+  noteEl.textContent = data.length >= CHART_WINDOW
     ? 'Showing last ' + CHART_WINDOW + ' weeks. Full history in table below.'
-    : 'Showing all ' + chartData.length + ' week' + (chartData.length !== 1 ? 's' : '') + ' of history.';
-
-  const datasets = cfg.datasets.map((ds, i) => ({
+    : 'Showing all ' + data.length + ' week' + (data.length !== 1 ? 's' : '') + ' of history.';
+ 
+  const cfg    = CHART_CONFIGS[activeChartTab];
+  const labels = data.map(r => r.weekLabel);
+ 
+  const datasets = cfg.datasets.map(ds => ({
     label: ds.label,
-    data: chartData.map(r => {
-      const v = r[ds.key];
-      return (v != null && v !== '') ? Number(v) : null;
-    }),
-    borderColor: ds.color,
-    backgroundColor: ds.color + '18',
+    data:  data.map(r => (r[ds.key] != null && r[ds.key] !== '') ? Number(r[ds.key]) : null),
+    borderColor: ds.color, backgroundColor: ds.color+'18',
     fill: cfg.datasets.length === 1,
-    tension: 0.35,
-    pointRadius: 4,
-    pointHoverRadius: 6,
-    borderWidth: 2.5,
-    yAxisID: ds.yAxis,
-    spanGaps: true,
+    tension: 0.35, pointRadius: 4, pointHoverRadius: 6, borderWidth: 2.5,
+    yAxisID: ds.yAxis, spanGaps: true,
   }));
-
+ 
   const scales = {
-    x: {
-      grid: { color: 'rgba(0,0,0,0.04)' },
-      ticks: {
-        font: { family: "'DM Sans', sans-serif", size: 11 },
-        color: '#9B9890',
-        maxRotation: 40,
-        callback: function(val, idx) {
-          const lbl = labels[idx] || '';
-          // Shorten labels
-          return lbl.replace(/, 20\d\d/, '');
-        }
-      }
-    },
-    y: {
-      position: 'left',
-      grid: { color: 'rgba(0,0,0,0.04)' },
-      ticks: {
-        font: { family: "'DM Sans', sans-serif", size: 11 },
-        color: '#9B9890',
-        callback: v => cfg.datasets[0].fmt(v)
-      }
-    }
+    x: { grid:{color:'rgba(0,0,0,0.04)'}, ticks:{ font:{family:"'DM Sans',sans-serif",size:11}, color:'#9B9890', maxRotation:40, callback:(v,i)=>(labels[i]||'').replace(/, 20\d\d/,'') } },
+    y: { position:'left', grid:{color:'rgba(0,0,0,0.04)'}, ticks:{font:{family:"'DM Sans',sans-serif",size:11},color:'#9B9890',callback:v=>cfg.datasets[0].fmt(v)} }
   };
-
-  if (cfg.datasets.length > 1 && cfg.datasets[1].yAxis === 'y1') {
-    scales.y1 = {
-      position: 'right',
-      grid: { drawOnChartArea: false },
-      ticks: {
-        font: { family: "'DM Sans', sans-serif", size: 11 },
-        color: '#C5A84F',
-        callback: v => cfg.datasets[1].fmt(v)
-      }
-    };
+  if (cfg.datasets.length > 1 && cfg.datasets[1].yAxis==='y1') {
+    scales.y1 = { position:'right', grid:{drawOnChartArea:false}, ticks:{font:{family:"'DM Sans',sans-serif",size:11},color:'#C5A84F',callback:v=>cfg.datasets[1].fmt(v)} };
   }
-
+ 
   if (mainChart) mainChart.destroy();
-
   mainChart = new Chart(canvas, {
-    type: 'line',
-    data: { labels, datasets },
+    type: 'line', data: { labels, datasets },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: { mode: 'index', intersect: false },
-      plugins: {
-        legend: {
-          position: 'top',
-          labels: { font: { family: "'DM Sans', sans-serif", size: 12 }, color: '#555550', boxWidth: 12, padding: 16 }
-        },
-        tooltip: {
-          backgroundColor: '#1C2B4A',
-          titleFont: { family: "'DM Sans', sans-serif", size: 12 },
-          bodyFont:  { family: "'DM Sans', sans-serif", size: 12 },
-          padding: 12,
-          cornerRadius: 8,
-        }
+      responsive:true, maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{ position:'top', labels:{font:{family:"'DM Sans',sans-serif",size:12},color:'#555550',boxWidth:12,padding:16} },
+        tooltip:{ backgroundColor:'#1C2B4A', titleFont:{family:"'DM Sans',sans-serif",size:12}, bodyFont:{family:"'DM Sans',sans-serif",size:12}, padding:12, cornerRadius:8 }
       },
       scales
     }
   });
 }
-
-// Tab switching
+ 
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('chartTabs').addEventListener('click', e => {
     const btn = e.target.closest('.chart-tab');
@@ -859,228 +441,23 @@ document.addEventListener('DOMContentLoaded', () => {
     renderChart();
   });
 });
-
-// ── Google Sheets CSV fetch ────────────────────────────────────
-async function fetchSheetHistory(csvUrl) {
-  const resp = await fetch(csvUrl);
-  if (!resp.ok) throw new Error('HTTP ' + resp.status);
-  const text = await resp.text();
-  return parseCSV(text);
-}
-
-function parseCSV(text) {
-  const lines = text.split('\n').filter(l => l.trim());
-  if (lines.length < 2) return [];
-
-  const headers = splitCSVRow(lines[0]);
-  const rows = [];
-
-  for (let i = 1; i < lines.length; i++) {
-    const cols = splitCSVRow(lines[i]);
-    if (cols.length < 2) continue;
-    const obj = {};
-    headers.forEach((h, idx) => { obj[h.trim()] = cols[idx] != null ? cols[idx].trim() : ''; });
-    // Coerce numeric fields
-    const nums = ['newListings','totalInventory','priceReductions','avgReductionPct',
-                  'aucCount','pendingCount','medianPendingDOM','closedCount',
-                  'medianClosePrice','medianPSF','medianDOM','lpsp','rate',
-                  'invStreak','selStreak','buyStreak','priceStreak','luxPrice','invPrice','dealPrice'];
-    nums.forEach(k => { if (obj[k] !== '' && obj[k] != null) obj[k] = parseFloat(obj[k]) || null; });
-    if (obj.weekLabel) rows.push(obj);
-  }
-  return rows;
-}
-
-// Minimal RFC 4180 CSV row splitter (handles quoted fields)
-function splitCSVRow(row) {
-  const result = [];
-  let cur = '', inQ = false;
-  for (let i = 0; i < row.length; i++) {
-    const ch = row[i];
-    if (ch === '"') {
-      if (inQ && row[i+1] === '"') { cur += '"'; i++; }
-      else inQ = !inQ;
-    } else if (ch === ',' && !inQ) {
-      result.push(cur); cur = '';
-    } else {
-      cur += ch;
-    }
-  }
-  result.push(cur);
-  return result;
-}
-
-// ── localStorage helpers ───────────────────────────────────────
-function loadLocalHistory() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch { return []; }
-}
-
-function saveLocalHistory(arr) {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); } catch(e) {}
-}
-
-function loadAdminInput() {
-  const saved = localStorage.getItem('ventura_admin_input');
-  if (saved) document.getElementById('jsonInput').value = saved;
-  const url = localStorage.getItem(SHEET_URL_KEY);
-  if (url) {
-    const el = document.getElementById('sheetUrlInput');
-    if (el) el.value = url;
-  }
-}
-
-// ── Admin actions ─────────────────────────────────────────────
-function toggleAdmin() {
-  adminVisible = !adminVisible;
-  document.getElementById('adminPanel').style.display = adminVisible ? '' : 'none';
-  document.getElementById('adminToggleBtn').textContent = adminVisible ? 'Close Admin Panel' : 'Update Market Data (Admin)';
-}
-
-async function saveWeek() {
-  const input   = document.getElementById('jsonInput').value.trim();
-  const statusEl = document.getElementById('saveStatus');
-  if (!input) { statusEl.textContent = 'Nothing to save.'; statusEl.className = 'admin-status error'; return; }
-
-  let data;
-  try {
-    data = JSON.parse(input);
-  } catch(e) {
-    statusEl.textContent = 'JSON parse error — check formatting.';
-    statusEl.className = 'admin-status error';
-    return;
-  }
-
-  if (!data.weekLabel) {
-    statusEl.textContent = 'Missing weekLabel field.';
-    statusEl.className = 'admin-status error';
-    return;
-  }
-
-  // Add to local history (dedup)
-  localHistory = localHistory.filter(r => r.weekLabel !== data.weekLabel);
-  localHistory.push(data);
-  saveLocalHistory(localHistory);
-  localStorage.setItem('ventura_admin_input', input);
-
-  statusEl.textContent = 'Saved: ' + data.weekLabel + ' (' + localHistory.length + ' weeks local)';
-  statusEl.className = 'admin-status';
-
-  mergeAndRender();
-}
-
-function clearAll() {
-  if (!confirm('Clear all locally stored weeks? This cannot be undone.\n(Sheet-sourced data is not affected.)')) return;
-  localHistory = [];
-  saveLocalHistory([]);
-  localStorage.removeItem('ventura_admin_input');
-  document.getElementById('jsonInput').value = '';
-  document.getElementById('saveStatus').textContent = 'Local data cleared.';
-  document.getElementById('saveStatus').className = 'admin-status';
-  mergeAndRender();
-}
-
-function downloadBackup() {
-  const blob = new Blob([JSON.stringify(allHistory, null, 2)], { type: 'application/json' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'ventura-market-history-' + new Date().toISOString().slice(0,10) + '.json';
-  a.click();
-}
-
-function importBackup() { document.getElementById('backupFileInput').click(); }
-
-function handleImport(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    try {
-      const imported = JSON.parse(ev.target.result);
-      if (!Array.isArray(imported)) throw new Error('Expected array');
-      // Merge imported into local, deduplicate
-      const seen = new Set(localHistory.map(r => r.weekLabel));
-      let added = 0;
-      imported.forEach(r => { if (r.weekLabel && !seen.has(r.weekLabel)) { localHistory.push(r); seen.add(r.weekLabel); added++; } });
-      saveLocalHistory(localHistory);
-      document.getElementById('saveStatus').textContent = 'Imported ' + added + ' new week(s).';
-      document.getElementById('saveStatus').className = 'admin-status';
-      mergeAndRender();
-    } catch(err) {
-      document.getElementById('saveStatus').textContent = 'Import failed: ' + err.message;
-      document.getElementById('saveStatus').className = 'admin-status error';
-    }
-  };
-  reader.readAsText(file);
-}
-
-async function saveSheetUrl() {
-  const url    = document.getElementById('sheetUrlInput').value.trim();
-  const status = document.getElementById('sheetUrlStatus');
-  if (!url) { clearSheetUrl(); return; }
-
-  status.textContent = 'Testing connection...';
-  status.className   = 'admin-status';
-
-  try {
-    const rows = await fetchSheetHistory(url);
-    localStorage.setItem(SHEET_URL_KEY, url);
-    sheetHistory = rows;
-    status.textContent = 'Connected — ' + rows.length + ' rows loaded from sheet.';
-    status.className   = 'admin-status';
-    mergeAndRender();
-  } catch(e) {
-    status.textContent = 'Failed: ' + e.message + ' — check URL and that sheet is published publicly.';
-    status.className   = 'admin-status error';
-  }
-}
-
-function clearSheetUrl() {
-  localStorage.removeItem(SHEET_URL_KEY);
-  document.getElementById('sheetUrlInput').value = '';
-  document.getElementById('sheetUrlStatus').textContent = 'Sheet URL cleared.';
-  document.getElementById('sheetUrlStatus').className = 'admin-status';
-  sheetHistory = [];
-  mergeAndRender();
-}
-
-// ── Formatting helpers ─────────────────────────────────────────
-function fmtNum(v) {
-  const n = Number(v);
-  if (isNaN(n)) return v;
-  return n >= 1000 ? n.toLocaleString() : String(n);
-}
+ 
+function nn(v)       { return (v != null && v !== '') ? String(v) : '--'; }
 function fmtPrice(v) {
-  const n = Number(v);
-  if (isNaN(n)) return '\u2013\u2013';
-  if (n >= 1000000) return '$' + (n / 1000000).toFixed(2).replace(/\.?0+$/, '') + 'M';
-  if (n >= 1000)    return '$' + Math.round(n / 1000) + 'K';
-  return '$' + n;
+  const n = Number(v); if(isNaN(n)) return '--';
+  if(n>=1000000) return '$'+(n/1000000).toFixed(2).replace(/\.?0+$/,'')+'M';
+  if(n>=1000)    return '$'+Math.round(n/1000)+'K';
+  return '$'+n;
 }
 function fmtPct(v) {
-  const n = Number(v);
-  if (isNaN(n)) return '\u2013\u2013';
-  // lpsp is stored as 100 (= 100%) or 99.77 (= 99.77%)
-  return n > 10 ? n.toFixed(2) + '%' : (n * 100).toFixed(2) + '%';
+  const n = Number(v); if(isNaN(n)) return '--';
+  return n > 10 ? n.toFixed(2)+'%' : (n*100).toFixed(2)+'%';
 }
-function esc(s) {
-  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function parseWeekLabel(label) {
-  if (!label) return 0;
   const months = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
-  // Match "Apr 30–May 6, 2026" or "Week of May 5, 2025"
-  const m = String(label).match(/(\w{3})\s+\d+[–\-,\s]+(?:(\w{3})\s+)?(\d+),?\s*(\d{4})/);
-  if (m) {
-    const mon = months[m[2] || m[1]] ?? 0;
-    const day = parseInt(m[3]);
-    const yr  = parseInt(m[4]);
-    return new Date(yr, mon, day).getTime();
-  }
+  const m = String(label||'').match(/(\w{3})\s+\d+[–\-,\s]+(?:(\w{3})\s+)?(\d+),?\s*(\d{4})/);
+  if(m) { const mon=months[m[2]||m[1]]??0; return new Date(parseInt(m[4]),mon,parseInt(m[3])).getTime(); }
   return 0;
 }
 </script>
