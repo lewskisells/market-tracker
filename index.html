@@ -1,976 +1,1088 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ventura Real Estate Market Tracker | Brandon Wasilewski</title>
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --navy: #111111;
-    --navy-light: #2a2a2a;
-    --gold: #c9a84c;
-    --gold-light: #e8c87a;
-    --cream: #f8f6f1;
-    --white: #ffffff;
-    --text-dark: #111111;
-    --text-mid: #4a5568;
-    --text-light: #8a95a8;
-    --border: #e2ddd4;
-    --up: #2d7a4f;
-    --down: #b83232;
-    --neutral: #6b7280;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { height: auto; overflow-x: hidden; }
-  a { color: inherit; text-decoration: none; }
-  body {
-    font-family: 'Montserrat', sans-serif;
-    background: var(--cream);
-    color: var(--text-dark);
-    line-height: 1.6;
-  }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ventura Market Tracker</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset & base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  /* HERO */
-  .hero {
-    background: var(--navy);
-    padding: 3rem 2rem 2.5rem;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-  .hero::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: radial-gradient(ellipse at 70% 50%, rgba(201,168,76,0.08) 0%, transparent 60%);
-    pointer-events: none;
-  }
-  .hero-eyebrow {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 0.75rem;
-  }
-  .hero h1 {
-    font-family: 'Archivo Black', sans-serif;
-    font-size: clamp(1.8rem, 4vw, 2.8rem);
-    font-weight: 600;
-    color: var(--white);
-    line-height: 1.2;
-    margin-bottom: 0.75rem;
-  }
-  .hero-sub {
-    font-size: 15px;
-    color: rgba(255,255,255,0.65);
-    max-width: 480px;
-    margin: 0 auto 1.5rem;
-  }
-  .last-updated {
-    display: inline-block;
-    font-size: 12px;
-    color: rgba(255,255,255,0.4);
-    border: 1px solid rgba(255,255,255,0.12);
-    padding: 4px 14px;
-    border-radius: 20px;
-  }
+    :root {
+      --bg:          #F4F1EC;
+      --surface:     #FFFFFF;
+      --surface2:    #F9F7F3;
+      --ink:         #1A1A1A;
+      --ink-2:       #555550;
+      --ink-3:       #9B9890;
+      --gold:        #C5A84F;
+      --gold-light:  #EAD99A;
+      --navy:        #1C2B4A;
+      --navy-mid:    #2D4270;
+      --green:       #3A7D5C;
+      --red:         #C04040;
+      --border:      rgba(0,0,0,0.08);
+      --radius:      12px;
+      --shadow:      0 2px 16px rgba(0,0,0,0.07);
+    }
 
-  /* AGENT CARD */
-  .agent-strip {
-    background: var(--white);
-    border-bottom: 1px solid var(--border);
-    padding: 1.25rem 2rem;
-    display: flex;
-    align-items: center;
-    gap: 1.25rem;
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-  .agent-photo {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    object-fit: cover;
-    object-position: center top;
-    border: 2px solid var(--gold);
-    flex-shrink: 0;
-  }
-  .agent-info { flex: 1; }
-  .agent-name {
-    font-family: 'Archivo Black', sans-serif;
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--navy);
-  }
-  .agent-title {
-    font-size: 12px;
-    color: var(--text-light);
-    margin-top: 1px;
-  }
+    html { background: var(--bg); color: var(--ink); font-family: 'DM Sans', sans-serif; font-size: 16px; }
+    body { min-height: 100vh; }
 
+    /* ── Layout ── */
+    .page-wrap { max-width: 960px; margin: 0 auto; padding: 0 20px 80px; }
 
-  /* MAIN LAYOUT */
-  .container {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 1.5rem 1rem 1rem;
-  }
+    /* ── Header ── */
+    .site-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding: 36px 0 24px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 32px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .site-header h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(22px, 4vw, 32px);
+      color: var(--navy);
+      line-height: 1.1;
+    }
+    .site-header h1 span { color: var(--gold); }
+    .header-meta { font-size: 12px; color: var(--ink-3); text-align: right; line-height: 1.6; }
+    .header-meta a { color: var(--navy); text-decoration: none; font-weight: 500; }
+    .header-meta a:hover { color: var(--gold); }
 
-  /* SECTION HEADERS */
-  .section-header {
-    display: flex;
-    align-items: baseline;
-    gap: 0.75rem;
-    margin-bottom: 1.25rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid var(--border);
-  }
-  .section-title {
-    font-family: 'Archivo Black', sans-serif;
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--navy);
-  }
-  .section-label {
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--text-light);
-  }
+    /* ── Narrative card ── */
+    .narrative-card {
+      background: var(--navy);
+      color: #fff;
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      margin-bottom: 28px;
+      line-height: 1.65;
+    }
+    .narrative-label {
+      font-size: 10px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--gold-light);
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .narrative-text { font-size: 14px; color: rgba(255,255,255,0.88); }
 
-  /* TAB NAV */
-  .tab-nav {
-    display: flex;
-    gap: 0;
-    border-bottom: 2px solid var(--border);
-    margin-bottom: 2rem;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  .tab-btn {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text-light);
-    background: none;
-    border: none;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -2px;
-    padding: 0.75rem 1.25rem;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: color 0.2s, border-color 0.2s;
-  }
-  .tab-btn.active {
-    color: var(--navy);
-    border-bottom-color: var(--gold);
-  }
-  .tab-btn:hover { color: var(--navy); }
-  .tab-panel { display: none; }
-  .tab-panel.active { display: block; }
+    /* ── KPI grid ── */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    .kpi-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 18px 16px 14px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+    .kpi-label {
+      font-size: 10px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .kpi-value {
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--navy);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .kpi-sub { font-size: 12px; color: var(--ink-3); }
 
-  /* SNAPSHOT METRICS GRID */
-  .metrics-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 1rem;
-    margin-bottom: 2rem;
-  }
-  .metric-card {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 1.1rem 1.25rem;
-    position: relative;
-  }
-  .metric-card.featured {
-    border-color: var(--gold);
-    border-width: 1.5px;
-  }
-  .metric-label {
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-light);
-    margin-bottom: 0.4rem;
-  }
-  .metric-value {
-    font-family: 'Archivo Black', sans-serif;
-    font-size: 1.75rem;
-    font-weight: 600;
-    color: var(--navy);
-    line-height: 1.1;
-  }
-  .metric-sub {
-    font-size: 12px;
-    color: var(--text-light);
-    margin-top: 0.25rem;
-  }
-  .trend-arrow {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    font-size: 16px;
-    font-weight: 600;
-  }
-  .trend-up { color: var(--up); }
-  .trend-down { color: var(--down); }
-  .trend-flat { color: var(--neutral); }
+    /* ── Section header ── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 20px;
+      color: var(--navy);
+    }
+    .section-badge {
+      font-size: 11px;
+      color: var(--ink-3);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 4px 12px;
+    }
 
-  /* 4-WEEK TABLE */
-  .table-wrap {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    margin-bottom: 2rem;
-  }
-  .data-table {
-    min-width: 700px;
-  }
-  .data-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
-  }
-  .data-table th {
-    background: var(--navy);
-    color: rgba(255,255,255,0.75);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    padding: 0.75rem 1rem;
-    text-align: left;
-  }
-  .data-table th:first-child { color: var(--gold); }
-  .data-table td {
-    padding: 0.7rem 1rem;
-    border-bottom: 1px solid var(--border);
-    color: var(--text-dark);
-  }
-  .data-table tr:last-child td { border-bottom: none; }
-  .data-table tr:nth-child(even) td { background: var(--cream); }
-  .data-table td:first-child {
-    font-weight: 500;
-    color: var(--text-mid);
-    font-size: 12px;
-    white-space: nowrap;
-  }
-  .data-table .current-week td {
-    background: rgba(201,168,76,0.06);
-    font-weight: 500;
-  }
+    /* ── Directional indicators ── */
+    .dir-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 14px;
+      margin-bottom: 32px;
+    }
+    .dir-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      display: flex;
+      gap: 14px;
+      align-items: center;
+    }
+    .dir-arrow {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--surface2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    .dir-arrow.up   { background: #E8F5EE; color: var(--green); }
+    .dir-arrow.down { background: #FBE8E8; color: var(--red); }
+    .dir-arrow.neutral { background: #EEF0F5; color: var(--navy-mid); }
+    .dir-label { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); font-weight: 600; margin-bottom: 4px; }
+    .dir-status { font-size: 15px; font-weight: 600; color: var(--ink); margin-bottom: 2px; }
+    .dir-streak { font-size: 12px; color: var(--ink-3); }
+    .confirmed-badge {
+      display: inline-block;
+      font-size: 9px;
+      background: var(--gold);
+      color: #fff;
+      border-radius: 4px;
+      padding: 2px 6px;
+      margin-left: 6px;
+      vertical-align: middle;
+      font-weight: 600;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
 
-  /* NARRATIVE CARDS */
-  .narrative-card {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--gold);
-    border-radius: 0 10px 10px 0;
-    padding: 1.25rem 1.5rem;
-    margin-bottom: 1rem;
-  }
-  .narrative-week {
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 0.4rem;
-  }
-  .narrative-text {
-    font-size: 14px;
-    color: var(--text-mid);
-    line-height: 1.7;
-  }
+    /* ── Chart section ── */
+    .chart-section {
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      padding: 24px;
+      margin-bottom: 28px;
+    }
+    .chart-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .chart-tab {
+      font-size: 13px;
+      font-weight: 500;
+      padding: 7px 16px;
+      border-radius: 20px;
+      border: 1.5px solid var(--border);
+      background: transparent;
+      color: var(--ink-3);
+      cursor: pointer;
+      transition: all .18s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .chart-tab:hover { border-color: var(--navy); color: var(--navy); }
+    .chart-tab.active {
+      background: var(--navy);
+      border-color: var(--navy);
+      color: #fff;
+    }
+    .chart-wrap {
+      position: relative;
+      height: 280px;
+    }
+    .chart-empty {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 200px;
+      color: var(--ink-3);
+      font-size: 14px;
+    }
+    .chart-range-note {
+      font-size: 11px;
+      color: var(--ink-3);
+      margin-top: 12px;
+      text-align: right;
+    }
 
-  /* DIRECTIONAL INDICATORS */
-  .indicators-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1rem;
-    margin-bottom: 2rem;
-  }
-  .indicator-card {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 1.25rem;
-  }
-  .indicator-label {
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-light);
-    margin-bottom: 0.75rem;
-  }
-  .indicator-direction {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 0.5rem;
-  }
-  .dir-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    font-weight: 700;
-    flex-shrink: 0;
-  }
-  .dir-up { background: rgba(45,122,79,0.1); color: var(--up); }
-  .dir-down { background: rgba(184,50,50,0.1); color: var(--down); }
-  .dir-flat { background: rgba(107,114,128,0.1); color: var(--neutral); }
-  .dir-label {
-    font-family: 'Archivo Black', sans-serif;
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: var(--navy);
-  }
-  .streak-badge {
-    display: inline-block;
-    font-size: 11px;
-    font-weight: 500;
-    background: var(--cream);
-    border: 1px solid var(--border);
-    color: var(--text-mid);
-    padding: 2px 10px;
-    border-radius: 20px;
-  }
-  .streak-badge.confirmed {
-    background: rgba(201,168,76,0.12);
-    border-color: var(--gold);
-    color: #8a6a20;
-  }
+    /* ── History table ── */
+    .history-table-wrap {
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      margin-bottom: 28px;
+    }
+    .history-table-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 22px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .history-table-title { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--navy); }
+    .history-rows-count { font-size: 12px; color: var(--ink-3); }
+    .history-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .history-table th {
+      text-align: left;
+      padding: 10px 14px;
+      font-size: 10px;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: var(--ink-3);
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+    }
+    .history-table td {
+      padding: 11px 14px;
+      border-bottom: 1px solid var(--border);
+      color: var(--ink);
+      vertical-align: middle;
+    }
+    .history-table tr:last-child td { border-bottom: none; }
+    .history-table tr:hover td { background: var(--surface2); }
+    .week-col { font-weight: 500; white-space: nowrap; }
+    .num-col { font-variant-numeric: tabular-nums; }
 
-  /* PICKS */
-  .picks-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1rem;
-    margin-bottom: 2rem;
-  }
-  .pick-card {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    overflow: hidden;
-  }
-  .pick-header {
-    padding: 0.85rem 1.25rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .pick-header.luxury { background: var(--navy); }
-  .pick-header.investment { background: #1e3a2f; }
-  .pick-header.deal { background: #3a1e1e; }
-  .pick-type {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--gold);
-  }
-  .pick-badge {
-    font-size: 10px;
-    font-weight: 500;
-    padding: 3px 10px;
-    border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.2);
-    color: rgba(255,255,255,0.7);
-  }
-  .pick-body { padding: 1.25rem; }
-  .pick-address {
-    font-family: 'Archivo Black', sans-serif;
-    font-size: 1.05rem;
-    font-weight: 600;
-    color: var(--navy);
-    margin-bottom: 0.35rem;
-    line-height: 1.3;
-  }
-  .pick-price {
-    font-size: 1.3rem;
-    font-weight: 600;
-    color: var(--text-dark);
-    margin-bottom: 0.5rem;
-  }
-  .pick-meta {
-    font-size: 12px;
-    color: var(--text-light);
-    margin-bottom: 1rem;
-  }
-  .pick-cta {
-    display: block;
-    text-align: center;
-    background: var(--cream);
-    border: 1px solid var(--border);
-    color: var(--navy);
-    font-size: 12px;
-    font-weight: 500;
-    padding: 8px 16px;
-    border-radius: 6px;
-    text-decoration: none;
-    transition: background 0.2s, border-color 0.2s;
-  }
-  .pick-cta:hover {
-    background: var(--navy);
-    color: var(--white);
-    border-color: var(--navy);
-  }
+    /* ── Admin panel ── */
+    .admin-toggle-btn {
+      display: block;
+      margin: 0 auto 20px;
+      padding: 10px 28px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      font-size: 13px;
+      color: var(--ink-3);
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: all .18s;
+    }
+    .admin-toggle-btn:hover { border-color: var(--navy); color: var(--navy); }
 
-  /* LOADING STATE */
-  .loading-state {
-    text-align: center;
-    padding: 3rem 1rem;
-    color: var(--text-light);
-    font-size: 14px;
-  }
-  .loading-dot {
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--gold);
-    margin: 0 3px;
-    animation: pulse 1.2s infinite;
-  }
-  .loading-dot:nth-child(2) { animation-delay: 0.2s; }
-  .loading-dot:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes pulse {
-    0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); }
-    40% { opacity: 1; transform: scale(1); }
-  }
+    .admin-panel {
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+    .admin-title { font-size: 16px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+    .admin-sub   { font-size: 13px; color: var(--ink-3); margin-bottom: 16px; line-height: 1.5; }
+    .admin-textarea {
+      width: 100%;
+      height: 160px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 13px;
+      font-family: 'DM Sans', monospace;
+      color: var(--ink);
+      background: var(--surface2);
+      resize: vertical;
+      line-height: 1.5;
+    }
+    .admin-textarea:focus { outline: none; border-color: var(--navy); }
+    .admin-btn-row { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; align-items: center; }
+    .btn-primary {
+      padding: 10px 22px;
+      background: var(--navy);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: background .18s;
+    }
+    .btn-primary:hover { background: var(--navy-mid); }
+    .btn-secondary {
+      padding: 10px 18px;
+      background: transparent;
+      color: var(--ink-3);
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: all .18s;
+    }
+    .btn-secondary:hover { border-color: var(--red); color: var(--red); }
+    .admin-status { font-size: 13px; color: var(--green); margin-left: 4px; }
+    .admin-status.error { color: var(--red); }
 
-  /* ERROR STATE */
-  .error-state {
-    background: #fff8f0;
-    border: 1px solid #f5d9b5;
-    border-radius: 10px;
-    padding: 1.5rem;
-    text-align: center;
-    color: #7a4a1e;
-    font-size: 14px;
-  }
+    .divider { height: 1px; background: var(--border); margin: 24px 0; }
 
-  @media (max-width: 768px) {
-    .agent-strip { flex-wrap: wrap; }
-    .metrics-grid { grid-template-columns: 1fr 1fr; }
-    .picks-grid { grid-template-columns: 1fr; }
-    .hero { padding: 2rem 1.25rem 1.75rem; }
-    .container { padding: 1.5rem 1rem; }
-    .metric-value { font-size: 1.4rem; }
-  }
-  @media (max-width: 400px) {
-    .metrics-grid { grid-template-columns: 1fr; }
-  }
-</style>
+    .backup-title { font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+    .backup-sub   { font-size: 13px; color: var(--ink-3); margin-bottom: 12px; }
+
+    /* ── Footer ── */
+    .site-footer {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--ink-3);
+      line-height: 1.8;
+    }
+    .site-footer a { color: var(--navy); text-decoration: none; }
+    .site-footer a:hover { color: var(--gold); }
+
+    /* ── Source status chip ── */
+    .source-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      padding: 3px 9px;
+      border-radius: 10px;
+      font-weight: 600;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .source-chip.sheet  { background: #E8F5EE; color: var(--green); }
+    .source-chip.local  { background: #FFF3CD; color: #8A6D00; }
+    .source-chip.dot    { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+    @media (max-width: 600px) {
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+      .dir-grid { grid-template-columns: 1fr 1fr; }
+      .history-table th:nth-child(n+4),
+      .history-table td:nth-child(n+4) { display: none; }
+    }
+  </style>
 </head>
 <body>
+<div class="page-wrap">
 
-<!-- HERO -->
-<div class="hero">
-  <div class="hero-eyebrow">Ventura, CA &nbsp;|&nbsp; Updated Weekly</div>
-  <h1>Ventura Real Estate<br>Market Tracker</h1>
-  <p class="hero-sub">Live data pulled directly from MLS — refreshed every week so you always know where the market stands.</p>
-  <span class="last-updated" id="lastUpdated">Loading data...</span>
-</div>
+  <!-- HEADER -->
+  <header class="site-header">
+    <h1>Ventura <span>Market</span> Tracker</h1>
+    <div class="header-meta" id="headerMeta">
+      Loading&hellip;
+    </div>
+  </header>
 
-<!-- AGENT STRIP -->
-<div class="agent-strip">
-  <img class="agent-photo" src="data:image/jpeg;base64,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" alt="Brandon Wasilewski, Ventura REALTOR">
-  <div class="agent-info">
-    <div class="agent-name">Brandon Wasilewski</div>
-    <div class="agent-title">REALTOR® &nbsp;|&nbsp; Realty One Group Summit &nbsp;|&nbsp; DRE 02021131 &nbsp;|&nbsp; 805-856-8773</div>
-  </div>
-</div>
-
-<!-- MAIN CONTENT -->
-<div class="container">
-
-  <!-- TABS -->
-  <div class="tab-nav">
-    <button class="tab-btn active" data-tab="snapshot">Weekly Snapshot</button>
-    <button class="tab-btn" data-tab="narrative">Trend Narrative</button>
-    <button class="tab-btn" data-tab="indicators">Market Direction</button>
-    <button class="tab-btn" data-tab="picks">Featured Picks</button>
+  <!-- NARRATIVE -->
+  <div class="narrative-card" id="narrativeCard" style="display:none">
+    <div class="narrative-label">Market Narrative</div>
+    <div class="narrative-text" id="narrativeText"></div>
   </div>
 
-  <!-- TAB 1: WEEKLY SNAPSHOT -->
-  <div class="tab-panel active" id="tab-snapshot">
-    <div class="section-header">
-      <span class="section-title">This Week at a Glance</span>
-      <span class="section-label" id="snapshotWeekLabel"></span>
+  <!-- KPI GRID -->
+  <div class="kpi-grid" id="kpiGrid"></div>
+
+  <!-- DIRECTIONAL INDICATORS -->
+  <div class="section-header">
+    <div class="section-title">Market Trends</div>
+    <div class="section-badge" id="dirBadge">Directional Streaks</div>
+  </div>
+  <div class="dir-grid" id="dirGrid"></div>
+
+  <!-- HISTORICAL TREND CHARTS -->
+  <div class="section-header">
+    <div class="section-title">Historical Trends</div>
+    <div id="histBadge" class="section-badge">Loading history&hellip;</div>
+  </div>
+  <div class="chart-section">
+    <div class="chart-tabs" id="chartTabs">
+      <button class="chart-tab active" data-chart="pricing">Pricing</button>
+      <button class="chart-tab" data-chart="activity">Activity</button>
+      <button class="chart-tab" data-chart="velocity">Market Velocity</button>
+      <button class="chart-tab" data-chart="rates">Rates</button>
     </div>
-    <div class="metrics-grid" id="metricsGrid">
-      <div class="loading-state">
-        <div><span class="loading-dot"></span><span class="loading-dot"></span><span class="loading-dot"></span></div>
-        <p style="margin-top:0.75rem;">Loading market data...</p>
-      </div>
+    <div class="chart-wrap">
+      <canvas id="mainChart"></canvas>
+      <div class="chart-empty" id="chartEmpty" style="display:none">No history yet — add weeks using the admin panel below.</div>
     </div>
-    <div class="section-header" style="margin-top:1.5rem;">
-      <span class="section-title">4-Week Rolling View</span>
+    <div class="chart-range-note" id="chartRangeNote"></div>
+  </div>
+
+  <!-- HISTORY TABLE -->
+  <div class="history-table-wrap" id="historyTableWrap">
+    <div class="history-table-header">
+      <div class="history-table-title">Weekly History</div>
+      <div class="history-rows-count" id="histRowCount"></div>
     </div>
-    <div class="table-wrap">
-      <table class="data-table" id="rollingTable">
+    <div style="overflow-x:auto">
+      <table class="history-table">
         <thead>
-          <tr id="rollingTableHead">
-            <th>Metric</th>
-            <th>Week 1</th>
-            <th>Week 2</th>
-            <th>Week 3</th>
-            <th>Week 4</th>
+          <tr>
+            <th>Week</th>
+            <th>New Listings</th>
+            <th>Inventory</th>
+            <th>Median Price</th>
+            <th>$/Sq Ft</th>
+            <th>DOM</th>
+            <th>LP/SP</th>
+            <th>Pending</th>
+            <th>Closed</th>
+            <th>Rate</th>
           </tr>
         </thead>
-        <tbody id="rollingTableBody">
-          <tr><td colspan="5" style="text-align:center;color:var(--text-light);padding:2rem;">Loading...</td></tr>
-        </tbody>
+        <tbody id="historyTableBody"></tbody>
       </table>
     </div>
   </div>
 
-  <!-- TAB 2: TREND NARRATIVE -->
-  <div class="tab-panel" id="tab-narrative">
-    <div class="section-header">
-      <span class="section-title">Market Narrative</span>
-      <span class="section-label">Last 4 Weeks</span>
+  <!-- ADMIN TOGGLE -->
+  <button class="admin-toggle-btn" id="adminToggleBtn" onclick="toggleAdmin()">Update Market Data (Admin)</button>
+
+  <!-- ADMIN PANEL -->
+  <div class="admin-panel" id="adminPanel" style="display:none">
+    <div class="admin-title">Paste Weekly JSON Block</div>
+    <div class="admin-sub">
+      Paste the Memory File JSON output from your weekly workflow. Data is stored in your browser and persists week over week. All history is retained.<br>
+      <strong>Note:</strong> For the historical charts to pull from Google Sheets automatically, publish Tab 6 (Full History) as a public CSV — see setup instructions below.
     </div>
-    <div id="narrativeContainer">
-      <div class="loading-state">
-        <span class="loading-dot"></span><span class="loading-dot"></span><span class="loading-dot"></span>
-      </div>
+    <textarea class="admin-textarea" id="jsonInput" placeholder='{"weekLabel":"Week of May 12, 2025","newListings":12,...}'></textarea>
+    <div class="admin-btn-row">
+      <button class="btn-primary" onclick="saveWeek()">Save Week</button>
+      <button class="btn-secondary" onclick="clearAll()">Clear All Data</button>
+      <span class="admin-status" id="saveStatus"></span>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="backup-title">Export / Backup History</div>
+    <div class="backup-sub">Download all stored weeks as a JSON file for safekeeping.</div>
+    <div class="admin-btn-row">
+      <button class="btn-primary" onclick="downloadBackup()">Download Backup</button>
+      <button class="btn-secondary" onclick="importBackup()">Import Backup</button>
+      <input type="file" id="backupFileInput" style="display:none" accept=".json" onchange="handleImport(event)" />
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- GOOGLE SHEETS SETUP -->
+    <div class="backup-title">Google Sheets Historical Data (Setup)</div>
+    <div class="admin-sub">
+      To enable automatic chart history from your Google Sheet:<br>
+      1. Open your <strong>Ventura Market Memory File</strong> Google Sheet<br>
+      2. Go to <strong>File &rarr; Share &rarr; Publish to web</strong><br>
+      3. Select <strong>Tab: 6 - Full History</strong> and format <strong>Comma-separated values (.csv)</strong><br>
+      4. Click <strong>Publish</strong> and copy the URL<br>
+      5. Paste it in the field below and click Save
+    </div>
+    <input
+      type="text"
+      id="sheetUrlInput"
+      placeholder="https://docs.google.com/spreadsheets/d/SHEET_ID/pub?gid=GID&single=true&output=csv"
+      style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;background:var(--surface2);color:var(--ink);margin-bottom:10px;"
+    />
+    <div class="admin-btn-row">
+      <button class="btn-primary" onclick="saveSheetUrl()">Save Sheet URL</button>
+      <button class="btn-secondary" onclick="clearSheetUrl()">Clear URL</button>
+      <span class="admin-status" id="sheetUrlStatus"></span>
     </div>
   </div>
 
-  <!-- TAB 3: DIRECTIONAL INDICATORS -->
-  <div class="tab-panel" id="tab-indicators">
-    <div class="section-header">
-      <span class="section-title">Market Direction</span>
-      <span class="section-label">Current Trends</span>
-    </div>
-    <div class="indicators-grid" id="indicatorsGrid">
-      <div class="loading-state">
-        <span class="loading-dot"></span><span class="loading-dot"></span><span class="loading-dot"></span>
-      </div>
-    </div>
-  </div>
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <strong>Brandon Wasilewski</strong> &bull; Realty One Group Summit &bull; DRE: 02021131<br>
+    <a href="https://brandonwasilewski.com" target="_blank">brandonwasilewski.com</a>
+    &bull; 805-856-8773<br>
+    <span style="margin-top:4px;display:block">Data sourced from MLS activity. For informational purposes only. Not guaranteed accurate.</span>
+  </footer>
 
-  <!-- TAB 4: FEATURED PICKS -->
-  <div class="tab-panel" id="tab-picks">
-    <div class="section-header">
-      <span class="section-title">Featured Picks</span>
-      <span class="section-label" id="picksWeekLabel"></span>
-    </div>
-    <div class="picks-grid" id="picksGrid">
-      <div class="loading-state">
-        <span class="loading-dot"></span><span class="loading-dot"></span><span class="loading-dot"></span>
-      </div>
-    </div>
-  </div>
-
-</div>
-
-</div>
+</div><!-- /page-wrap -->
 
 <script>
-const SHEET_ID = '13gE7-A6FaDxzmWOY-iw1DtIB3AgI4Q0xU93GZYlvZEw';
+// ╔══════════════════════════════════════════════════════════════╗
+// ║  VENTURA MARKET TRACKER — Main JS                           ║
+// ║  Data sources (priority order):                              ║
+// ║   1. Google Sheets CSV (Tab 6 Full History) via published URL║
+// ║   2. localStorage (admin JSON entry fallback)               ║
+// ╚══════════════════════════════════════════════════════════════╝
 
-function gidUrl(sheetName) {
-  return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
-}
+const STORAGE_KEY    = 'ventura_market_history_v2';
+const SHEET_URL_KEY  = 'ventura_sheet_csv_url';
 
-async function fetchSheet(sheetName) {
-  const url = gidUrl(sheetName);
-  const res = await fetch(url);
-  const text = await res.text();
-  const json = JSON.parse(text.substring(47).slice(0, -2));
-  return json.table;
-}
+// ── State ──────────────────────────────────────────────────────
+let allHistory     = [];   // full history array (merged from all sources)
+let sheetHistory   = [];   // rows from Google Sheet CSV
+let localHistory   = [];   // rows from localStorage
+let mainChart      = null;
+let activeChartTab = 'pricing';
+let adminVisible   = false;
 
-function getVal(cell) {
-  if (!cell || cell.v === null || cell.v === undefined) return '';
-  return cell.f || String(cell.v);
-}
+// ── Bootstrap ─────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', async () => {
+  loadAdminInput();
+  localHistory = loadLocalHistory();
 
-function trendIcon(current, prev) {
-  if (!current || !prev) return '';
-  const cv = parseFloat(String(current).replace(/[^0-9.-]/g, ''));
-  const pv = parseFloat(String(prev).replace(/[^0-9.-]/g, ''));
-  if (isNaN(cv) || isNaN(pv)) return '';
-  if (cv > pv) return '<span class="trend-arrow trend-up">&#8593;</span>';
-  if (cv < pv) return '<span class="trend-arrow trend-down">&#8595;</span>';
-  return '<span class="trend-arrow trend-flat">&#8212;</span>';
-}
-
-function dirIcon(dir) {
-  const d = String(dir || '').toLowerCase();
-  if (d.includes('up') || d.includes('increas') || d === '↑') return { cls: 'dir-up', symbol: '&#8593;', label: 'Increasing' };
-  if (d.includes('down') || d.includes('decreas') || d === '↓') return { cls: 'dir-down', symbol: '&#8595;', label: 'Decreasing' };
-  if (d.includes('neutral') || d.includes('stable') || d.includes('flat') || d === '→') return { cls: 'dir-flat', symbol: '&#8212;', label: 'Neutral' };
-  return { cls: 'dir-flat', symbol: '&#8212;', label: 'Stable' };
-}
-
-// Sheet 1 is VERTICAL: col A = metric names, col B = most recent week, col C = prior week, etc.
-// Row 3 (index 2) = header row with week labels
-// Rows 5-20 (index 4-19) = data rows, skipping section header rows
-
-async function loadSnapshot() {
-  try {
-    const table = await fetchSheet('1 - Weekly Snapshot');
-    if (!table || !table.rows || table.rows.length === 0) throw new Error('No data');
-
-    const rows = table.rows;
-
-    // Row index 2 = header row (index 0 = row 1, so row 3 = index 2)
-    // But gviz skips some formatting rows - find the header row by looking for a date-like value in col B
-    // Col A = "METRIC", col B onward = week labels
-    // Find the week label row - it contains the date range in col B
-    let headerRowIdx = -1;
-    let weekLabels = [];
-    // Find the header row — scan ALL rows for one where col A = METRIC
-    // gviz may skip merged rows so we cast a wide net
-    for (let i = 0; i < rows.length; i++) {
-      if (!rows[i].c) continue;
-      const colA = getVal(rows[i].c[0]).trim();
-      const colB = rows[i].c[1] ? getVal(rows[i].c[1]).trim() : '';
-      const isMetricRow = /^metric$/i.test(colA);
-      const isDateRow = /^\w{3}[\s\-–]\d|\d{4}/.test(colB);
-      if (isMetricRow || isDateRow) {
-        headerRowIdx = i;
-        rows[i].c.forEach((cell, idx) => {
-          if (idx > 0) {
-            const v = getVal(cell);
-            if (v && v.trim() !== '') weekLabels.push(v.trim());
-          }
-        });
-        break;
-      }
+  const sheetUrl = localStorage.getItem(SHEET_URL_KEY);
+  if (sheetUrl) {
+    document.getElementById('sheetUrlInput').value = sheetUrl;
+    try {
+      sheetHistory = await fetchSheetHistory(sheetUrl);
+    } catch(e) {
+      console.warn('Sheet fetch failed, using localStorage only:', e.message);
     }
-    // Fallback — grab week label from the first data cell with a date pattern
-    if (weekLabels.length === 0) {
-      for (let i = 0; i < rows.length; i++) {
-        if (!rows[i].c) continue;
-        for (let j = 1; j < rows[i].c.length; j++) {
-          const v = getVal(rows[i].c[j]);
-          if (v && /apr|may|jun|jul|aug|sep|oct|nov|dec|jan|feb|mar/i.test(v)) {
-            weekLabels.push(v);
-          }
+  }
+
+  mergeAndRender();
+});
+
+// ── Merge sheet + local, deduplicate by weekLabel ─────────────
+function mergeAndRender() {
+  const seen  = new Set();
+  const merged = [];
+
+  // Sheet history is authoritative — add first
+  for (const row of sheetHistory) {
+    if (!seen.has(row.weekLabel)) {
+      seen.add(row.weekLabel);
+      merged.push({ ...row, _source: 'sheet' });
+    }
+  }
+  // Local fills gaps for weeks not yet in sheet
+  for (const row of localHistory) {
+    if (!seen.has(row.weekLabel)) {
+      seen.add(row.weekLabel);
+      merged.push({ ...row, _source: 'local' });
+    }
+  }
+
+  // Sort chronologically (oldest first)
+  merged.sort((a, b) => parseWeekLabel(a.weekLabel) - parseWeekLabel(b.weekLabel));
+  allHistory = merged;
+
+  renderAll();
+}
+
+// ── Render everything ──────────────────────────────────────────
+function renderAll() {
+  const current = allHistory.length > 0 ? allHistory[allHistory.length - 1] : null;
+
+  renderHeader(current);
+  renderNarrative(current);
+  renderKPIs(current);
+  renderDirectional(current);
+  renderHistoryTable();
+  renderChart();
+
+  const hasSomeSheet = allHistory.some(r => r._source === 'sheet');
+  document.getElementById('histBadge').textContent =
+    allHistory.length === 0 ? 'No history yet'
+    : allHistory.length + ' week' + (allHistory.length !== 1 ? 's' : '') + (hasSomeSheet ? ' (live from sheet)' : '');
+}
+
+// ── Header ─────────────────────────────────────────────────────
+function renderHeader(current) {
+  const metaEl = document.getElementById('headerMeta');
+  if (!current) {
+    metaEl.innerHTML = 'No data yet<br><a href="https://brandonwasilewski.com" target="_blank">brandonwasilewski.com</a>';
+    return;
+  }
+  const sourceLabel = current._source === 'sheet'
+    ? '<span class="source-chip sheet"><span class="dot"></span>Live Sheet</span>'
+    : '<span class="source-chip local"><span class="dot"></span>Local</span>';
+  metaEl.innerHTML =
+    'Updated: ' + esc(current.weekLabel) + ' ' + sourceLabel +
+    '<br><a href="https://brandonwasilewski.com" target="_blank">brandonwasilewski.com</a>';
+}
+
+// ── Narrative ──────────────────────────────────────────────────
+function renderNarrative(current) {
+  const card = document.getElementById('narrativeCard');
+  const text = document.getElementById('narrativeText');
+  if (!current || !current.narrative) { card.style.display = 'none'; return; }
+  card.style.display = '';
+  text.textContent = current.narrative;
+}
+
+// ── KPI cards ──────────────────────────────────────────────────
+function renderKPIs(current) {
+  const grid = document.getElementById('kpiGrid');
+  const d = current || {};
+  const fmt = (v, prefix='', suffix='') =>
+    v != null && v !== '' ? prefix + fmtNum(v) + suffix : '\u2013\u2013';
+
+  const cards = [
+    { label: 'New Listings',         value: fmt(d.newListings),      sub: 'this week' },
+    { label: 'Total Inventory',      value: fmt(d.totalInventory),   sub: 'active' },
+    { label: 'Median Sold Price',    value: fmt(d.medianClosePrice, '$', ''), sub: 'closed sales', isPrice: true },
+    { label: 'Median $/Sq Ft',       value: fmt(d.medianPSF, '$', ''),        sub: 'sold' },
+    { label: 'Median DOM',           value: fmt(d.medianDOM),        sub: 'days on market' },
+    { label: 'LP/SP Ratio',          value: d.lpsp != null && d.lpsp !== '' ? fmtPct(d.lpsp) : '\u2013\u2013', sub: 'list vs sold' },
+    { label: 'Price Reductions',     value: fmt(d.priceReductions),  sub: 'this week' },
+    { label: '30-Yr Rate',           value: d.rate != null && d.rate !== '' ? d.rate + '%' : '\u2013\u2013', sub: 'national avg' },
+  ];
+
+  grid.innerHTML = cards.map(c => `
+    <div class="kpi-card">
+      <div class="kpi-label">${c.label}</div>
+      <div class="kpi-value">${c.isPrice && c.value !== '\u2013\u2013' ? fmtPrice(d.medianClosePrice) : c.value}</div>
+      <div class="kpi-sub">${c.sub}</div>
+    </div>
+  `).join('');
+}
+
+// ── Directional indicators ─────────────────────────────────────
+function renderDirectional(current) {
+  const grid = document.getElementById('dirGrid');
+  const d = current || {};
+  const dirs = [
+    { label: 'Inventory',       dir: d.invDir,   streak: d.invStreak },
+    { label: 'Seller Pricing',  dir: d.selDir,   streak: d.selStreak },
+    { label: 'Buyer Demand',    dir: d.buyDir,   streak: d.buyStreak },
+    { label: 'Price Trend',     dir: d.priceDir, streak: d.priceStreak },
+  ];
+  grid.innerHTML = dirs.map(item => {
+    const dir  = (item.dir || 'neutral').toLowerCase();
+    const str  = Number(item.streak) || 1;
+    const confirmed = str >= 3;
+    const arrow = dir === 'up' ? '↑' : dir === 'down' ? '↓' : '→';
+    const cls   = dir === 'up' ? 'up' : dir === 'down' ? 'down' : 'neutral';
+    const label = dir === 'up' ? 'Increasing' : dir === 'down' ? 'Decreasing' : 'Stable';
+    return `
+      <div class="dir-card">
+        <div class="dir-arrow ${cls}">${arrow}</div>
+        <div>
+          <div class="dir-label">${item.label}</div>
+          <div class="dir-status">
+            ${label}
+            ${confirmed ? '<span class="confirmed-badge">Confirmed</span>' : ''}
+          </div>
+          <div class="dir-streak">${str} week${str !== 1 ? 's' : ''} in same direction</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ── History table ─────────────────────────────────────────────
+function renderHistoryTable() {
+  const tbody = document.getElementById('historyTableBody');
+  const countEl = document.getElementById('histRowCount');
+
+  if (allHistory.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:28px;color:var(--ink-3)">No history yet.</td></tr>';
+    countEl.textContent = '';
+    return;
+  }
+
+  const rows = [...allHistory].reverse(); // most recent first
+  countEl.textContent = rows.length + ' week' + (rows.length !== 1 ? 's' : '');
+
+  tbody.innerHTML = rows.map(r => `
+    <tr>
+      <td class="week-col">${esc(r.weekLabel)}</td>
+      <td class="num-col">${r.newListings ?? '\u2013'}</td>
+      <td class="num-col">${r.totalInventory ?? '\u2013'}</td>
+      <td class="num-col">${r.medianClosePrice != null ? fmtPrice(r.medianClosePrice) : '\u2013'}</td>
+      <td class="num-col">${r.medianPSF != null ? '$' + r.medianPSF : '\u2013'}</td>
+      <td class="num-col">${r.medianDOM != null ? r.medianDOM + 'd' : '\u2013'}</td>
+      <td class="num-col">${r.lpsp != null ? fmtPct(r.lpsp) : '\u2013'}</td>
+      <td class="num-col">${r.pendingCount ?? '\u2013'}</td>
+      <td class="num-col">${r.closedCount ?? '\u2013'}</td>
+      <td class="num-col">${r.rate != null ? r.rate + '%' : '\u2013'}</td>
+    </tr>
+  `).join('');
+}
+
+// ── Charts ────────────────────────────────────────────────────
+const CHART_CONFIGS = {
+  pricing: {
+    label: 'Pricing',
+    datasets: [
+      { key: 'medianClosePrice', label: 'Median Sold Price', color: '#1C2B4A', yAxis: 'y', fmt: v => '$' + fmtNum(v) },
+      { key: 'medianPSF',        label: '$/Sq Ft',           color: '#C5A84F', yAxis: 'y1', fmt: v => '$' + v },
+    ]
+  },
+  activity: {
+    label: 'Activity',
+    datasets: [
+      { key: 'newListings',    label: 'New Listings',    color: '#1C2B4A', yAxis: 'y', fmt: v => v },
+      { key: 'aucCount',       label: 'AUC',             color: '#C5A84F', yAxis: 'y', fmt: v => v },
+      { key: 'pendingCount',   label: 'Pending',         color: '#3A7D5C', yAxis: 'y', fmt: v => v },
+      { key: 'closedCount',    label: 'Closed',          color: '#8B6CAD', yAxis: 'y', fmt: v => v },
+    ]
+  },
+  velocity: {
+    label: 'Market Velocity',
+    datasets: [
+      { key: 'medianDOM',  label: 'Median DOM',   color: '#1C2B4A', yAxis: 'y',  fmt: v => v + 'd' },
+      { key: 'lpsp',       label: 'LP/SP %',      color: '#C5A84F', yAxis: 'y1', fmt: v => fmtPct(v) },
+    ]
+  },
+  rates: {
+    label: 'Rates',
+    datasets: [
+      { key: 'rate', label: '30-Yr Fixed Rate', color: '#1C2B4A', yAxis: 'y', fmt: v => v + '%' },
+    ]
+  }
+};
+
+function renderChart() {
+  const canvas  = document.getElementById('mainChart');
+  const emptyEl = document.getElementById('chartEmpty');
+  const noteEl  = document.getElementById('chartRangeNote');
+
+  // Show last 13 weeks (~3 months) in chart
+  const CHART_WINDOW = 13;
+  const chartData = allHistory.slice(-CHART_WINDOW);
+
+  if (chartData.length === 0) {
+    canvas.style.display = 'none';
+    emptyEl.style.display = 'flex';
+    noteEl.textContent = '';
+    return;
+  }
+
+  canvas.style.display = 'block';
+  emptyEl.style.display = 'none';
+
+  const cfg = CHART_CONFIGS[activeChartTab];
+  const labels = chartData.map(r => r.weekLabel);
+
+  noteEl.textContent = chartData.length >= CHART_WINDOW
+    ? 'Showing last ' + CHART_WINDOW + ' weeks. Full history in table below.'
+    : 'Showing all ' + chartData.length + ' week' + (chartData.length !== 1 ? 's' : '') + ' of history.';
+
+  const datasets = cfg.datasets.map((ds, i) => ({
+    label: ds.label,
+    data: chartData.map(r => {
+      const v = r[ds.key];
+      return (v != null && v !== '') ? Number(v) : null;
+    }),
+    borderColor: ds.color,
+    backgroundColor: ds.color + '18',
+    fill: cfg.datasets.length === 1,
+    tension: 0.35,
+    pointRadius: 4,
+    pointHoverRadius: 6,
+    borderWidth: 2.5,
+    yAxisID: ds.yAxis,
+    spanGaps: true,
+  }));
+
+  const scales = {
+    x: {
+      grid: { color: 'rgba(0,0,0,0.04)' },
+      ticks: {
+        font: { family: "'DM Sans', sans-serif", size: 11 },
+        color: '#9B9890',
+        maxRotation: 40,
+        callback: function(val, idx) {
+          const lbl = labels[idx] || '';
+          // Shorten labels
+          return lbl.replace(/, 20\d\d/, '');
         }
-        if (weekLabels.length > 0) break;
+      }
+    },
+    y: {
+      position: 'left',
+      grid: { color: 'rgba(0,0,0,0.04)' },
+      ticks: {
+        font: { family: "'DM Sans', sans-serif", size: 11 },
+        color: '#9B9890',
+        callback: v => cfg.datasets[0].fmt(v)
       }
     }
+  };
 
-    // Build a map: metricName -> [col1val, col2val, col3val, col4val]
-    const metricData = {};
-    const skipPatterns = /^\s*$|^—|supply|demand|closed sales|rate context/i;
-
-    for (let i = 0; i < rows.length; i++) {
-      if (i === headerRowIdx) continue;
-      const row = rows[i];
-      if (!row.c || !row.c[0]) continue;
-      const metricName = getVal(row.c[0]);
-      if (!metricName || skipPatterns.test(metricName)) continue;
-      const vals = [];
-      for (let j = 1; j < (row.c.length || 0); j++) {
-        vals.push(row.c[j] ? getVal(row.c[j]) : '');
+  if (cfg.datasets.length > 1 && cfg.datasets[1].yAxis === 'y1') {
+    scales.y1 = {
+      position: 'right',
+      grid: { drawOnChartArea: false },
+      ticks: {
+        font: { family: "'DM Sans', sans-serif", size: 11 },
+        color: '#C5A84F',
+        callback: v => cfg.datasets[1].fmt(v)
       }
-      if (vals.some(v => v !== '')) {
-        metricData[metricName] = vals;
-      }
-    }
-
-    // Most recent week = index 0 of vals, prior week = index 1
-    const currentWeekLabel = weekLabels[0] || 'Current Week';
-    document.getElementById('snapshotWeekLabel').textContent = currentWeekLabel;
-    document.getElementById('lastUpdated').textContent = 'Last updated: ' + currentWeekLabel;
-
-    // Display metric cards
-    const displayMetrics = [
-      { match: /new list/i, label: 'New Listings', featured: false },
-      { match: /total active|inventory/i, label: 'Total Inventory', featured: false },
-      { match: /price reduc/i, label: 'Price Reductions', featured: false },
-      { match: /auc count/i, label: 'Under Contract (AUC)', featured: false },
-      { match: /pending count/i, label: 'Pending', featured: false },
-      { match: /closed count/i, label: 'Closed Sales', featured: false },
-      { match: /median close price/i, label: 'Median Close Price', featured: true },
-      { match: /median.*sq|median.*psf/i, label: 'Median $/sqft', featured: false },
-      { match: /median dom.*closed|median dom \(closed/i, label: 'Median DOM', featured: false },
-      { match: /lp.?sp/i, label: 'LP/SP Ratio', featured: false },
-    ];
-
-    const grid = document.getElementById('metricsGrid');
-    grid.innerHTML = '';
-
-    displayMetrics.forEach(dm => {
-      const key = Object.keys(metricData).find(k => dm.match.test(k));
-      if (!key) return;
-      const vals = metricData[key];
-      const current = vals[0];
-      const prior = vals[1];
-      if (!current) return;
-
-      const card = document.createElement('div');
-      card.className = 'metric-card' + (dm.featured ? ' featured' : '');
-      card.innerHTML = `
-        <div class="metric-label">${dm.label}</div>
-        <div class="metric-value">${current}</div>
-        ${prior ? `<div class="metric-sub">Prior week: ${prior}</div>` : ''}
-        ${trendIcon(current, prior)}
-      `;
-      grid.appendChild(card);
-    });
-
-    if (grid.children.length === 0) {
-      grid.innerHTML = '<div class="error-state">Metric data not yet available. Make sure the sheet has data in column B.</div>';
-    }
-
-    // Build 4-week rolling table
-    const tableMetrics = [
-      { match: /new list/i, label: 'New Listings' },
-      { match: /pending count/i, label: 'Pending' },
-      { match: /closed count/i, label: 'Closed' },
-      { match: /price reduc/i, label: 'Price Reductions' },
-      { match: /median close price/i, label: 'Median Close Price' },
-      { match: /median.*sq|median.*psf/i, label: 'Median $/sqft' },
-      { match: /median dom.*closed|median dom \(closed/i, label: 'Median DOM' },
-      { match: /lp.?sp/i, label: 'LP/SP Ratio' },
-    ];
-
-    const tbody = document.getElementById('rollingTableBody');
-    tbody.innerHTML = '';
-
-    // Update table headers with actual week labels
-    const thead = document.getElementById('rollingTableHead');
-    if (thead && weekLabels.length > 0) {
-      thead.innerHTML = '<th>Metric</th>' + weekLabels.slice(0,4).map((w,i) => `<th>${w || 'Week ' + (i+1)}</th>`).join('');
-    }
-
-    tableMetrics.forEach((tm, rowIdx) => {
-      const key = Object.keys(metricData).find(k => tm.match.test(k));
-      const vals = key ? metricData[key] : [];
-      const tr = document.createElement('tr');
-      if (rowIdx === 0) tr.className = '';
-      const cells = [tm.label, vals[0]||'—', vals[1]||'—', vals[2]||'—', vals[3]||'—'];
-      tr.innerHTML = cells.map((v,i) => `<td${i===0?' style="font-weight:500;color:var(--text-mid);font-size:12px;"':''}>${v}</td>`).join('');
-      tbody.appendChild(tr);
-    });
-
-  } catch (e) {
-    document.getElementById('metricsGrid').innerHTML = `<div class="error-state">Unable to load snapshot data.<br><small style="opacity:0.7;margin-top:6px;display:block;">${e.message}</small></div>`;
-    console.error('Snapshot error:', e);
-  }
-}
-
-async function loadNarrative() {
-  try {
-    const table = await fetchSheet('2 - Trend Narrative');
-    if (!table || !table.rows || table.rows.length === 0) throw new Error('No data');
-
-    const container = document.getElementById('narrativeContainer');
-    container.innerHTML = '';
-
-    // Patterns to skip — internal instructions and header rows
-    const skipPatterns = /4-week rolling|read before filming|narrative.*direction|acceleration|reversal|no raw numbers|ventura market memory|trend narrative|^\s*week\s*$/i;
-
-    const validRows = table.rows.filter(row => {
-      if (!row.c) return false;
-      const colA = getVal(row.c[0]);
-      const colB = row.c[1] ? getVal(row.c[1]) : '';
-      if (!colA && !colB) return false;
-      if (skipPatterns.test(colA)) return false;
-      if (!colB || skipPatterns.test(colB)) return false;
-      return true;
-    });
-
-    validRows.slice(0, 4).forEach(row => {
-      const weekVal = getVal(row.c[0]);
-      const textVal = getVal(row.c[1]) || '';
-      if (!textVal) return;
-
-      const card = document.createElement('div');
-      card.className = 'narrative-card';
-      card.innerHTML = `
-        ${weekVal ? `<div class="narrative-week">${weekVal}</div>` : ''}
-        <div class="narrative-text">${textVal}</div>
-      `;
-      container.appendChild(card);
-    });
-
-    if (container.children.length === 0) {
-      container.innerHTML = '<div class="error-state">Narrative data not yet available. This will populate after your first weekly update.</div>';
-    }
-
-  } catch (e) {
-    document.getElementById('narrativeContainer').innerHTML = `<div class="error-state">Unable to load narrative data.<br><small style="opacity:0.7;margin-top:6px;display:block;">${e.message}</small></div>`;
-  }
-}
-
-async function loadIndicators() {
-  try {
-    const table = await fetchSheet('3 - Directional Indicators');
-    if (!table || !table.rows || table.rows.length === 0) throw new Error('No data');
-
-    const grid = document.getElementById('indicatorsGrid');
-    grid.innerHTML = '';
-
-    // Sheet structure: Col A = Indicator, Col B = Direction, Col C = Streak, Col D = Filming Note
-    // Data rows start at row 5 (index 4) — skip title, subtitle, rule, and header rows
-    // Filter: col A must be a known indicator name, col B must be a direction word
-    const validIndicators = ['inventory', 'seller pricing pressure', 'buyer demand', 'price trend'];
-
-    const dataRows = table.rows.filter(row => {
-      if (!row.c || !row.c[0]) return false;
-      const colA = getVal(row.c[0]).toLowerCase().trim();
-      return validIndicators.some(ind => colA.includes(ind.split(' ')[0]));
-    });
-
-    dataRows.forEach(row => {
-      const name = getVal(row.c[0]);
-      const dirVal = row.c[1] ? getVal(row.c[1]).trim() : '';
-      const streakVal = row.c[2] ? getVal(row.c[2]).trim() : '';
-
-      if (!name || !dirVal) return;
-
-      const { cls, symbol } = dirIcon(dirVal);
-      const streakNum = parseInt(streakVal) || 0;
-      const isConfirmed = streakNum >= 3;
-
-      const card = document.createElement('div');
-      card.className = 'indicator-card';
-      card.innerHTML = `
-        <div class="indicator-label">${name}</div>
-        <div class="indicator-direction">
-          <div class="dir-icon ${cls}">${symbol}</div>
-          <div class="dir-label">${dirVal}</div>
-        </div>
-        ${streakNum ? `<span class="streak-badge ${isConfirmed ? 'confirmed' : ''}">${streakNum} week streak${isConfirmed ? ' — confirmed trend' : ''}</span>` : ''}
-      `;
-      grid.appendChild(card);
-    });
-
-    if (grid.children.length === 0) {
-      grid.innerHTML = '<div class="error-state">Directional indicator data not yet available.</div>';
-    }
-
-  } catch (e) {
-    document.getElementById('indicatorsGrid').innerHTML = `<div class="error-state">Unable to load indicator data.<br><small style="opacity:0.7;margin-top:6px;display:block;">${e.message}</small></div>`;
-  }
-}
-
-async function loadPicks() {
-  try {
-    const table = await fetchSheet('4 - Featured Picks Log');
-    if (!table || !table.rows || table.rows.length === 0) throw new Error('No data');
-
-    const grid = document.getElementById('picksGrid');
-    grid.innerHTML = '';
-
-    // Sheet structure: Col A=WEEK, Col B=TYPE, Col C=ADDRESS, Col D=LIST PRICE, Col E=STATUS AT FEATURE, Col F=CURRENT STATUS
-    // Find data rows — skip title/header/instruction rows
-    const skipPatterns = /ventura market|featured picks|luxury.*investment|update.*current|^\s*week\s*$/i;
-
-    const dataRows = table.rows.filter(row => {
-      if (!row.c) return false;
-      const colA = getVal(row.c[0]);
-      const colB = row.c[1] ? getVal(row.c[1]) : '';
-      if (!colA && !colB) return false;
-      if (skipPatterns.test(colA)) return false;
-      // Must have a TYPE value of LUXURY or INVESTMENT
-      if (!/luxury|investment|deal/i.test(colB)) return false;
-      return true;
-    });
-
-    if (dataRows.length === 0) {
-      grid.innerHTML = '<div class="error-state">Featured picks not yet available. This will populate after your first weekly update.</div>';
-      return;
-    }
-
-    // Get most recent week label
-    const weekLabel = getVal(dataRows[0].c[0]);
-    document.getElementById('picksWeekLabel').textContent = weekLabel;
-
-    // Filter to most recent week only
-    const currentWeekRows = dataRows.filter(row => getVal(row.c[0]) === weekLabel || !getVal(row.c[0]));
-
-    const typeConfig = {
-      'luxury':     { display: 'Luxury Pick',     headerCls: 'luxury',     ctaText: 'Talk about this property' },
-      'investment': { display: 'Investment Pick',  headerCls: 'investment', ctaText: 'Discuss the investment angle' },
-      'deal':       { display: 'Deal of the Week', headerCls: 'deal',       ctaText: 'Ask about deals like this' },
     };
-
-    currentWeekRows.forEach(row => {
-      const type = getVal(row.c[1]).toLowerCase().trim();
-      const addr = getVal(row.c[2]);
-      const price = getVal(row.c[3]);
-      const status = getVal(row.c[4]);
-      const currentStatus = row.c[5] ? getVal(row.c[5]) : '';
-
-      if (!addr) return;
-
-      const typeKey = Object.keys(typeConfig).find(k => type.includes(k));
-      if (!typeKey) return;
-      const cfg = typeConfig[typeKey];
-      const displayStatus = currentStatus || status;
-
-      const card = document.createElement('div');
-      card.className = 'pick-card';
-      card.innerHTML = `
-        <div class="pick-header ${cfg.headerCls}">
-          <span class="pick-type">${cfg.display}</span>
-          ${displayStatus ? `<span class="pick-badge">${displayStatus}</span>` : ''}
-        </div>
-        <div class="pick-body">
-          <div class="pick-address">${addr}</div>
-          ${price ? `<div class="pick-price">${price}</div>` : ''}
-        </div>
-      `;
-      grid.appendChild(card);
-    });
-
-    if (grid.children.length === 0) {
-      grid.innerHTML = '<div class="error-state">Featured picks not yet available for this week.</div>';
-    }
-
-  } catch (e) {
-    document.getElementById('picksGrid').innerHTML = `<div class="error-state">Unable to load picks data.<br><small style="opacity:0.7;margin-top:6px;display:block;">${e.message}</small></div>`;
   }
+
+  if (mainChart) mainChart.destroy();
+
+  mainChart = new Chart(canvas, {
+    type: 'line',
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: {
+          position: 'top',
+          labels: { font: { family: "'DM Sans', sans-serif", size: 12 }, color: '#555550', boxWidth: 12, padding: 16 }
+        },
+        tooltip: {
+          backgroundColor: '#1C2B4A',
+          titleFont: { family: "'DM Sans', sans-serif", size: 12 },
+          bodyFont:  { family: "'DM Sans', sans-serif", size: 12 },
+          padding: 12,
+          cornerRadius: 8,
+        }
+      },
+      scales
+    }
+  });
 }
 
-document.querySelectorAll('.tab-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+// Tab switching
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('chartTabs').addEventListener('click', e => {
+    const btn = e.target.closest('.chart-tab');
+    if (!btn) return;
+    document.querySelectorAll('.chart-tab').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    activeChartTab = btn.dataset.chart;
+    renderChart();
   });
 });
 
-loadSnapshot();
-loadNarrative();
-loadIndicators();
-loadPicks();
-</script>
+// ── Google Sheets CSV fetch ────────────────────────────────────
+async function fetchSheetHistory(csvUrl) {
+  const resp = await fetch(csvUrl);
+  if (!resp.ok) throw new Error('HTTP ' + resp.status);
+  const text = await resp.text();
+  return parseCSV(text);
+}
 
-<script>
-  function sendHeight() {
-    const h = document.body.scrollHeight;
-    window.parent.postMessage({ iframeHeight: h }, '*');
+function parseCSV(text) {
+  const lines = text.split('\n').filter(l => l.trim());
+  if (lines.length < 2) return [];
+
+  const headers = splitCSVRow(lines[0]);
+  const rows = [];
+
+  for (let i = 1; i < lines.length; i++) {
+    const cols = splitCSVRow(lines[i]);
+    if (cols.length < 2) continue;
+    const obj = {};
+    headers.forEach((h, idx) => { obj[h.trim()] = cols[idx] != null ? cols[idx].trim() : ''; });
+    // Coerce numeric fields
+    const nums = ['newListings','totalInventory','priceReductions','avgReductionPct',
+                  'aucCount','pendingCount','medianPendingDOM','closedCount',
+                  'medianClosePrice','medianPSF','medianDOM','lpsp','rate',
+                  'invStreak','selStreak','buyStreak','priceStreak','luxPrice','invPrice','dealPrice'];
+    nums.forEach(k => { if (obj[k] !== '' && obj[k] != null) obj[k] = parseFloat(obj[k]) || null; });
+    if (obj.weekLabel) rows.push(obj);
   }
-  // Send once after fonts and data have loaded
-  window.addEventListener('load', function() {
-    setTimeout(sendHeight, 800);
-  });
+  return rows;
+}
+
+// Minimal RFC 4180 CSV row splitter (handles quoted fields)
+function splitCSVRow(row) {
+  const result = [];
+  let cur = '', inQ = false;
+  for (let i = 0; i < row.length; i++) {
+    const ch = row[i];
+    if (ch === '"') {
+      if (inQ && row[i+1] === '"') { cur += '"'; i++; }
+      else inQ = !inQ;
+    } else if (ch === ',' && !inQ) {
+      result.push(cur); cur = '';
+    } else {
+      cur += ch;
+    }
+  }
+  result.push(cur);
+  return result;
+}
+
+// ── localStorage helpers ───────────────────────────────────────
+function loadLocalHistory() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch { return []; }
+}
+
+function saveLocalHistory(arr) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); } catch(e) {}
+}
+
+function loadAdminInput() {
+  const saved = localStorage.getItem('ventura_admin_input');
+  if (saved) document.getElementById('jsonInput').value = saved;
+  const url = localStorage.getItem(SHEET_URL_KEY);
+  if (url) {
+    const el = document.getElementById('sheetUrlInput');
+    if (el) el.value = url;
+  }
+}
+
+// ── Admin actions ─────────────────────────────────────────────
+function toggleAdmin() {
+  adminVisible = !adminVisible;
+  document.getElementById('adminPanel').style.display = adminVisible ? '' : 'none';
+  document.getElementById('adminToggleBtn').textContent = adminVisible ? 'Close Admin Panel' : 'Update Market Data (Admin)';
+}
+
+async function saveWeek() {
+  const input   = document.getElementById('jsonInput').value.trim();
+  const statusEl = document.getElementById('saveStatus');
+  if (!input) { statusEl.textContent = 'Nothing to save.'; statusEl.className = 'admin-status error'; return; }
+
+  let data;
+  try {
+    data = JSON.parse(input);
+  } catch(e) {
+    statusEl.textContent = 'JSON parse error — check formatting.';
+    statusEl.className = 'admin-status error';
+    return;
+  }
+
+  if (!data.weekLabel) {
+    statusEl.textContent = 'Missing weekLabel field.';
+    statusEl.className = 'admin-status error';
+    return;
+  }
+
+  // Add to local history (dedup)
+  localHistory = localHistory.filter(r => r.weekLabel !== data.weekLabel);
+  localHistory.push(data);
+  saveLocalHistory(localHistory);
+  localStorage.setItem('ventura_admin_input', input);
+
+  statusEl.textContent = 'Saved: ' + data.weekLabel + ' (' + localHistory.length + ' weeks local)';
+  statusEl.className = 'admin-status';
+
+  mergeAndRender();
+}
+
+function clearAll() {
+  if (!confirm('Clear all locally stored weeks? This cannot be undone.\n(Sheet-sourced data is not affected.)')) return;
+  localHistory = [];
+  saveLocalHistory([]);
+  localStorage.removeItem('ventura_admin_input');
+  document.getElementById('jsonInput').value = '';
+  document.getElementById('saveStatus').textContent = 'Local data cleared.';
+  document.getElementById('saveStatus').className = 'admin-status';
+  mergeAndRender();
+}
+
+function downloadBackup() {
+  const blob = new Blob([JSON.stringify(allHistory, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'ventura-market-history-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+}
+
+function importBackup() { document.getElementById('backupFileInput').click(); }
+
+function handleImport(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const imported = JSON.parse(ev.target.result);
+      if (!Array.isArray(imported)) throw new Error('Expected array');
+      // Merge imported into local, deduplicate
+      const seen = new Set(localHistory.map(r => r.weekLabel));
+      let added = 0;
+      imported.forEach(r => { if (r.weekLabel && !seen.has(r.weekLabel)) { localHistory.push(r); seen.add(r.weekLabel); added++; } });
+      saveLocalHistory(localHistory);
+      document.getElementById('saveStatus').textContent = 'Imported ' + added + ' new week(s).';
+      document.getElementById('saveStatus').className = 'admin-status';
+      mergeAndRender();
+    } catch(err) {
+      document.getElementById('saveStatus').textContent = 'Import failed: ' + err.message;
+      document.getElementById('saveStatus').className = 'admin-status error';
+    }
+  };
+  reader.readAsText(file);
+}
+
+async function saveSheetUrl() {
+  const url    = document.getElementById('sheetUrlInput').value.trim();
+  const status = document.getElementById('sheetUrlStatus');
+  if (!url) { clearSheetUrl(); return; }
+
+  status.textContent = 'Testing connection...';
+  status.className   = 'admin-status';
+
+  try {
+    const rows = await fetchSheetHistory(url);
+    localStorage.setItem(SHEET_URL_KEY, url);
+    sheetHistory = rows;
+    status.textContent = 'Connected — ' + rows.length + ' rows loaded from sheet.';
+    status.className   = 'admin-status';
+    mergeAndRender();
+  } catch(e) {
+    status.textContent = 'Failed: ' + e.message + ' — check URL and that sheet is published publicly.';
+    status.className   = 'admin-status error';
+  }
+}
+
+function clearSheetUrl() {
+  localStorage.removeItem(SHEET_URL_KEY);
+  document.getElementById('sheetUrlInput').value = '';
+  document.getElementById('sheetUrlStatus').textContent = 'Sheet URL cleared.';
+  document.getElementById('sheetUrlStatus').className = 'admin-status';
+  sheetHistory = [];
+  mergeAndRender();
+}
+
+// ── Formatting helpers ─────────────────────────────────────────
+function fmtNum(v) {
+  const n = Number(v);
+  if (isNaN(n)) return v;
+  return n >= 1000 ? n.toLocaleString() : String(n);
+}
+function fmtPrice(v) {
+  const n = Number(v);
+  if (isNaN(n)) return '\u2013\u2013';
+  if (n >= 1000000) return '$' + (n / 1000000).toFixed(2).replace(/\.?0+$/, '') + 'M';
+  if (n >= 1000)    return '$' + Math.round(n / 1000) + 'K';
+  return '$' + n;
+}
+function fmtPct(v) {
+  const n = Number(v);
+  if (isNaN(n)) return '\u2013\u2013';
+  // lpsp is stored as 100 (= 100%) or 99.77 (= 99.77%)
+  return n > 10 ? n.toFixed(2) + '%' : (n * 100).toFixed(2) + '%';
+}
+function esc(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function parseWeekLabel(label) {
+  if (!label) return 0;
+  const months = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+  // Match "Apr 30–May 6, 2026" or "Week of May 5, 2025"
+  const m = String(label).match(/(\w{3})\s+\d+[–\-,\s]+(?:(\w{3})\s+)?(\d+),?\s*(\d{4})/);
+  if (m) {
+    const mon = months[m[2] || m[1]] ?? 0;
+    const day = parseInt(m[3]);
+    const yr  = parseInt(m[4]);
+    return new Date(yr, mon, day).getTime();
+  }
+  return 0;
+}
 </script>
 </body>
 </html>
