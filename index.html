@@ -190,6 +190,31 @@
     .site-footer a { color: var(--black); text-decoration: none; }
     .site-footer a:hover { color: var(--gold); }
  
+    /* Valuation CTA */
+    .valuation-btn {
+      display: block;
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto 40px;
+      padding: 18px 28px;
+      background: var(--black);
+      color: #fff;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      text-decoration: none;
+      border-radius: var(--radius);
+      letter-spacing: .01em;
+      transition: background .18s, transform .14s;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.15);
+    }
+    .valuation-btn:hover {
+      background: var(--black-mid);
+      transform: translateY(-1px);
+    }
+    .valuation-btn:active { transform: translateY(0); }
+ 
     /* ── Mobile ── */
     @media (max-width: 600px) {
  
@@ -246,6 +271,9 @@
       .history-table td     { padding: 9px 10px; font-size: 12px; }
       .history-table th:nth-child(n+5),
       .history-table td:nth-child(n+5) { display: none; }
+ 
+      /* Valuation button */
+      .valuation-btn { font-size: 15px; padding: 16px 20px; max-width: 100%; }
  
       /* Footer */
       .site-footer { font-size: 11px; margin-top: 32px; }
@@ -334,6 +362,10 @@
       </table>
     </div>
   </div>
+ 
+  <a href="https://lewskitherealtor.com/15339/p/28767/d1nHmRFvc" target="_blank" rel="noopener" class="valuation-btn">
+    Discover Your Home&#8217;s Market Value
+  </a>
  
   <footer class="site-footer">
     <strong>Brandon Wasilewski</strong> &bull; Realty One Group Summit &bull; DRE: 02021131<br>
@@ -456,6 +488,7 @@ function renderKPIs(current) {
     { label: 'LP/SP Ratio',       value: d.lpsp != null ? fmtPct(d.lpsp) : '--',               sub: 'list vs sold' },
     { label: 'Price Reductions',  value: nn(d.priceReductions),                                 sub: 'this week' },
     { label: '30-Yr Rate',        value: d.rate != null ? d.rate + '%' : '--',                  sub: 'national avg' },
+    { label: 'Avg Reduction',     value: d.avgReductionPct != null ? d.avgReductionPct + '%' : '--', sub: 'avg price cut' },
   ];
   document.getElementById('kpiGrid').innerHTML = cards.map(c =>
     `<div class="kpi-card">
