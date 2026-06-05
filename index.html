@@ -462,19 +462,25 @@ function renderHeader(current) {
     : 'No data available<br><a href="https://brandonwasilewski.com/blog" target="_blank">brandonwasilewski.com/blog</a>';
 }
  
+// ── FIXED: handles both abbreviated (Jun) and full (June) month names ──────
 function lastDateFromLabel(label) {
   if (!label) return '';
-  const months = { Jan:'Jan', Feb:'Feb', Mar:'Mar', Apr:'Apr', May:'May', Jun:'Jun', Jul:'Jul', Aug:'Aug', Sep:'Sep', Oct:'Oct', Nov:'Nov', Dec:'Dec' };
-  // Match range like "Apr 30–May 6, 2026" or "Apr 15–22, 2026"
-  const rangeTwo = String(label).match(/(\w{3})\s+\d+[–\-]+(\w{3})\s+(\d+),?\s*(\d{4})/);
+  // Normalize full month names to 3-letter abbreviations for display
+  const fullToAbbr = {
+    January:'Jan', February:'Feb', March:'Mar', April:'Apr',
+    June:'Jun', July:'Jul', August:'Aug', September:'Sep',
+    October:'Oct', November:'Nov', December:'Dec'
+  };
+  let s = String(label);
+  Object.keys(fullToAbbr).forEach(full => {
+    s = s.replace(new RegExp(full, 'g'), fullToAbbr[full]);
+  });
+  // Now parse the normalized string
+  const rangeTwo = s.match(/(\w{3})\s+\d+[–\-]+(\w{3})\s+(\d+),?\s*(\d{4})/);
   if (rangeTwo) return rangeTwo[2] + ' ' + rangeTwo[3] + ', ' + rangeTwo[4];
-  const rangeOne = String(label).match(/\w{3}\s+\d+[–\-]+(\d+),?\s*(\d{4})/);
-  if (rangeOne) {
-    const mon = String(label).match(/(\w{3})/);
-    return (mon ? mon[1] : '') + ' ' + rangeOne[1] + ', ' + rangeOne[2];
-  }
-  // Single date or "Week of X" — return as-is trimmed
-  return label.replace(/^Week of\s*/i, '');
+  const rangeOne = s.match(/(\w{3})\s+\d+[–\-]+(\d+),?\s*(\d{4})/);
+  if (rangeOne) return rangeOne[1] + ' ' + rangeOne[2] + ', ' + rangeOne[3];
+  return s.replace(/^Week of\s*/i, '');
 }
  
 function renderKPIs(current) {
@@ -706,7 +712,6 @@ function renderChart() {
           bodyFont:  { family: "'DM Sans',sans-serif", size: 12 },
           padding: 10,
           cornerRadius: 8,
-          // Keep tooltip inside chart on mobile
           position: 'nearest',
           xAlign: 'center',
           yAlign: 'bottom',
@@ -724,15 +729,18 @@ function renderChart() {
             maxTicksLimit: isMobile ? 5 : 13,
             callback: (v, i) => {
               const lbl = labels[i] || '';
-              // On mobile show just "Apr 6" style — last date only
               if (isMobile) {
-                const m = lbl.match(/(?:[–\-]\s*(?:\w+\s+)?(\d+)|Week of\s+(\w+\s+\d+)),?\s*(\d{4})/);
-                const short = lbl.match(/([A-Za-z]+)\s+(\d+)[–\-]/);
-                // Try to get end date of range e.g. "May 6" from "Apr 30–May 6, 2026"
-                const endMonth = lbl.match(/[–\-](\w{3})\s+(\d+)/);
-                if (endMonth) return endMonth[1] + ' ' + endMonth[2];
-                const sameMonth = lbl.match(/(\w{3})\s+\d+[–\-](\d+)/);
-                if (sameMonth) return sameMonth[1] + ' ' + sameMonth[2];
+                const endMonth = lbl.match(/[–\-]([A-Za-z]+)\s+(\d+)/);
+                if (endMonth) {
+                  // Abbreviate full month names for mobile display
+                  const abbr = endMonth[1].length > 3 ? endMonth[1].slice(0,3) : endMonth[1];
+                  return abbr + ' ' + endMonth[2];
+                }
+                const sameMonth = lbl.match(/([A-Za-z]+)\s+\d+[–\-](\d+)/);
+                if (sameMonth) {
+                  const abbr = sameMonth[1].length > 3 ? sameMonth[1].slice(0,3) : sameMonth[1];
+                  return abbr + ' ' + sameMonth[2];
+                }
                 return lbl.replace(/, 20\d\d/, '').replace(/Week of /, '');
               }
               return lbl.replace(/, 20\d\d/, '');
@@ -767,12 +775,23 @@ function fmtPct(v) {
   return n > 10 ? n.toFixed(2) + '%' : (n * 100).toFixed(2) + '%';
 }
 function esc(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+ 
+// ── FIXED: handles both abbreviated (Jun) and full (June) month names ──────
 function parseWeekLabel(label) {
-  const months = { Jan:0, Feb:1, Mar:2, Apr:3, May:4, Jun:5, Jul:6, Aug:7, Sep:8, Oct:9, Nov:10, Dec:11 };
-  const m = String(label || '').match(/(\w{3})\s+\d+[–\-,\s]+(?:(\w{3})\s+)?(\d+),?\s*(\d{4})/);
-  if (m) { const mon = months[m[2] || m[1]] ?? 0; return new Date(parseInt(m[4]), mon, parseInt(m[3])).getTime(); }
+  const months = {
+    Jan:0, Feb:1, Mar:2, Apr:3, May:4, Jun:5, Jul:6, Aug:7, Sep:8, Oct:9, Nov:10, Dec:11,
+    January:0, February:1, March:2, April:3, June:5, July:6,
+    August:7, September:8, October:9, November:10, December:11
+  };
+  const s = String(label || '');
+  const m = s.match(/([A-Za-z]+)\s+\d+[–\-,\s]+(?:([A-Za-z]+)\s+)?(\d+),?\s*(\d{4})/);
+  if (m) {
+    const mon = months[m[2] || m[1]] ?? 0;
+    return new Date(parseInt(m[4]), mon, parseInt(m[3])).getTime();
+  }
   return 0;
 }
 </script>
 </body>
 </html>
+ 
