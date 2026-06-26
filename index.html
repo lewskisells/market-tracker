@@ -171,6 +171,14 @@
     .chart-wrap { position: relative; height: 280px; }
     .chart-empty { display: flex; align-items: center; justify-content: center; height: 200px; color: var(--ink-3); font-size: 14px; }
     .chart-range-note { font-size: 11px; color: var(--ink-3); margin-top: 12px; text-align: right; }
+
+    /* Price Reduction chart legend note */
+    .chart-subtitle {
+      font-size: 12px;
+      color: var(--ink-3);
+      margin-bottom: 16px;
+      margin-top: -12px;
+    }
  
     /* History table */
     .history-table-wrap { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 28px; }
@@ -327,7 +335,11 @@
       <button class="chart-tab active" data-chart="pricing">Pricing</button>
       <button class="chart-tab" data-chart="activity">Activity</button>
       <button class="chart-tab" data-chart="velocity">Market Velocity</button>
+      <button class="chart-tab" data-chart="reductions">Price Reductions</button>
       <button class="chart-tab" data-chart="rates">Rates</button>
+    </div>
+    <div id="chartSubtitle" class="chart-subtitle" style="display:none">
+      Bars = number of reductions (left axis) &nbsp;&bull;&nbsp; Line = avg reduction % (right axis)
     </div>
     <div class="chart-wrap">
       <canvas id="mainChart"></canvas>
@@ -465,7 +477,6 @@ function renderHeader(current) {
 // ── FIXED: handles both abbreviated (Jun) and full (June) month names ──────
 function lastDateFromLabel(label) {
   if (!label) return '';
-  // Normalize full month names to 3-letter abbreviations for display
   const fullToAbbr = {
     January:'Jan', February:'Feb', March:'Mar', April:'Apr',
     June:'Jun', July:'Jul', August:'Aug', September:'Sep',
@@ -475,7 +486,6 @@ function lastDateFromLabel(label) {
   Object.keys(fullToAbbr).forEach(full => {
     s = s.replace(new RegExp(full, 'g'), fullToAbbr[full]);
   });
-  // Now parse the normalized string
   const rangeTwo = s.match(/(\w{3})\s+\d+[–\-]+(\w{3})\s+(\d+),?\s*(\d{4})/);
   if (rangeTwo) return rangeTwo[2] + ' ' + rangeTwo[3] + ', ' + rangeTwo[4];
   const rangeOne = s.match(/(\w{3})\s+\d+[–\-]+(\d+),?\s*(\d{4})/);
@@ -638,63 +648,85 @@ const CHART_CONFIGS = {
     { key: 'medianDOM', label: 'Median DOM', color: '#111111', yAxis: 'y',  fmt: v => v + 'd' },
     { key: 'lpsp',      label: 'LP/SP %',   color: '#C5A84F', yAxis: 'y1', fmt: v => fmtPct(v) },
   ]},
+  reductions: { datasets: [
+    { key: 'priceReductions', label: 'Reduction Count', color: '#C04040', yAxis: 'y',  fmt: v => v, type: 'bar' },
+    { key: 'avgReductionPct', label: 'Avg Reduction %', color: '#C5A84F', yAxis: 'y1', fmt: v => v + '%', type: 'line' },
+  ]},
   rates: { datasets: [
     { key: 'rate', label: '30-Yr Fixed Rate', color: '#111111', yAxis: 'y', fmt: v => v + '%' },
   ]}
 };
- 
+
 function renderChart() {
-  const canvas  = document.getElementById('mainChart');
-  const emptyEl = document.getElementById('chartEmpty');
-  const noteEl  = document.getElementById('chartRangeNote');
-  const data    = allHistory.slice(-CHART_WINDOW);
- 
+  const canvas     = document.getElementById('mainChart');
+  const emptyEl    = document.getElementById('chartEmpty');
+  const noteEl     = document.getElementById('chartRangeNote');
+  const subtitleEl = document.getElementById('chartSubtitle');
+  const data       = allHistory.slice(-CHART_WINDOW);
+
+  // Show/hide the subtitle only for the reductions tab
+  subtitleEl.style.display = activeChartTab === 'reductions' ? 'block' : 'none';
+
   if (data.length === 0) {
     canvas.style.display = 'none'; emptyEl.style.display = 'flex'; noteEl.textContent = ''; return;
   }
   canvas.style.display = 'block'; emptyEl.style.display = 'none';
- 
+
   noteEl.textContent = data.length >= CHART_WINDOW
     ? 'Showing last ' + CHART_WINDOW + ' weeks. Full history in table below.'
     : 'Showing all ' + data.length + ' week' + (data.length !== 1 ? 's' : '') + ' of history.';
- 
+
   const cfg    = CHART_CONFIGS[activeChartTab];
   const labels = data.map(r => r.weekLabel);
- 
-  const datasets = cfg.datasets.map(ds => ({
-    label:            ds.label,
-    data:             data.map(r => (r[ds.key] != null && r[ds.key] !== '') ? Number(r[ds.key]) : null),
-    borderColor:      ds.color,
-    backgroundColor:  ds.color + '18',
-    fill:             cfg.datasets.length === 1,
-    tension:          0.35,
-    pointRadius:      4,
-    pointHoverRadius: 6,
-    borderWidth:      2.5,
-    yAxisID:          ds.yAxis,
-    spanGaps:         true,
-  }));
- 
+
+  const datasets = cfg.datasets.map(ds => {
+    const chartType = ds.type || 'line';
+    const base = {
+      label:            ds.label,
+      data:             data.map(r => (r[ds.key] != null && r[ds.key] !== '') ? Number(r[ds.key]) : null),
+      borderColor:      ds.color,
+      backgroundColor:  chartType === 'bar' ? ds.color + 'CC' : ds.color + '18',
+      tension:          chartType === 'bar' ? 0 : 0.35,
+      pointRadius:      chartType === 'bar' ? 0 : 4,
+      pointHoverRadius: chartType === 'bar' ? 0 : 6,
+      borderWidth:      chartType === 'bar' ? 0 : 2.5,
+      yAxisID:          ds.yAxis,
+      spanGaps:         true,
+      type:             chartType,
+      order:            chartType === 'bar' ? 2 : 1,  // bars render behind lines
+    };
+    if (chartType === 'line') {
+      base.fill = cfg.datasets.length === 1;
+    }
+    return base;
+  });
+
   const isMobile = window.innerWidth <= 600;
- 
+
   const scales = {
     y: {
       position: 'left',
       grid: { color: 'rgba(0,0,0,0.04)' },
-      ticks: { font: { family: "'DM Sans',sans-serif", size: isMobile ? 10 : 11 }, color: '#9B9890', callback: v => cfg.datasets[0].fmt(v) }
+      ticks: { font: { family: "'DM Sans',sans-serif", size: isMobile ? 10 : 11 }, color: '#9B9890',
+        callback: v => cfg.datasets[0].fmt(v) }
     }
   };
+
   if (cfg.datasets.length > 1 && cfg.datasets[1].yAxis === 'y1') {
     scales.y1 = {
       position: 'right',
       grid: { drawOnChartArea: false },
-      ticks: { font: { family: "'DM Sans',sans-serif", size: isMobile ? 10 : 11 }, color: '#C5A84F', callback: v => cfg.datasets[1].fmt(v) }
+      ticks: {
+        font: { family: "'DM Sans',sans-serif", size: isMobile ? 10 : 11 },
+        color: activeChartTab === 'reductions' ? '#C5A84F' : '#C5A84F',
+        callback: v => cfg.datasets[1].fmt(v)
+      }
     };
   }
- 
+
   if (mainChart) mainChart.destroy();
   mainChart = new Chart(canvas, {
-    type: 'line',
+    type: 'line',   // mixed charts use 'line' as base type; per-dataset type overrides it
     data: { labels, datasets },
     options: {
       responsive: true,
@@ -732,7 +764,6 @@ function renderChart() {
               if (isMobile) {
                 const endMonth = lbl.match(/[–\-]([A-Za-z]+)\s+(\d+)/);
                 if (endMonth) {
-                  // Abbreviate full month names for mobile display
                   const abbr = endMonth[1].length > 3 ? endMonth[1].slice(0,3) : endMonth[1];
                   return abbr + ' ' + endMonth[2];
                 }
@@ -794,4 +825,3 @@ function parseWeekLabel(label) {
 </script>
 </body>
 </html>
- 
