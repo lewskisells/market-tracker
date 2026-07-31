@@ -332,7 +332,7 @@
       <button class="chart-tab" data-chart="rates">Rates</button>
     </div>
     <div id="chartSubtitle" class="chart-subtitle" style="display:none">
-      Bars = number of reductions (left axis) &nbsp;&bull;&nbsp; Line = avg reduction % (right axis)
+      Bars = number of reductions (left axis) &nbsp;&bull;&nbsp; Line = avg reduction % (right axis, 0% at bottom)
     </div>
     <div class="chart-wrap">
       <canvas id="mainChart"></canvas>
@@ -683,7 +683,11 @@ function renderChart() {
     const chartType = ds.type || 'line';
     const base = {
       label:            ds.label,
-      data:             data.map(r => (r[ds.key] != null && r[ds.key] !== '') ? Number(r[ds.key]) : null),
+      data:             data.map(r => {
+        let v = (r[ds.key] != null && r[ds.key] !== '') ? Number(r[ds.key]) : null;
+        if (v != null && typeof ds.transform === 'function') v = ds.transform(v);
+        return v;
+      }),
       borderColor:      ds.color,
       backgroundColor:  chartType === 'bar' ? ds.color + 'CC' : ds.color + '18',
       tension:          chartType === 'bar' ? 0 : 0.35,
@@ -716,6 +720,7 @@ function renderChart() {
     scales.y1 = {
       position: 'right',
       grid: { drawOnChartArea: false },
+      ...(activeChartTab === 'reductions' ? { reverse: true, suggestedMin: -10, max: 0 } : {}),
       ticks: {
         font: { family: "'DM Sans',sans-serif", size: isMobile ? 10 : 11 },
         color: activeChartTab === 'reductions' ? '#C5A84F' : '#C5A84F',
