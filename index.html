@@ -311,21 +311,14 @@
   <!-- KPI CARDS -->
   <div class="kpi-grid" id="kpiGrid"></div>
  
-  <!-- DIRECTIONAL INDICATORS -->
+  <!-- MARKET TRENDS (directional indicators) -->
   <div class="section-header">
     <div class="section-title">Market Trends</div>
     <div class="section-badge">Directional Streaks</div>
   </div>
   <div class="dir-grid" id="dirGrid"></div>
  
-  <!-- FEATURED PICKS -->
-  <div class="section-header">
-    <div class="section-title">Featured Picks</div>
-    <div class="section-badge" id="picksBadge">This Week</div>
-  </div>
-  <div class="picks-grid" id="picksGrid"></div>
- 
-  <!-- HISTORICAL TRENDS -->
+  <!-- HISTORICAL TRENDS (chart) -->
   <div class="section-header">
     <div class="section-title">Historical Trends</div>
     <div id="histBadge" class="section-badge">Loading&hellip;</div>
@@ -348,7 +341,14 @@
     <div class="chart-range-note" id="chartRangeNote"></div>
   </div>
  
-  <!-- HISTORY TABLE -->
+  <!-- FEATURED PICKS -->
+  <div class="section-header">
+    <div class="section-title">Featured Picks</div>
+    <div class="section-badge" id="picksBadge">This Week</div>
+  </div>
+  <div class="picks-grid" id="picksGrid"></div>
+ 
+  <!-- WEEKLY HISTORY (table) -->
   <div class="history-table-wrap">
     <div class="history-table-header">
       <div class="history-table-title">Weekly History</div>
@@ -459,9 +459,9 @@ function renderAll() {
   renderHeader(current);
   renderKPIs(current);
   renderDirectional(current);
-  renderPicks(current);
   renderHistoryTable();
   renderChart();
+  renderPicks(current);
   document.getElementById('histBadge').textContent =
     allHistory.length === 0 ? 'No history yet'
     : allHistory.length + ' week' + (allHistory.length !== 1 ? 's' : '') + ' (live)';
