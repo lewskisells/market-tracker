@@ -308,13 +308,6 @@
   <div class="loading-bar" id="loadingBar"></div>
   <div class="load-error"  id="loadError" style="display:none"></div>
  
-  <!-- FEATURED PICKS -->
-  <div class="section-header">
-    <div class="section-title">Featured Picks</div>
-    <div class="section-badge" id="picksBadge">This Week</div>
-  </div>
-  <div class="picks-grid" id="picksGrid"></div>
- 
   <!-- MARKET TRENDS (directional indicators) -->
   <div class="section-header">
     <div class="section-title">Market Trends</div>
@@ -347,6 +340,13 @@
     </div>
     <div class="chart-range-note" id="chartRangeNote"></div>
   </div>
+ 
+  <!-- FEATURED PICKS -->
+  <div class="section-header">
+    <div class="section-title">Featured Picks</div>
+    <div class="section-badge" id="picksBadge">This Week</div>
+  </div>
+  <div class="picks-grid" id="picksGrid"></div>
  
   <!-- WEEKLY HISTORY (table) -->
   <div class="history-table-wrap">
@@ -401,12 +401,14 @@ window.addEventListener('DOMContentLoaded', async () => {
     allHistory.sort((a, b) => parseWeekLabel(a.weekLabel) - parseWeekLabel(b.weekLabel));
     document.getElementById('loadingBar').style.display = 'none';
     renderAll();
+    sendHeightToParent();
   } catch(e) {
     document.getElementById('loadingBar').style.display = 'none';
     const err = document.getElementById('loadError');
     err.style.display = '';
     err.textContent = 'Unable to load market data. Please try refreshing the page.';
     console.error(e);
+    sendHeightToParent();
   }
 });
  
@@ -796,8 +798,24 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.classList.add('active');
     activeChartTab = btn.dataset.chart;
     renderChart();
+    sendHeightToParent();
   });
 });
+
+// ── Tell the parent page (GoDaddy iframe) our real height so it can resize ──
+// Without this, the iframe stays locked at its fixed height and content
+// gets clipped on mobile, where the layout reflows taller.
+function sendHeightToParent() {
+  const h = document.documentElement.scrollHeight;
+  window.parent.postMessage({ iframeHeight: h }, '*');
+}
+window.addEventListener('load', sendHeightToParent);
+window.addEventListener('resize', sendHeightToParent);
+window.addEventListener('orientationchange', () => setTimeout(sendHeightToParent, 300));
+
+if (window.ResizeObserver) {
+  new ResizeObserver(() => sendHeightToParent()).observe(document.body);
+}
  
 function nn(v)       { return (v != null && v !== '') ? String(v) : '--'; }
 function fmtPrice(v) {
